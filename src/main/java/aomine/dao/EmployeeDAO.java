@@ -42,4 +42,11 @@ public class EmployeeDAO implements DAO<Employee> {
     session.remove(employee);
     session.getTransaction().commit();
   }
+
+  public boolean isEmpty() {
+    String hql = "SELECT COUNT(e) FROM Employee e";
+    Long count = session.createQuery(hql, Long.class).uniqueResult();
+
+    return count == 0;
+  }
 }

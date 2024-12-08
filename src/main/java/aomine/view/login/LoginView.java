@@ -96,9 +96,19 @@ public class LoginView extends JPanel {
     }
   }
 
+  public JTextField getTfUsername() {
+    return tfUsername;
+  }
+
+  public JPasswordField getPfPassword() {
+    return pfPassword;
+  }
+
   private JLabel lblTitle;
   private JPanel container;
   private JTextField tfUsername;
   private JPasswordField pfPassword;
   private JButton btnLogin;
+
+  
 }
