@@ -23,7 +23,7 @@ public class LoginController {
       // "Error", 
       // "Usuario y/o contraseña incorrectos.",
       "OK!", 
-      "ROles creados correctamente.",
+      "Usuario creado correctamente.",
       MessageAlerts.MessageType.SUCCESS
     );
 

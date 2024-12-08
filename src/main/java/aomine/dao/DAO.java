@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public interface DAO<T> {
   ArrayList<T> getAll();
-  T get(int id);
+  T get(long id);
   void add(T t);
   void update(T t);
-  void delete(int id);
+  void delete(long id);
 }

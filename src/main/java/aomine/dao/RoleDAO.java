@@ -23,7 +23,7 @@ public class RoleDAO implements DAO<Role> {
   }
 
   @Override
-  public Role get(int id) {
+  public Role get(long id) {
     return session.find(Role.class, id);
   }
 
@@ -42,7 +42,7 @@ public class RoleDAO implements DAO<Role> {
   }
 
   @Override
-  public void delete(int id) {
+  public void delete(long id) {
     session.beginTransaction();
     Role role = get(id);
     session.remove(role);
