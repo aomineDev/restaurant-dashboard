@@ -1,0 +1,20 @@
+<hibernate-configuration>
+  <session-factory>
+    <!-- Configuración de conexión a PostgreSQL -->
+    <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+    <property name="hibernate.connection.url">${DB_URL}</property>
+    <property name="hibernate.connection.username">${DB_USER}</property>
+    <property name="hibernate.connection.password">${DB_PASSWORD}</property>
+
+    <!-- Configuración adicional -->
+    <property name="hibernate.show_sql">true</property>
+    <property name="hibernate.format_sql">true</property>
+    <property name="hibernate.hbm2ddl.auto">update</property>
+     
+    <!-- Declaración explícita de clases -->
+    <mapping class="aomine.model.Role"/>
+    <mapping class="aomine.model.Person"/>
+    <mapping class="aomine.model.NaturalPerson"/>
+    <mapping class="aomine.model.Employee"/>
+  </session-factory>
+</hibernate-configuration>

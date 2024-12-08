@@ -1,4 +1,4 @@
-package aomine.admin.view;
+package aomine.view.admin;
 
 import javax.swing.JButton;
 import java.awt.Desktop;

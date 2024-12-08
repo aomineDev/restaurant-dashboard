@@ -32,7 +32,6 @@ public class SwitchTheme extends JPanel {
 
     darkLigSwitchIcon = new SwitchIcon();
     btnSwitch = new JToggleButton();
-    btnSwitch.setSelected(true);
 
     darkLigSwitchIcon.setCenterSpace(20);
     btnSwitch.setIcon(darkLigSwitchIcon);

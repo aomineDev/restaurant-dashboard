@@ -94,5 +94,10 @@
             <artifactId>javase</artifactId>
             <version>3.5.3</version>
         </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>6.6.3.Final</version>
+        </dependency>
     </dependencies>
 </project>

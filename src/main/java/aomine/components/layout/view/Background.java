@@ -15,7 +15,7 @@ public class Background extends JPanel {
     setOpaque(true);
     setLayout(new BorderLayout());
     putClientProperty(FlatClientProperties.STYLE,
-      "border:5,5,5,5;" +
+      "border: 5,5,5,5;" +
       "background: $Drawer.background"
     );
   }

@@ -55,7 +55,6 @@ public class SwitchIcon implements AnimatedIcon {
     g2.setClip(new Rectangle(x, y, width, size));
     paintIcon(c, (Graphics2D) g2.create(), animatedX, darkY, darkIcon, animatedValue);
     paintIcon(c, (Graphics2D) g2.create(), animatedX, lightY, lightIcon, 1f - animatedValue);
-    
 
     g2.dispose();
   }

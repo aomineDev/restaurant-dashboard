@@ -7,9 +7,8 @@ import java.awt.Image;
 
 import com.formdev.flatlaf.extras.FlatAnimatedLafChange;
 
-import aomine.login.view.LoginView;
 import aomine.utils.PrevNext;
-
+import aomine.view.login.LoginView;
 import aomine.components.layout.sidebar.MyDrawerBuilder;
 import aomine.components.layout.sidebar.Sidebar;
 import aomine.components.layout.slider.PanelSlider;

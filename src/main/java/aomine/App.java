@@ -6,7 +6,7 @@ import javax.swing.UIManager;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
-import com.formdev.flatlaf.themes.FlatMacDarkLaf;
+import com.formdev.flatlaf.themes.FlatMacLightLaf;
 
 import aomine.components.layout.view.Background;
 import raven.popup.GlassPanePopup;
@@ -40,7 +40,7 @@ public class App extends JFrame {
 
     FlatLaf.registerCustomDefaultsSource("aomine.themes");
 
-    FlatMacDarkLaf.setup();
+    FlatMacLightLaf.setup();
         
     EventQueue.invokeLater(() -> new App().setVisible(true));
   }

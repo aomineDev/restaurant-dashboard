@@ -24,7 +24,7 @@ public class MainView extends JPanel {
   private void init() {
     putClientProperty(FlatClientProperties.STYLE, 
       "border: 5, 5, 5, 5;" +
-      "arc: 30"
+      "arc: 30;"
     );
 
     setLayout(new MigLayout("wrap, fillx", "[fill]", "[]"));
@@ -34,12 +34,12 @@ public class MainView extends JPanel {
     JScrollPane scroll = new JScrollPane(panelSlider);
 
     scroll.putClientProperty(FlatClientProperties.STYLE, 
-      "border: 0, 0, 0, 0"
+      "border: 0, 0, 0, 0;"
     );
 
     scroll.getVerticalScrollBar().putClientProperty(FlatClientProperties.STYLE, 
       "trackArc: 999;" +
-      "width: 10"
+      "width: 10;"
     );
 
     scroll.getVerticalScrollBar().setUnitIncrement(10);
@@ -51,7 +51,7 @@ public class MainView extends JPanel {
   private JPanel createHeader() {
     JPanel header = new JPanel(new MigLayout("insets 3"));
     header.putClientProperty(FlatClientProperties.STYLE, 
-      "background: null"
+      "background: null;"
     );
     btnSidebar = createButton(new FlatSVGIcon(getClass().getResource("/aomine/icons/header/menu.svg")));
     btnPrev = createButton(new FlatSVGIcon(getClass().getResource("/aomine/icons/header/prev.svg")));
@@ -79,7 +79,7 @@ public class MainView extends JPanel {
       "margin: 3, 3, 3, 3;" +
       "borderWidth: 0;" +
       "focusWidth: 0;" +
-      "innerFocusWidth: 0" 
+      "innerFocusWidth: 0;"
     );
 
     return button;

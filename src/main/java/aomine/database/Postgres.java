@@ -1,5 +1,5 @@
 package aomine.database;
 
-public class RestaurantDB {
+public class Postgres {
   
 }

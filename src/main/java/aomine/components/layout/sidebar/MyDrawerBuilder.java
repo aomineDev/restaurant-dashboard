@@ -12,9 +12,9 @@ import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 
 import aomine.ViewManager;
-import aomine.admin.view.Prueba;
-import aomine.admin.view.Test;
 import aomine.components.layout.sidebar.switchTheme.SwitchTheme;
+import aomine.view.admin.Prueba;
+import aomine.view.admin.Test;
 import raven.drawer.component.DrawerPanel;
 import raven.drawer.component.SimpleDrawerBuilder;
 import raven.drawer.component.footer.SimpleFooterData;
@@ -66,6 +66,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
   public SimpleMenuOption getSimpleMenuOption() {
     MenuItem[] items = new MenuItem[]{
       new Item("Dashboard"),
+      new Item("asd"),
       new Item("Prueba")
     };
 
