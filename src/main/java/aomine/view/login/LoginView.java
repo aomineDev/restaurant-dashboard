@@ -2,6 +2,8 @@ package aomine.view.login;
 
 import java.awt.Cursor;
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -12,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.text.JTextComponent;
 
 import com.formdev.flatlaf.FlatClientProperties;
 
@@ -28,7 +31,7 @@ public class LoginView extends JPanel {
     init();
   }
 
-  public void init() {
+  private void init() {
     // Main Layout
     setLayout(new MigLayout("fill", "[center]"));
 
@@ -50,8 +53,7 @@ public class LoginView extends JPanel {
       "font: bold +10;" +
       "foreground: #7E3819;"
     );
-
-    tfUsername.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Ingrese su usuario");
+   
     pfPassword.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Ingrese su contraseña");
     pfPassword.putClientProperty(FlatClientProperties.STYLE, "showRevealButton: true");
     btnLogin.putClientProperty(FlatClientProperties.STYLE, 
@@ -67,6 +69,36 @@ public class LoginView extends JPanel {
     // Events
     btnLogin.addActionListener(controller::handleLoginClick);
 
+    tfUsername.addKeyListener(new KeyListener() {
+      @Override
+      public void keyTyped(KeyEvent e) {
+        toggleFieldErrorHint(tfUsername, false);
+        toggleFieldErrorHint(pfPassword, false);
+      }
+
+      @Override
+      public void keyPressed(KeyEvent e) {}
+
+      @Override
+      public void keyReleased(KeyEvent e) {}
+    });
+
+    pfPassword.addKeyListener(new KeyListener() {
+      @Override
+      public void keyTyped(KeyEvent e) {
+        toggleFieldErrorHint(tfUsername, false);
+        toggleFieldErrorHint(pfPassword, false);
+      }
+
+      @Override
+      public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_ENTER) controller.handleLoginClick(null);
+      }
+
+      @Override
+      public void keyReleased(KeyEvent e) {}
+    });
+
     // Constraints
     container.add(lblTitle, "grow 0, center");
     container.add(new JLabel("Usuario"), "gapy 10");
@@ -76,6 +108,12 @@ public class LoginView extends JPanel {
     container.add(btnLogin, "gapy 15");
 
     add(container);
+  }
+
+  public void toggleFieldErrorHint(JTextComponent component, boolean toggle) {
+    String outline = toggle ? FlatClientProperties.OUTLINE_ERROR : null;
+
+    component.putClientProperty(FlatClientProperties.OUTLINE, outline);
   }
 
   public void setBackgrondImage(String imagePath) {
@@ -109,6 +147,4 @@ public class LoginView extends JPanel {
   private JTextField tfUsername;
   private JPasswordField pfPassword;
   private JButton btnLogin;
-
-  
 }

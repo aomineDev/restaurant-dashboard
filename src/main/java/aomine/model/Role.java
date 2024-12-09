@@ -18,6 +18,11 @@ public class Role {
   @Column(name = "name")
   private String name;
 
+  public static final String ADMIN = "administrador";
+  public static final String WAITER = "mesero";
+  public static final String CHEF = "cocinero";
+  public static final String CASHIER = "cajero";
+
   public long getRoleId() {
     return roleId;
   }

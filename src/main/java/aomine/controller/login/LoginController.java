@@ -28,8 +28,10 @@ public class LoginController {
   }
 
   public void handleLoginClick(ActionEvent evt) {
+    // Verificacion de primer ingreso
     if (employeeDAO.isEmpty()) createAdmin();
 
+    // Validacion de campos
     String username = view.getTfUsername().getText();
 
     validate.setElement(username)
@@ -37,6 +39,7 @@ public class LoginController {
 
     if (!validate.getIsValid()) {
       errorMessage(validate.getMessage());
+      view.toggleFieldErrorHint(view.getTfUsername(), true);
       return;
     }
 
@@ -48,26 +51,31 @@ public class LoginController {
 
     if (!validate.getIsValid()) {
       errorMessage(validate.getMessage());
+      view.toggleFieldErrorHint(view.getPfPassword(), true);
       return;
     }
 
+    // Validacio de credenciales
     try {
       Employee user = verifyUsername(username);
       verifyPassword(password, user.getPassword());
 
-      if (user.getRole().getName().equals("administrador")) {
+      if (user.getRole().getName().equals(Role.ADMIN)) {
         ViewManager.showView(new Test());
       }
 
       ViewManager.login();
     } catch (Exception e) {
       errorMessage(e.getMessage());
+      view.getPfPassword().setText("");
+      view.toggleFieldErrorHint(view.getTfUsername(), true);
+      view.toggleFieldErrorHint(view.getPfPassword(), true);
     }
   }
 
   private void createAdmin() {
     Role admin = new Role();
-    admin.setName("administrador");
+    admin.setName(Role.ADMIN);
     roleDAO.add(admin);
 
     String password = "securepass";
