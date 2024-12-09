@@ -18,13 +18,13 @@ public abstract class Person {
   @Column(name = "person_id")
   protected long personId;
 
-  @Column(name = "phone_number")
+  @Column(name = "phone_number", unique = true)
   protected int phoneNumber;
 
   @Column(name = "address", length = 100)
   protected String address;
 
-  @Column(name = "email", length = 100)
+  @Column(name = "email", unique = true, length = 100)
   protected String email;
 
   public Person() {}

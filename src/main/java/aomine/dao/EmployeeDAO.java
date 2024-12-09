@@ -49,4 +49,12 @@ public class EmployeeDAO implements DAO<Employee> {
 
     return count == 0;
   }
+
+  public Employee getByUsername(String username) {
+    String query = "FROM Employee e WHERE e.username = :username";
+
+    return session.createQuery(query, Employee.class)
+      .setParameter("username", username)
+      .uniqueResult();
+  }
 }

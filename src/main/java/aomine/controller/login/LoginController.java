@@ -2,8 +2,6 @@ package aomine.controller.login;
 
 import java.awt.event.ActionEvent;
 
-import org.postgresql.translation.messages_pt_BR;
-
 import aomine.ViewManager;
 import aomine.dao.EmployeeDAO;
 import aomine.dao.RoleDAO;
@@ -13,6 +11,7 @@ import aomine.utils.Validate;
 import aomine.view.admin.Test;
 import aomine.view.login.LoginView;
 import at.favre.lib.crypto.bcrypt.BCrypt;
+import at.favre.lib.crypto.bcrypt.BCrypt.Result;
 import raven.alerts.MessageAlerts;
 
 public class LoginController {
@@ -26,7 +25,6 @@ public class LoginController {
     validate = new Validate();
     roleDAO = new RoleDAO();
     employeeDAO = new EmployeeDAO();
-
   }
 
   public void handleLoginClick(ActionEvent evt) {
@@ -53,8 +51,18 @@ public class LoginController {
       return;
     }
 
-    // ViewManager.showView(new Test());
-    // ViewManager.login();
+    try {
+      Employee user = verifyUsername(username);
+      verifyPassword(password, user.getPassword());
+
+      if (user.getRole().getName().equals("administrador")) {
+        ViewManager.showView(new Test());
+      }
+
+      ViewManager.login();
+    } catch (Exception e) {
+      errorMessage(e.getMessage());
+    }
   }
 
   private void createAdmin() {
@@ -77,11 +85,24 @@ public class LoginController {
     employeeDAO.add(user);
   }
 
-  public void errorMessage(String msg) {
+  private void errorMessage(String msg) {
     MessageAlerts.getInstance().showMessage(
       "Error!", 
       msg,
       MessageAlerts.MessageType.ERROR
     );
+  }
+
+  private Employee verifyUsername(String username) throws Exception {
+    Employee user = employeeDAO.getByUsername(username);
+
+    if (user == null) throw new Exception("Usurio y/o contraseña invalidos");
+    else return user;
+  }
+
+  private void verifyPassword(String password, String encryptedPassword) throws Exception {
+     Result result = BCrypt.verifyer().verify(password.toCharArray(), encryptedPassword);
+     
+     if (!result.verified) throw new Exception("Usurio y/o contraseña invalidos");
   }
 }
