@@ -4,6 +4,7 @@ import java.awt.Component;
 
 import javax.swing.Icon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -27,8 +28,8 @@ public class MainView extends JPanel {
       "arc: 30;"
     );
 
-    setLayout(new MigLayout("wrap, fillx", "[fill]", "[]"));
-
+    setLayout(new MigLayout("flowy", "[grow]", "[][grow]"));
+ 
     header = createHeader();
     panelSlider = new PanelSlider();
     JScrollPane scroll = new JScrollPane(panelSlider);
@@ -45,7 +46,7 @@ public class MainView extends JPanel {
     scroll.getVerticalScrollBar().setUnitIncrement(10);
 
     add(header);
-    add(scroll);
+    add(scroll, "grow");
   }
 
   private JPanel createHeader() {

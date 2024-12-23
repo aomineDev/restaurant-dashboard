@@ -8,6 +8,7 @@ import aomine.dao.RoleDAO;
 import aomine.model.Employee;
 import aomine.model.Role;
 import aomine.utils.Validate;
+import aomine.view.admin.EmployeeView;
 import aomine.view.admin.Test;
 import aomine.view.login.LoginView;
 import at.favre.lib.crypto.bcrypt.BCrypt;
@@ -20,40 +21,30 @@ public class LoginController {
   private EmployeeDAO employeeDAO;
   private Validate validate;
 
+  // from vview
+  private String username;
+  private String password;
+
   public LoginController(LoginView view) {
     this.view = view;
-    validate = new Validate();
-    roleDAO = new RoleDAO();
-    employeeDAO = new EmployeeDAO();
+    // validate = new Validate();
+    // roleDAO = new RoleDAO();
+    // employeeDAO = new EmployeeDAO();
+  }
+
+  public void fastLogin(ActionEvent evt) {
+    ViewManager.showView(new EmployeeView());
+    ViewManager.login();
+
   }
 
   public void handleLoginClick(ActionEvent evt) {
     // Verificacion de primer ingreso
-    if (employeeDAO.isEmpty()) createAdmin();
+    if (employeeDAO.isEmpty())
+      createAdmin();
 
     // Validacion de campos
-    String username = view.getTfUsername().getText();
-
-    validate.setElement(username)
-      .isRequired("El usuario es requerido");
-
-    if (!validate.getIsValid()) {
-      errorMessage(validate.getMessage());
-      view.toggleFieldErrorHint(view.getTfUsername(), true);
-      return;
-    }
-
-    String password = String.valueOf(view.getPfPassword().getPassword());
-
-    validate.setElement(password)
-      .isRequired("La contraseña es requedia")
-      .minLength("La contraseña tiene que tener mas de 8 cara cteres", 8);
-
-    if (!validate.getIsValid()) {
-      errorMessage(validate.getMessage());
-      view.toggleFieldErrorHint(view.getPfPassword(), true);
-      return;
-    }
+    validateFields();
 
     // Validacio de credenciales
     try {
@@ -68,9 +59,39 @@ public class LoginController {
     } catch (Exception e) {
       errorMessage(e.getMessage());
       view.getPfPassword().setText("");
-      view.toggleFieldErrorHint(view.getTfUsername(), true);
-      view.toggleFieldErrorHint(view.getPfPassword(), true);
+      // view.toggleFieldErrorHint(view.getTfUsername(), true);
+      // view.toggleFieldErrorHint(view.getPfPassword(), true);
     }
+  }
+
+  private void validateFields() {
+    // try {
+    // username = view.getTfUsername().getText();
+
+    // validate.setElement(username)
+    // .isRequired("El usuario es requerido");
+
+    // if (!validate.getIsValid()) {
+    // errorMessage(validate.getMessage());
+    // view.toggleFieldErrorHint(view.getTfUsername(), true);
+    // return;
+    // }
+
+    // password = String.valueOf(view.getPfPassword().getPassword());
+
+    // validate.setElement(password)
+    // .isRequired("La contraseña es requedia")
+    // .minLength("La contraseña tiene que tener mas de 8 cara cteres", 8);
+
+    // if (!validate.getIsValid()) {
+    // errorMessage(validate.getMessage());
+    // view.toggleFieldErrorHint(view.getPfPassword(), true);
+    // return;
+    // }
+    // } catch (Exception e) {
+    // // TODO: handle exception
+    // }
+
   }
 
   private void createAdmin() {
@@ -95,22 +116,24 @@ public class LoginController {
 
   private void errorMessage(String msg) {
     MessageAlerts.getInstance().showMessage(
-      "Error!", 
-      msg,
-      MessageAlerts.MessageType.ERROR
-    );
+        "Error!",
+        msg,
+        MessageAlerts.MessageType.ERROR);
   }
 
   private Employee verifyUsername(String username) throws Exception {
     Employee user = employeeDAO.getByUsername(username);
 
-    if (user == null) throw new Exception("Usurio y/o contraseña invalidos");
-    else return user;
+    if (user == null)
+      throw new Exception("Usurio y/o contraseña invalidos");
+    else
+      return user;
   }
 
   private void verifyPassword(String password, String encryptedPassword) throws Exception {
-     Result result = BCrypt.verifyer().verify(password.toCharArray(), encryptedPassword);
-     
-     if (!result.verified) throw new Exception("Usurio y/o contraseña invalidos");
+    Result result = BCrypt.verifyer().verify(password.toCharArray(), encryptedPassword);
+
+    if (!result.verified)
+      throw new Exception("Usurio y/o contraseña invalidos");
   }
 }

@@ -24,7 +24,7 @@ public class ViewManager {
   private final MainView mainView;
   public final PrevNext<SimpleView> viewStack = new PrevNext<>();
   private boolean sidebarShowing;
-  
+
   public static void install(JFrame frame) {
     instance = new ViewManager(frame);
   }
@@ -58,24 +58,27 @@ public class ViewManager {
   public static void showView(SimpleView component) {
     if (isNewViewAble()) {
       instance.viewStack.add(component);
-      
+
       if (instance.sidebarShowing) {
         instance.sidebarShowing = false;
         Image oldImage = instance.panelSlider.createOldImage();
         instance.mainView.setView(component);
-        instance.panelSlider.addSlide(instance.mainView, SimpleTransition.getSwitchViewTransition(oldImage, instance.sidebar.getDrawerBuilder().getDrawerWidth()));
+        instance.panelSlider.addSlide(instance.mainView,
+            SimpleTransition.getSwitchViewTransition(oldImage, instance.sidebar.getDrawerBuilder().getDrawerWidth()));
       }
     }
   }
 
   public static void showSidebar() {
     instance.sidebarShowing = true;
-    instance.panelSlider.addSlide(instance.sidebar, SimpleTransition.getShowSidebarTransition(instance.sidebar.getDrawerBuilder().getDrawerWidth()));
+    instance.panelSlider.addSlide(instance.sidebar,
+        SimpleTransition.getShowSidebarTransition(instance.sidebar.getDrawerBuilder().getDrawerWidth()));
   }
 
   public static void hideSidebar() {
     instance.sidebarShowing = false;
-    instance.panelSlider.addSlide(instance.mainView, SimpleTransition.getHideSidebarTransition(instance.sidebar.getDrawerBuilder().getDrawerWidth()));
+    instance.panelSlider.addSlide(instance.mainView,
+        SimpleTransition.getHideSidebarTransition(instance.sidebar.getDrawerBuilder().getDrawerWidth()));
   }
 
   public static void prev() {
@@ -96,7 +99,7 @@ public class ViewManager {
   }
 
   public static void refresh() {
-    if(!instance.sidebarShowing) {
+    if (!instance.sidebarShowing) {
       instance.viewStack.getCurrent().viewRefresh();
     }
   }
@@ -110,7 +113,7 @@ public class ViewManager {
   }
 
   public static void updateTempViewUI() {
-    for (SimpleView f: instance.viewStack) {
+    for (SimpleView f : instance.viewStack) {
       SwingUtilities.updateComponentTreeUI(f);
     }
   }

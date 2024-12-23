@@ -11,8 +11,8 @@ public class SimpleView extends JPanel {
 
   private void init() {
     putClientProperty(FlatClientProperties.STYLE, 
-      "border:5,5,5,5;" +
-      "background:null"
+      "border: 5,5,5,5;" +
+      "background: null"
     );
   }
 
