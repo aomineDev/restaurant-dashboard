@@ -3,10 +3,13 @@ package aomine.components;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.JTextComponent;
 
+import java.awt.TextComponent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -16,14 +19,15 @@ import com.formdev.flatlaf.FlatClientProperties;
 
 import net.miginfocom.swing.MigLayout;
 
-public class TextInput extends JPanel {
+public class TextInput {
   private String placeholder;
   private String lblText;
   private String value;
   private String lblErrorText;
+  private boolean isPassword;
   private boolean errorHintState;
 
-  private JTextField textField;
+  private JTextComponent input;
   private JLabel lblError;
   private JLabel lbl;
 
@@ -37,40 +41,44 @@ public class TextInput extends JPanel {
     this.lblText = builder.lblText;
     this.value = builder.value;
     this.lblErrorText = builder.lblErrorText;
+    this.isPassword = builder.isPassword;
     this.errorHintState = false;
 
     init();
   }
 
   private void init() {
-    setLayout(new MigLayout("insets 0, debug, flowy, fillx", "[fill]"));
-
     if (this.lblText != null) {
       this.lbl = new JLabel(this.lblText);
-      add(this.lbl);
     }
 
-    this.textField = new JTextField(this.value);
+    if (isPassword) {
+      this.input = new JPasswordField(this.value) {
+        @Override
+        public String getText() {
+          return String.valueOf(getPassword());
+        }
+      };
 
-    this.textField.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, this.placeholder);
+      this.input.putClientProperty(FlatClientProperties.STYLE, "showRevealButton: true");
+    } else
+      this.input = new JTextField(this.value);
 
-    this.addKeyListener();
+    this.input.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, this.placeholder);
 
-    this.addDocumentListener();
-
-    add(this.textField);
+    addKeyListener();
+    addDocumentListener();
 
     if (this.lblErrorText != null) {
       this.lblError = new JLabel(this.lblErrorText);
       this.lblError.putClientProperty(FlatClientProperties.STYLE,
           "font: -1;" +
               "foreground: rgb(255, 130, 130);");
-      add(this.lblError);
     }
   }
 
   public void addKeyListener() {
-    this.textField.addKeyListener(new KeyListener() {
+    this.input.addKeyListener(new KeyListener() {
       @Override
       public void keyTyped(KeyEvent e) {
         if (handleKeyTyped != null)
@@ -92,7 +100,7 @@ public class TextInput extends JPanel {
   }
 
   public void addDocumentListener() {
-    this.textField.getDocument().addDocumentListener(new DocumentListener() {
+    this.input.getDocument().addDocumentListener(new DocumentListener() {
       @Override
       public void insertUpdate(DocumentEvent e) {
         if (handleChanged != null)
@@ -113,28 +121,32 @@ public class TextInput extends JPanel {
     });
   }
 
-  public void setFieldErrorHint(boolean value) {
-    if (errorHintState == value)
+  public void setErrorHint(boolean newState) {
+    if (errorHintState == newState)
       return;
 
-    String outline = value ? FlatClientProperties.OUTLINE_ERROR : null;
+    errorHintState = newState;
+    String outline = newState ? FlatClientProperties.OUTLINE_ERROR : null;
 
-    this.textField.putClientProperty(FlatClientProperties.OUTLINE, outline);
+    this.input.putClientProperty(FlatClientProperties.OUTLINE, outline);
   }
 
   public void setLblErrorText(String txt) {
     if (this.lblError == null)
       return;
 
+    if (this.lblError.getText() == txt)
+      return;
+
     this.lblError.setText(txt);
   }
 
   public void setLeftIcon(String iconPath) {
-    this.textField.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON, getIcon(iconPath));
+    this.input.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON, getIcon(iconPath));
   }
 
   public void setRightIcon(String iconPath) {
-    this.textField.putClientProperty(FlatClientProperties.TEXT_FIELD_TRAILING_ICON, getIcon(iconPath));
+    this.input.putClientProperty(FlatClientProperties.TEXT_FIELD_TRAILING_ICON, getIcon(iconPath));
   }
 
   private ImageIcon getIcon(String iconPath) {
@@ -142,11 +154,23 @@ public class TextInput extends JPanel {
   }
 
   public String getText() {
-    return this.textField.getText();
+    return this.input.getText();
   }
 
   public void setText(String txt) {
-    this.textField.setText(txt);
+    this.input.setText(txt);
+  }
+
+  public JLabel getLabel() {
+    return this.lbl;
+  }
+
+  public JTextComponent getInput() {
+    return this.input;
+  }
+
+  public JLabel getErrorLabel() {
+    return this.lblError;
   }
 
   public void onKeyTyped(Consumer<KeyEvent> handleKeyTyped) {
@@ -170,29 +194,35 @@ public class TextInput extends JPanel {
     private String lblText;
     private String value;
     private String lblErrorText;
+    private boolean isPassword;
 
     public TextInputBuilder() {
-      placeholder = "";
-      value = "";
+      this.placeholder = "";
+      this.isPassword = false;
     }
 
-    public TextInputBuilder placeholder(String placeholder) {
+    public TextInputBuilder setPlaceholder(String placeholder) {
       this.placeholder = placeholder;
       return this;
     }
 
-    public TextInputBuilder label(String lblText) {
+    public TextInputBuilder setLabelText(String lblText) {
       this.lblText = lblText;
       return this;
     }
 
-    public TextInputBuilder value(String value) {
+    public TextInputBuilder setValue(String value) {
       this.value = value;
       return this;
     }
 
-    public TextInputBuilder errorLabel() {
+    public TextInputBuilder withErrorLabel() {
       this.lblErrorText = "";
+      return this;
+    }
+
+    public TextInputBuilder setPassword(boolean value) {
+      this.isPassword = value;
       return this;
     }
 

@@ -7,7 +7,8 @@ import aomine.dao.EmployeeDAO;
 import aomine.dao.RoleDAO;
 import aomine.model.Employee;
 import aomine.model.Role;
-import aomine.utils.Validate;
+import aomine.utils.validate.ValError;
+import aomine.utils.validate.Validate;
 import aomine.view.admin.EmployeeView;
 import aomine.view.admin.Test;
 import aomine.view.login.LoginView;
@@ -27,15 +28,15 @@ public class LoginController {
 
   public LoginController(LoginView view) {
     this.view = view;
-    // validate = new Validate();
+    validate = new Validate();
     // roleDAO = new RoleDAO();
     // employeeDAO = new EmployeeDAO();
   }
 
   public void fastLogin(ActionEvent evt) {
-    ViewManager.showView(new EmployeeView());
-    ViewManager.login();
-
+    validateFields();
+    // ViewManager.showView(new EmployeeView());
+    // ViewManager.login();
   }
 
   public void handleLoginClick(ActionEvent evt) {
@@ -58,40 +59,28 @@ public class LoginController {
       ViewManager.login();
     } catch (Exception e) {
       errorMessage(e.getMessage());
-      view.getPfPassword().setText("");
+      view.getTiPassword().setText("");
       // view.toggleFieldErrorHint(view.getTfUsername(), true);
       // view.toggleFieldErrorHint(view.getPfPassword(), true);
     }
   }
 
   private void validateFields() {
-    // try {
-    // username = view.getTfUsername().getText();
+    validate.reset();
 
-    // validate.setElement(username)
-    // .isRequired("El usuario es requerido");
+    validate.setElement(view.getTiUsername())
+        .isRequired("campo requerido");
 
-    // if (!validate.getIsValid()) {
-    // errorMessage(validate.getMessage());
-    // view.toggleFieldErrorHint(view.getTfUsername(), true);
-    // return;
-    // }
+    validate.setElement(view.getTiPassword())
+        .isRequired("campo requerido")
+        .minLength("minimo 8 caracteres", 8);
 
-    // password = String.valueOf(view.getPfPassword().getPassword());
-
-    // validate.setElement(password)
-    // .isRequired("La contraseña es requedia")
-    // .minLength("La contraseña tiene que tener mas de 8 cara cteres", 8);
-
-    // if (!validate.getIsValid()) {
-    // errorMessage(validate.getMessage());
-    // view.toggleFieldErrorHint(view.getPfPassword(), true);
-    // return;
-    // }
-    // } catch (Exception e) {
-    // // TODO: handle exception
-    // }
-
+    if (validate.getErrorCount() > 0) {
+      for (ValError error : validate.getValErrorList()) {
+        error.getInput().setErrorHint(true);
+        error.getInput().setLblErrorText(error.getMessage());
+      }
+    }
   }
 
   private void createAdmin() {
