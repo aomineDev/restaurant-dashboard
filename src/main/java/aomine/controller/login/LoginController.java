@@ -7,6 +7,7 @@ import aomine.dao.EmployeeDAO;
 import aomine.dao.RoleDAO;
 import aomine.model.Employee;
 import aomine.model.Role;
+import aomine.store.Store;
 import aomine.utils.validate.ValError;
 import aomine.utils.validate.Validate;
 import aomine.view.admin.EmployeeView;
@@ -34,9 +35,8 @@ public class LoginController {
   }
 
   public void fastLogin(ActionEvent evt) {
-    validateFields();
-    // ViewManager.showView(new EmployeeView());
-    // ViewManager.login();
+    ViewManager.showView(new EmployeeView());
+    ViewManager.login();
   }
 
   public void handleLoginClick(ActionEvent evt) {
@@ -52,6 +52,10 @@ public class LoginController {
       Employee user = verifyUsername(username);
       verifyPassword(password, user.getPassword());
 
+      // Save User
+      Store.setUser(user);
+
+      // Root
       if (user.getRole().getName().equals(Role.ADMIN)) {
         ViewManager.showView(new Test());
       }
@@ -60,8 +64,6 @@ public class LoginController {
     } catch (Exception e) {
       errorMessage(e.getMessage());
       view.getTiPassword().setText("");
-      // view.toggleFieldErrorHint(view.getTfUsername(), true);
-      // view.toggleFieldErrorHint(view.getPfPassword(), true);
     }
   }
 
@@ -72,7 +74,7 @@ public class LoginController {
         .isRequired("campo requerido");
 
     validate.setElement(view.getTiPassword())
-        .isRequired("campo requerido")
+        .isRequired("campo requerido ")
         .minLength("minimo 8 caracteres", 8);
 
     if (validate.getErrorCount() > 0) {

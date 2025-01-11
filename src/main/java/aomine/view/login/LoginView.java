@@ -2,14 +2,10 @@ package aomine.view.login;
 
 import java.awt.Cursor;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
-import javax.swing.text.JTextComponent;
 
 import com.formdev.flatlaf.FlatClientProperties;
 
@@ -48,9 +44,15 @@ public class LoginView extends ImagePanel {
     btnLogin = new JButton("Login");
 
     // Styles
-    login.putClientProperty(FlatClientProperties.STYLE,
+    login.setOpaque(false);
+    setOpaque(false);
+    putClientProperty(FlatClientProperties.STYLE,
         "arc: 20;" +
-            "[light]background: @background;" +
+            "background:rgb(59, 184, 21);");
+    login.putClientProperty(FlatClientProperties.STYLE,
+        "arc: 50;" +
+            "[light]background: #000000;" +
+            // "[light]background: @background;" +
             "[dark]background: lighten(@background, 3%);");
 
     lblTitle.putClientProperty(FlatClientProperties.STYLE,

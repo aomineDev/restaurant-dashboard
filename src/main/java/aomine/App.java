@@ -9,6 +9,7 @@ import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 
 import aomine.components.layout.view.Background;
+import aomine.store.Store;
 import raven.popup.GlassPanePopup;
 
 import java.awt.Dimension;
@@ -17,7 +18,7 @@ import java.awt.Font;
 
 public class App extends JFrame {
   App() {
- 		init();
+    init();
   }
 
   private void init() {
@@ -26,11 +27,14 @@ public class App extends JFrame {
     setSize(new Dimension(1200, 700));
     setLocationRelativeTo(null);
 
+    GlassPanePopup.install(this);
+    ViewManager.install(this);
+    Store.install();
+
     getRootPane().putClientProperty(FlatClientProperties.FULL_WINDOW_CONTENT, true);
 
     setContentPane(new Background());
-    GlassPanePopup.install(this);
-    ViewManager.install(this);
+
     ViewManager.logout();
   }
 
@@ -41,7 +45,7 @@ public class App extends JFrame {
     FlatLaf.registerCustomDefaultsSource("aomine.themes");
 
     FlatMacLightLaf.setup();
-        
+
     EventQueue.invokeLater(() -> new App().setVisible(true));
   }
 }

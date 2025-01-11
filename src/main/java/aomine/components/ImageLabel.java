@@ -41,7 +41,7 @@ public class ImageLabel extends JLabel {
     setIcon(new ImageIcon(scaledImage));
   }
 
-  class ImageLabelBuilder {
+  public static class ImageLabelBuilder {
     private String imagePath;
     private boolean isResizable;
 

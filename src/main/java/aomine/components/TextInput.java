@@ -1,23 +1,19 @@
 package aomine.components;
 
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 
-import java.awt.TextComponent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import java.util.function.Consumer;
 
 import com.formdev.flatlaf.FlatClientProperties;
-
-import net.miginfocom.swing.MigLayout;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 
 public class TextInput {
   private String placeholder;
@@ -142,15 +138,15 @@ public class TextInput {
   }
 
   public void setLeftIcon(String iconPath) {
-    this.input.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON, getIcon(iconPath));
+    this.input.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON, getSVGIcon(iconPath));
   }
 
   public void setRightIcon(String iconPath) {
-    this.input.putClientProperty(FlatClientProperties.TEXT_FIELD_TRAILING_ICON, getIcon(iconPath));
+    this.input.putClientProperty(FlatClientProperties.TEXT_FIELD_TRAILING_ICON, getSVGIcon(iconPath));
   }
 
-  private ImageIcon getIcon(String iconPath) {
-    return new ImageIcon(getClass().getResource("/aomine/icons/" + iconPath));
+  private FlatSVGIcon getSVGIcon(String iconPath) {
+    return new FlatSVGIcon("aomine/icons/" + iconPath, 0.35f);
   }
 
   public String getText() {

@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -20,6 +21,9 @@ public class ImagePanel extends JPanel {
   }
 
   private void setImage() {
+    if (imagePath == null)
+      return;
+
     try {
       image = ImageIO.read(new File(imagePath));
     } catch (IOException e) {
@@ -72,7 +76,8 @@ public class ImagePanel extends JPanel {
     }
 
     public ImagePanelBuilder setPathFromRoot(String imagePath) {
-      this.imagePath = new File("uploads/" + imagePath).getAbsolutePath();
+      this.imagePath = Paths.get("uploads/images", imagePath).toAbsolutePath().toString();
+      // this.imagePath = new File("uploads/" + imagePath).getAbsolutePath();
 
       return this;
     }
