@@ -1,6 +1,9 @@
 package aomine.components;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -9,14 +12,16 @@ import java.nio.file.Paths;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
-public class ImagePanel extends JPanel {
+public class GoatPanel extends JPanel {
   private String imagePath;
   private BufferedImage image;
   private boolean aspectRatio;
+  private int arc;
 
-  public ImagePanel(ImagePanelBuilder builder) {
+  public GoatPanel(GoatPanelBuilder builder) {
     this.imagePath = builder.imagePath;
     this.aspectRatio = builder.aspectRatio;
+    this.arc = builder.arc;
     setImage();
   }
 
@@ -31,7 +36,7 @@ public class ImagePanel extends JPanel {
     }
   }
 
-  public void setImagePath(ImagePanelBuilder builder) {
+  public void setImagePath(GoatPanelBuilder builder) {
     this.imagePath = builder.imagePath;
     setImage();
     repaint();
@@ -39,10 +44,16 @@ public class ImagePanel extends JPanel {
 
   @Override
   protected void paintComponent(Graphics g) {
-    super.paintComponent(g);
+    Graphics2D g2 = (Graphics2D) g.create();
+    g2.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    g2.setClip(new RoundRectangle2D.Double(0, 0, getWidth(), getHeight(), this.arc, this.arc));
 
-    if (image == null)
+    super.paintComponent(g2);
+
+    if (image == null) {
+      g2.dispose();
       return;
+    }
 
     int panelWidth = getWidth();
     int panelHeight = getHeight();
@@ -64,38 +75,48 @@ public class ImagePanel extends JPanel {
       y = (panelHeight - imgHeight) / 2;
     }
 
-    g.drawImage(image, x, y, imgWidth, imgHeight, this);
+    g2.drawImage(image, x, y, imgWidth, imgHeight, this);
+
+    g2.dispose();
   }
 
-  public static class ImagePanelBuilder {
+  public static class GoatPanelBuilder {
     private String imagePath;
     private boolean aspectRatio;
+    private int arc;
 
-    public ImagePanelBuilder() {
+    public GoatPanelBuilder() {
       aspectRatio = false;
+      arc = 0;
     }
 
-    public ImagePanelBuilder setPathFromRoot(String imagePath) {
+    public GoatPanelBuilder setPathFromRoot(String imagePath) {
       this.imagePath = Paths.get("uploads/images", imagePath).toAbsolutePath().toString();
       // this.imagePath = new File("uploads/" + imagePath).getAbsolutePath();
 
       return this;
     }
 
-    public ImagePanelBuilder setPathFromResources(String imagePath) {
+    public GoatPanelBuilder setPathFromResources(String imagePath) {
       this.imagePath = getClass().getResource("/aomine/images/" + imagePath).getPath();
 
       return this;
     }
 
-    public ImagePanelBuilder keepAspectRatio() {
+    public GoatPanelBuilder keepAspectRatio() {
       this.aspectRatio = true;
 
       return this;
     }
 
-    public ImagePanel build() {
-      return new ImagePanel(this);
+    public GoatPanelBuilder setArc(int arc) {
+      this.arc = arc;
+
+      return this;
+    }
+
+    public GoatPanel build() {
+      return new GoatPanel(this);
     }
   }
 }

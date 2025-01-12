@@ -19,7 +19,7 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
 
-import aomine.components.ImagePanel;
+import aomine.components.GoatPanel;
 import aomine.components.TextInput;
 import net.miginfocom.swing.MigLayout;
 
@@ -36,8 +36,9 @@ public class Test extends JFrame {
     System.out.println(System.getProperty("user.home"));
     String imagePath = "react.png";
 
-    System.out.println(Paths.get("uploads/images", imagePath).toAbsolutePath().toString());
-    ImagePanel panel = new ImagePanel.ImagePanelBuilder()
+    System.out.println(Paths.get("uploads/images",
+        imagePath).toAbsolutePath().toString());
+    GoatPanel panel = new GoatPanel.GoatPanelBuilder()
         .setPathFromResources("background/react.png")
         .build();
     panel.setLayout(new MigLayout("fill", "[center]"));

@@ -23,25 +23,22 @@ public class MainView extends JPanel {
   }
 
   private void init() {
-    putClientProperty(FlatClientProperties.STYLE, 
-      "border: 5, 5, 5, 5;" +
-      "arc: 30;"
-    );
+    putClientProperty(FlatClientProperties.STYLE,
+        "border: 5, 5, 5, 5;" +
+            "arc: 30;");
 
     setLayout(new MigLayout("flowy", "[grow]", "[][grow]"));
- 
+
     header = createHeader();
     panelSlider = new PanelSlider();
     JScrollPane scroll = new JScrollPane(panelSlider);
 
-    scroll.putClientProperty(FlatClientProperties.STYLE, 
-      "border: 0, 0, 0, 0;"
-    );
+    scroll.putClientProperty(FlatClientProperties.STYLE,
+        "border: 0, 0, 0, 0;");
 
-    scroll.getVerticalScrollBar().putClientProperty(FlatClientProperties.STYLE, 
-      "trackArc: 999;" +
-      "width: 10;"
-    );
+    scroll.getVerticalScrollBar().putClientProperty(FlatClientProperties.STYLE,
+        "trackArc: 999;" +
+            "width: 10;");
 
     scroll.getVerticalScrollBar().setUnitIncrement(10);
 
@@ -51,9 +48,8 @@ public class MainView extends JPanel {
 
   private JPanel createHeader() {
     JPanel header = new JPanel(new MigLayout("insets 3"));
-    header.putClientProperty(FlatClientProperties.STYLE, 
-      "background: null;"
-    );
+    header.putClientProperty(FlatClientProperties.STYLE,
+        "background: null;");
     btnSidebar = createButton(new FlatSVGIcon(getClass().getResource("/aomine/icons/header/menu.svg")));
     btnPrev = createButton(new FlatSVGIcon(getClass().getResource("/aomine/icons/header/prev.svg")));
     btnNext = createButton(new FlatSVGIcon(getClass().getResource("/aomine/icons/header/next.svg")));
@@ -74,14 +70,13 @@ public class MainView extends JPanel {
 
   private JButton createButton(Icon icon) {
     JButton button = new JButton(icon);
-    button.putClientProperty(FlatClientProperties.STYLE, 
-      "background: $Button.toolbar.background;" +
-      "arc: 10;" +
-      "margin: 3, 3, 3, 3;" +
-      "borderWidth: 0;" +
-      "focusWidth: 0;" +
-      "innerFocusWidth: 0;"
-    );
+    button.putClientProperty(FlatClientProperties.STYLE,
+        "background: $Button.toolbar.background;" +
+            "arc: 10;" +
+            "margin: 3, 3, 3, 3;" +
+            "borderWidth: 0;" +
+            "focusWidth: 0;" +
+            "innerFocusWidth: 0;");
 
     return button;
   }

@@ -11,11 +11,12 @@ import javax.swing.table.JTableHeader;
 
 import com.formdev.flatlaf.FlatClientProperties;
 
-import aomine.components.ImagePanel;
+import aomine.components.GoatPanel;
 import aomine.components.layout.view.SimpleView;
+import aomine.view.View;
 import net.miginfocom.swing.MigLayout;
 
-public class EmployeeView extends SimpleView {
+public class EmployeeView extends SimpleView implements View {
   public EmployeeView() {
     viewOpen();
   }
@@ -26,11 +27,13 @@ public class EmployeeView extends SimpleView {
     setLayouts();
     applyStyles();
     setModel();
+    applyEvents();
     renderComponents();
   }
 
-  private void initComponents() {
-    banner = new ImagePanel.ImagePanelBuilder()
+  @Override
+  public void initComponents() {
+    banner = new GoatPanel.GoatPanelBuilder()
         .setPathFromResources("banner/employee.png")
         .build();
     container = new JPanel();
@@ -42,7 +45,8 @@ public class EmployeeView extends SimpleView {
     tableEmployee = new JTable();
   }
 
-  private void setLayouts() {
+  @Override
+  public void setLayouts() {
     setLayout(new MigLayout("insets 0", "[210:30%:450]20[grow]", "[grow]"));
 
     container.setLayout(new MigLayout("insets 0, flowy", "[grow]", "[]10[grow]"));
@@ -52,32 +56,20 @@ public class EmployeeView extends SimpleView {
     btnContainer.setLayout(new MigLayout("insets 0"));
   }
 
-  private void applyTableStyles() {
-    // Add styles class to the table
-    JTableHeader tableHeader = tableEmployee.getTableHeader();
-
-    tableHeader.putClientProperty(FlatClientProperties.STYLE_CLASS, "table_style");
-    tableEmployee.putClientProperty(FlatClientProperties.STYLE_CLASS, "table_style");
-  }
-
-  private void applyStyles() {
+  @Override
+  public void applyStyles() {
     applyTableStyles();
     lblTitle.putClientProperty(FlatClientProperties.STYLE, "font: bold 32;");
     tableContainer.putClientProperty(FlatClientProperties.STYLE, "background:rgb(188, 207, 226)");
   }
 
-  private void setModel() {
-    Object[] columns = { "ID", "Nombre" };
-    DefaultTableModel model = new DefaultTableModel(null, columns);
+  @Override
+  public void applyEvents() {
 
-    for (int i = 1; i < 50; i++) {
-      model.addRow(new Object[] { i, "Empleado " + i });
-    }
-
-    tableEmployee.setModel(model);
   }
 
-  private void renderComponents() {
+  @Override
+  public void renderComponents() {
     add(banner, "grow");
     container.add(lblTitle);
     container.add(tableContainer, "grow");
@@ -88,7 +80,26 @@ public class EmployeeView extends SimpleView {
     add(container, "grow");
   }
 
-  private ImagePanel banner;
+  public void applyTableStyles() {
+    // Add styles class to the table
+    JTableHeader tableHeader = tableEmployee.getTableHeader();
+
+    tableHeader.putClientProperty(FlatClientProperties.STYLE_CLASS, "table_style");
+    tableEmployee.putClientProperty(FlatClientProperties.STYLE_CLASS, "table_style");
+  }
+
+  public void setModel() {
+    Object[] columns = { "ID", "Nombre" };
+    DefaultTableModel model = new DefaultTableModel(null, columns);
+
+    for (int i = 1; i < 50; i++) {
+      model.addRow(new Object[] { i, "Empleado " + i });
+    }
+
+    tableEmployee.setModel(model);
+  }
+
+  private GoatPanel banner;
   private JPanel container;
   private JLabel lblTitle;
   private JPanel tableContainer;

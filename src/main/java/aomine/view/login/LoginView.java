@@ -9,26 +9,35 @@ import javax.swing.JPanel;
 
 import com.formdev.flatlaf.FlatClientProperties;
 
-import aomine.components.ImagePanel;
+import aomine.components.GoatPanel;
 import aomine.components.TextInput;
 import aomine.controller.login.LoginController;
+import aomine.view.View;
 import net.miginfocom.swing.MigLayout;
 
-public class LoginView extends ImagePanel {
+public class LoginView extends JPanel implements View {
   private LoginController controller;
 
   public LoginView() {
-    super(new ImagePanelBuilder().setPathFromResources("background/login.png"));
     controller = new LoginController(this);
-    init();
+    viewOpen();
   }
 
-  private void init() {
-    // Main Layout
-    setLayout(new MigLayout("fill", "[center]"));
+  private void viewOpen() {
+    initComponents();
+    setLayouts();
+    applyStyles();
+    applyEvents();
+    renderComponents();
+  }
 
-    // Definition of components
-    login = new JPanel(new MigLayout("wrap, insets 35 45 30 45", "[fill, 280]"));
+  @Override
+  public void initComponents() {
+    background = new GoatPanel.GoatPanelBuilder()
+        .setPathFromResources("background/login.png")
+        .setArc(30)
+        .build();
+    login = new JPanel();
     lblTitle = new JLabel("Bienvenido!");
     tiUsername = new TextInput.TextInputBuilder()
         .setPlaceholder("Ingrese su usuario")
@@ -42,17 +51,24 @@ public class LoginView extends ImagePanel {
         .setPassword(true)
         .build();
     btnLogin = new JButton("Login");
+  }
 
-    // Styles
+  @Override
+  public void setLayouts() {
+    setLayout(new MigLayout("fill, insets 0"));
+
+    background.setLayout(new MigLayout("fill, insets 0", "[center]"));
+
+    login.setLayout(new MigLayout("flowy, insets 35 45 30 45", "[fill, 280]"));
+  }
+
+  @Override
+  public void applyStyles() {
     login.setOpaque(false);
-    setOpaque(false);
-    putClientProperty(FlatClientProperties.STYLE,
-        "arc: 20;" +
-            "background:rgb(59, 184, 21);");
     login.putClientProperty(FlatClientProperties.STYLE,
-        "arc: 50;" +
-            "[light]background: #000000;" +
-            // "[light]background: @background;" +
+        "arc: 20;" +
+            "[light]background: @background;" +
+            // "[light]background: lighten(@background, 3%);" +
             "[dark]background: lighten(@background, 3%);");
 
     lblTitle.putClientProperty(FlatClientProperties.STYLE,
@@ -67,8 +83,10 @@ public class LoginView extends ImagePanel {
             "focusWidth: 0;" +
             "innerFocusWidth: 0");
     btnLogin.setCursor(new Cursor(Cursor.HAND_CURSOR));
+  }
 
-    // Events
+  @Override
+  public void applyEvents() {
     tiUsername.onKeyTyped(e -> {
       resetField(tiUsername);
     });
@@ -86,8 +104,11 @@ public class LoginView extends ImagePanel {
     });
 
     btnLogin.addActionListener(controller::fastLogin);
+  }
 
-    // Constraints
+  @Override
+  public void renderComponents() {
+
     login.add(lblTitle, "grow 0, center");
     login.add(tiUsername.getLabel());
     login.add(tiUsername.getInput());
@@ -96,8 +117,8 @@ public class LoginView extends ImagePanel {
     login.add(tiPassword.getInput());
     login.add(tiPassword.getErrorLabel());
     login.add(btnLogin, "gapy 10");
-
-    add(login);
+    background.add(login);
+    add(background, "grow");
   }
 
   private void resetField(TextInput ti) {
@@ -113,6 +134,7 @@ public class LoginView extends ImagePanel {
     return tiPassword;
   }
 
+  private GoatPanel background;
   private JLabel lblTitle;
   private JPanel login;
   private TextInput tiUsername;

@@ -60,3 +60,15 @@ public class RoundedPanel extends JPanel {
 - con setClip definimos un area limite para que se pinte el contenido, en este caso el rectangulo redondeado solo define el area limite.
 - el fondo se pinta respentando los limites por lo que no tenemos que eliminarlo
 - no tenemos que definir un color por que no pintamos el rectangulo, solo lo usamos como area limite.
+
+## Usando Flat laf
+
+```java
+login = new JPanel();
+
+login.putClientProperty(FlatClientProperties.STYLE, "arc: 50;");
+```
+
+- Usara el color del fondo del padre para redondear el panel
+- Si el padre es un panel con imagen no funcionara
+> necesitaremos usar `login.setOpaque(false)` para que funcione
