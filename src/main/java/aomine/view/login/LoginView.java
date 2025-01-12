@@ -20,10 +20,11 @@ public class LoginView extends JPanel implements View {
 
   public LoginView() {
     controller = new LoginController(this);
-    viewOpen();
+    initialize();
   }
 
-  private void viewOpen() {
+  @Override
+  public void initialize() {
     initComponents();
     setLayouts();
     applyStyles();

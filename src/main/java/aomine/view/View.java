@@ -1,6 +1,8 @@
 package aomine.view;
 
 public interface View {
+  void initialize();
+
   void initComponents();
 
   void setLayouts();

@@ -18,11 +18,11 @@ import net.miginfocom.swing.MigLayout;
 
 public class EmployeeView extends SimpleView implements View {
   public EmployeeView() {
-    viewOpen();
+    initialize();
   }
 
   @Override
-  public void viewOpen() {
+  public void initialize() {
     initComponents();
     setLayouts();
     applyStyles();
