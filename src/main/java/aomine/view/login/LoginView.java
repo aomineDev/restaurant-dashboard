@@ -24,15 +24,6 @@ public class LoginView extends JPanel implements View {
   }
 
   @Override
-  public void initialize() {
-    initComponents();
-    setLayouts();
-    applyStyles();
-    applyEvents();
-    renderComponents();
-  }
-
-  @Override
   public void initComponents() {
     background = new GoatPanel.GoatPanelBuilder()
         .setPathFromResources("background/login.png")

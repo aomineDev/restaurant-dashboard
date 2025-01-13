@@ -1,5 +1,6 @@
 package aomine.view.admin;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -19,22 +20,16 @@ import net.miginfocom.swing.MigLayout;
 public class EmployeeView extends SimpleView implements View {
   public EmployeeView() {
     initialize();
-  }
-
-  @Override
-  public void initialize() {
-    initComponents();
-    setLayouts();
-    applyStyles();
     setModel();
-    applyEvents();
-    renderComponents();
+    testData();
+    applyTableStyles();
   }
 
   @Override
   public void initComponents() {
     banner = new GoatPanel.GoatPanelBuilder()
         .setPathFromResources("banner/employee.png")
+        .setArc(20)
         .build();
     container = new JPanel();
     lblTitle = new JLabel("Empleados");
@@ -51,16 +46,18 @@ public class EmployeeView extends SimpleView implements View {
 
     container.setLayout(new MigLayout("insets 0, flowy", "[grow]", "[]10[grow]"));
 
-    tableContainer.setLayout(new MigLayout("debug, flowy", "[grow]", "[][grow]"));
+    tableContainer.setLayout(new MigLayout("flowy, insets 16", "[grow]", "[][grow]"));
 
     btnContainer.setLayout(new MigLayout("insets 0"));
   }
 
   @Override
   public void applyStyles() {
-    applyTableStyles();
     lblTitle.putClientProperty(FlatClientProperties.STYLE, "font: bold 32;");
-    tableContainer.putClientProperty(FlatClientProperties.STYLE, "background:rgb(188, 207, 226)");
+    tableContainer.putClientProperty(FlatClientProperties.STYLE, "background: $Table.background;" +
+        "[light]border:0,0,0,0,shade(@background,5%),,20;" +
+        "[dark]border:0,0,0,0,tint(@background,5%),,20;");
+    btnContainer.putClientProperty(FlatClientProperties.STYLE_CLASS, "table_style");
   }
 
   @Override
@@ -81,6 +78,16 @@ public class EmployeeView extends SimpleView implements View {
   }
 
   public void applyTableStyles() {
+    // Change scroll style
+    JScrollPane scroll = (JScrollPane) tableEmployee.getParent().getParent();
+    scroll.setBorder(BorderFactory.createEmptyBorder());
+    scroll.getVerticalScrollBar().putClientProperty(FlatClientProperties.STYLE,
+        "background: $Table.background;" +
+            "track: $Table.background;" +
+            "trackArc: 999;" +
+            "thumbArc: 999;" +
+            "width: 8;");
+
     // Add styles class to the table
     JTableHeader tableHeader = tableEmployee.getTableHeader();
 
@@ -90,13 +97,25 @@ public class EmployeeView extends SimpleView implements View {
 
   public void setModel() {
     Object[] columns = { "ID", "Nombre" };
-    DefaultTableModel model = new DefaultTableModel(null, columns);
+    DefaultTableModel model = new DefaultTableModel(null, columns) {
+      boolean[] canEdit = { false, false };
+
+      @Override
+      public boolean isCellEditable(int rowIndex, int columnIndex) {
+        return canEdit[columnIndex];
+      }
+    };
+
+    tableEmployee.setModel(model);
+
+  }
+
+  private void testData() {
+    DefaultTableModel model = (DefaultTableModel) tableEmployee.getModel();
 
     for (int i = 1; i < 50; i++) {
       model.addRow(new Object[] { i, "Empleado " + i });
     }
-
-    tableEmployee.setModel(model);
   }
 
   private GoatPanel banner;

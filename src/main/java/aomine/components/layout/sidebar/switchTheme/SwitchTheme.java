@@ -13,16 +13,16 @@ import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 
 import com.formdev.flatlaf.FlatClientProperties;
+import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.extras.FlatAnimatedLafChange;
-import com.formdev.flatlaf.themes.FlatMacDarkLaf;
-import com.formdev.flatlaf.themes.FlatMacLightLaf;
 
 import aomine.ViewManager;
 import net.miginfocom.swing.MigLayout;
 
 public class SwitchTheme extends JPanel {
-  public SwitchTheme () {
+  public SwitchTheme() {
     init();
   }
 
@@ -37,18 +37,18 @@ public class SwitchTheme extends JPanel {
     btnSwitch.setIcon(darkLigSwitchIcon);
     btnSwitch.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-    btnSwitch.putClientProperty(FlatClientProperties.STYLE, 
-      "arc: 999;" +
-      "borderWidth: 0;" +
-      "focusWidth: 0;" +
-      "innerFocusWidth: 0;" 
-      // "background:darken($Drawer.background,5%)"
+    btnSwitch.putClientProperty(FlatClientProperties.STYLE,
+        "arc: 999;" +
+            "borderWidth: 0;" +
+            "focusWidth: 0;" +
+            "innerFocusWidth: 0;"
+    // "background:darken($Drawer.background,5%)"
     );
 
     btnSwitch.addActionListener(new ActionListener() {
       private final ScheduledExecutorService scheduled = Executors.newScheduledThreadPool(1);
       private ScheduledFuture<?> scheduledFuture;
-      
+
       @Override
       public void actionPerformed(ActionEvent evt) {
         if (scheduledFuture != null) {
@@ -69,7 +69,7 @@ public class SwitchTheme extends JPanel {
       if (toDark) {
         EventQueue.invokeLater(() -> {
           FlatAnimatedLafChange.showSnapshot();
-          FlatMacDarkLaf.setup();
+          FlatDarkLaf.setup();
           FlatLaf.updateUI();
           ViewManager.updateTempViewUI();
           FlatAnimatedLafChange.hideSnapshotWithAnimation();
@@ -77,7 +77,7 @@ public class SwitchTheme extends JPanel {
       } else {
         EventQueue.invokeLater(() -> {
           FlatAnimatedLafChange.showSnapshot();
-          FlatMacLightLaf.setup();
+          FlatLightLaf.setup();
           FlatLaf.updateUI();
           ViewManager.updateTempViewUI();
           FlatAnimatedLafChange.hideSnapshotWithAnimation();

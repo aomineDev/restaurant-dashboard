@@ -5,6 +5,7 @@ import javax.swing.UIManager;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 
@@ -44,7 +45,7 @@ public class App extends JFrame {
 
     FlatLaf.registerCustomDefaultsSource("aomine.themes");
 
-    FlatMacLightLaf.setup();
+    FlatLightLaf.setup();
 
     EventQueue.invokeLater(() -> new App().setVisible(true));
   }

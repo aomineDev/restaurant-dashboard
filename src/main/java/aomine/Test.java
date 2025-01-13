@@ -35,24 +35,17 @@ public class Test extends JFrame {
     setDefaultCloseOperation(EXIT_ON_CLOSE);
     System.out.println(System.getProperty("user.home"));
     String imagePath = "react.png";
+    System.out.println(Paths.get("uploads/images", imagePath).toAbsolutePath().toString());
 
-    System.out.println(Paths.get("uploads/images",
-        imagePath).toAbsolutePath().toString());
     GoatPanel panel = new GoatPanel.GoatPanelBuilder()
         .setPathFromResources("background/react.png")
         .build();
     panel.setLayout(new MigLayout("fill", "[center]"));
-    BtnTest container = new BtnTest(50);
     JButton btn = new JButton("Test");
-
-    container.setLayout(new MigLayout("insets 35 45 30 45"));
 
     panel.putClientProperty(FlatClientProperties.STYLE, "background: #9ab8e6;");
 
-    container.putClientProperty(FlatClientProperties.STYLE, "background: #e09c9c;");
-
-    container.add(btn);
-    panel.add(container);
+    panel.add(btn);
     setContentPane(panel);
   }
 
