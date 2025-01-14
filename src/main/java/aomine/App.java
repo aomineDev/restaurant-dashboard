@@ -45,7 +45,7 @@ public class App extends JFrame {
 
     FlatLaf.registerCustomDefaultsSource("aomine.themes");
 
-    FlatLightLaf.setup();
+    FlatMacLightLaf.setup();
 
     EventQueue.invokeLater(() -> new App().setVisible(true));
   }

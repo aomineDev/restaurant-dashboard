@@ -60,8 +60,8 @@ public class LoginView extends JPanel implements View {
     login.putClientProperty(FlatClientProperties.STYLE,
         "arc: 20;" +
             "[light]background: @background;" +
-            // "[light]background: lighten(@background, 3%);" +
-            "[dark]background: lighten(@background, 3%);");
+            // "[light]background: lighten(@background, 4%);" +
+            "[dark]background: lighten(@background, 4%);");
 
     lblTitle.putClientProperty(FlatClientProperties.STYLE,
         "font: bold +10;" +
@@ -101,6 +101,8 @@ public class LoginView extends JPanel implements View {
   @Override
   public void renderComponents() {
 
+    add(background, "grow");
+    background.add(login);
     login.add(lblTitle, "grow 0, center");
     login.add(tiUsername.getLabel());
     login.add(tiUsername.getInput());
@@ -109,8 +111,6 @@ public class LoginView extends JPanel implements View {
     login.add(tiPassword.getInput());
     login.add(tiPassword.getErrorLabel());
     login.add(btnLogin, "gapy 10");
-    background.add(login);
-    add(background, "grow");
   }
 
   private void resetField(TextInput ti) {

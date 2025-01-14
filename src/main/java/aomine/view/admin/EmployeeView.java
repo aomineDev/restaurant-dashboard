@@ -6,13 +6,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
 import com.formdev.flatlaf.FlatClientProperties;
 
 import aomine.components.GoatPanel;
+import aomine.components.TextInput;
 import aomine.components.layout.view.SimpleView;
 import aomine.view.View;
 import net.miginfocom.swing.MigLayout;
@@ -35,29 +35,41 @@ public class EmployeeView extends SimpleView implements View {
     lblTitle = new JLabel("Empleados");
     tableContainer = new JPanel();
     btnContainer = new JPanel();
-    txtSearch = new JTextField();
+    tiSearch = new TextInput.TextInputBuilder()
+        .setPlaceholder("Nombre")
+        .build();
     btnAdd = new JButton("Nuevo");
+    btnEdit = new JButton("Editar");
+    btnDelete = new JButton("Eliminar");
     tableEmployee = new JTable();
   }
 
   @Override
   public void setLayouts() {
-    setLayout(new MigLayout("insets 0", "[210:30%:450]20[grow]", "[grow]"));
+    setLayout(new MigLayout("insets 0", "[fill, 210:30%:450]20[fill, grow]", "[fill, grow]"));
 
     container.setLayout(new MigLayout("insets 0, flowy", "[grow]", "[]10[grow]"));
 
-    tableContainer.setLayout(new MigLayout("flowy, insets 16", "[grow]", "[][grow]"));
+    tableContainer.setLayout(new MigLayout("flowy, insets 16", "[grow, fill]", "[]20[grow, fill]"));
 
-    btnContainer.setLayout(new MigLayout("insets 0"));
+    btnContainer.setLayout(new MigLayout("insets 0", "[200, fill]push[][][]"));
   }
 
   @Override
   public void applyStyles() {
     lblTitle.putClientProperty(FlatClientProperties.STYLE, "font: bold 32;");
+
     tableContainer.putClientProperty(FlatClientProperties.STYLE, "background: $Table.background;" +
         "[light]border:0,0,0,0,shade(@background,5%),,20;" +
         "[dark]border:0,0,0,0,tint(@background,5%),,20;");
+
     btnContainer.putClientProperty(FlatClientProperties.STYLE_CLASS, "table_style");
+
+    tiSearch.getInput().putClientProperty(FlatClientProperties.STYLE, "background: @background");
+
+    btnAdd.putClientProperty(FlatClientProperties.STYLE_CLASS, "table_style");
+    btnEdit.putClientProperty(FlatClientProperties.STYLE_CLASS, "table_style");
+    btnDelete.putClientProperty(FlatClientProperties.STYLE_CLASS, "table_style");
   }
 
   @Override
@@ -67,14 +79,16 @@ public class EmployeeView extends SimpleView implements View {
 
   @Override
   public void renderComponents() {
-    add(banner, "grow");
+    add(banner);
+    add(container);
     container.add(lblTitle);
     container.add(tableContainer, "grow");
-    btnContainer.add(txtSearch);
+    btnContainer.add(tiSearch.getInput());
     btnContainer.add(btnAdd);
+    btnContainer.add(btnEdit);
+    btnContainer.add(btnDelete);
     tableContainer.add(btnContainer);
-    tableContainer.add(new JScrollPane(tableEmployee), "grow");
-    add(container, "grow");
+    tableContainer.add(new JScrollPane(tableEmployee));
   }
 
   public void applyTableStyles() {
@@ -86,7 +100,7 @@ public class EmployeeView extends SimpleView implements View {
             "track: $Table.background;" +
             "trackArc: 999;" +
             "thumbArc: 999;" +
-            "width: 8;");
+            "width: 10;");
 
     // Add styles class to the table
     JTableHeader tableHeader = tableEmployee.getTableHeader();
@@ -123,7 +137,9 @@ public class EmployeeView extends SimpleView implements View {
   private JLabel lblTitle;
   private JPanel tableContainer;
   private JPanel btnContainer;
-  private JTextField txtSearch;
+  private TextInput tiSearch;
   private JButton btnAdd;
+  private JButton btnEdit;
+  private JButton btnDelete;
   private JTable tableEmployee;
 }
