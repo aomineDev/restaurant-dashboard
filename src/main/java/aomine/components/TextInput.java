@@ -137,16 +137,16 @@ public class TextInput {
     this.lblError.setText(txt);
   }
 
-  public void setLeftIcon(String iconPath) {
-    this.input.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON, getSVGIcon(iconPath));
+  public void setLeftIcon(String iconPath, float scale) {
+    this.input.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON, getSVGIcon(iconPath, scale));
   }
 
-  public void setRightIcon(String iconPath) {
-    this.input.putClientProperty(FlatClientProperties.TEXT_FIELD_TRAILING_ICON, getSVGIcon(iconPath));
+  public void setRightIcon(String iconPath, float scale) {
+    this.input.putClientProperty(FlatClientProperties.TEXT_FIELD_TRAILING_ICON, getSVGIcon(iconPath, scale));
   }
 
-  private FlatSVGIcon getSVGIcon(String iconPath) {
-    return new FlatSVGIcon("aomine/icons/" + iconPath, 0.35f);
+  private FlatSVGIcon getSVGIcon(String iconPath, float scale) {
+    return new FlatSVGIcon("aomine/icons/" + iconPath, scale);
   }
 
   public String getText() {

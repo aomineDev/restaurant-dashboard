@@ -1,5 +1,7 @@
 package aomine.view.admin;
 
+import java.awt.Cursor;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -10,6 +12,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
 import com.formdev.flatlaf.FlatClientProperties;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 
 import aomine.components.GoatPanel;
 import aomine.components.TextInput;
@@ -34,7 +37,6 @@ public class EmployeeView extends SimpleView implements View {
     container = new JPanel();
     lblTitle = new JLabel("Empleados");
     tableContainer = new JPanel();
-    btnContainer = new JPanel();
     tiSearch = new TextInput.TextInputBuilder()
         .setPlaceholder("Nombre")
         .build();
@@ -50,9 +52,7 @@ public class EmployeeView extends SimpleView implements View {
 
     container.setLayout(new MigLayout("insets 0, flowy", "[grow]", "[]10[grow]"));
 
-    tableContainer.setLayout(new MigLayout("flowy, insets 16", "[grow, fill]", "[]20[grow, fill]"));
-
-    btnContainer.setLayout(new MigLayout("insets 0", "[200, fill]push[][][]"));
+    tableContainer.setLayout(new MigLayout("insets 16, fillx", "[]push[][][]", "[]20[grow]"));
   }
 
   @Override
@@ -63,13 +63,13 @@ public class EmployeeView extends SimpleView implements View {
         "[light]border:0,0,0,0,shade(@background,5%),,20;" +
         "[dark]border:0,0,0,0,tint(@background,5%),,20;");
 
-    btnContainer.putClientProperty(FlatClientProperties.STYLE_CLASS, "table_style");
-
     tiSearch.getInput().putClientProperty(FlatClientProperties.STYLE, "background: @background");
 
     btnAdd.putClientProperty(FlatClientProperties.STYLE_CLASS, "table_style");
     btnEdit.putClientProperty(FlatClientProperties.STYLE_CLASS, "table_style");
     btnDelete.putClientProperty(FlatClientProperties.STYLE_CLASS, "table_style");
+
+    setIcons();
   }
 
   @Override
@@ -83,15 +83,14 @@ public class EmployeeView extends SimpleView implements View {
     add(container);
     container.add(lblTitle);
     container.add(tableContainer, "grow");
-    btnContainer.add(tiSearch.getInput());
-    btnContainer.add(btnAdd);
-    btnContainer.add(btnEdit);
-    btnContainer.add(btnDelete);
-    tableContainer.add(btnContainer);
-    tableContainer.add(new JScrollPane(tableEmployee));
+    tableContainer.add(tiSearch.getInput(), "w 200");
+    tableContainer.add(btnAdd);
+    tableContainer.add(btnEdit);
+    tableContainer.add(btnDelete, "wrap");
+    tableContainer.add(new JScrollPane(tableEmployee), "span, grow");
   }
 
-  public void applyTableStyles() {
+  private void applyTableStyles() {
     // Change scroll style
     JScrollPane scroll = (JScrollPane) tableEmployee.getParent().getParent();
     scroll.setBorder(BorderFactory.createEmptyBorder());
@@ -109,7 +108,7 @@ public class EmployeeView extends SimpleView implements View {
     tableEmployee.putClientProperty(FlatClientProperties.STYLE_CLASS, "table_style");
   }
 
-  public void setModel() {
+  private void setModel() {
     Object[] columns = { "ID", "Nombre" };
     DefaultTableModel model = new DefaultTableModel(null, columns) {
       boolean[] canEdit = { false, false };
@@ -121,7 +120,6 @@ public class EmployeeView extends SimpleView implements View {
     };
 
     tableEmployee.setModel(model);
-
   }
 
   private void testData() {
@@ -132,11 +130,24 @@ public class EmployeeView extends SimpleView implements View {
     }
   }
 
+  private void setIcons() {
+    String basePath = "aomine/icons/";
+    float scale = 0.35f;
+    String[] iconNames = { "add", "edit", "delete" };
+    JButton[] buttons = { btnAdd, btnEdit, btnDelete };
+
+    for (int i = 0; i < buttons.length; i++) {
+      buttons[i].setIcon(new FlatSVGIcon(basePath + iconNames[i] + ".svg", scale));
+      buttons[i].setCursor(new Cursor(Cursor.HAND_CURSOR));
+    }
+
+    tiSearch.setRightIcon("search.svg", scale);
+  }
+
   private GoatPanel banner;
   private JPanel container;
   private JLabel lblTitle;
   private JPanel tableContainer;
-  private JPanel btnContainer;
   private TextInput tiSearch;
   private JButton btnAdd;
   private JButton btnEdit;
