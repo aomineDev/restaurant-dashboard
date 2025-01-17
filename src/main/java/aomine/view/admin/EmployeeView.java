@@ -1,6 +1,8 @@
 package aomine.view.admin;
 
 import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -19,6 +21,13 @@ import aomine.components.TextInput;
 import aomine.components.layout.view.SimpleView;
 import aomine.view.View;
 import net.miginfocom.swing.MigLayout;
+import raven.popup.DefaultOption;
+import raven.popup.GlassPanePopup;
+import raven.popup.GlassPopup;
+import raven.popup.component.GlassPaneChild;
+import raven.popup.component.PopupCallbackAction;
+import raven.popup.component.SimplePopupBorder;
+import raven.popup.component.SimplePopupBorderOption;
 
 public class EmployeeView extends SimpleView implements View {
   public EmployeeView() {
@@ -57,7 +66,9 @@ public class EmployeeView extends SimpleView implements View {
 
   @Override
   public void applyStyles() {
-    lblTitle.putClientProperty(FlatClientProperties.STYLE, "font: bold 32;");
+    lblTitle.putClientProperty(FlatClientProperties.STYLE,
+        "font: bold 32;" +
+            "foreground: @primaryColor;");
 
     tableContainer.putClientProperty(FlatClientProperties.STYLE, "background: $Table.background;" +
         "[light]border:0,0,0,0,shade(@background,5%),,20;" +
@@ -75,6 +86,26 @@ public class EmployeeView extends SimpleView implements View {
   @Override
   public void applyEvents() {
 
+    btnAdd.addActionListener(e -> {
+      DefaultOption popupOption = new DefaultOption();
+
+      String[] actions = { "Cancelar", "Guardar" };
+
+      SimplePopupBorderOption borderOption = new SimplePopupBorderOption();
+
+      PopupCallbackAction callbackAction = (controller, action) -> {
+        if (action == 0) {
+          GlassPanePopup.closePopup("employeeForm");
+        } else if (action == 1) {
+          System.out.println("ok");
+        }
+      };
+
+      GlassPanePopup.showPopup(
+          new SimplePopupBorder(getForm(), "Nuevo Empleado", borderOption, actions, callbackAction),
+          popupOption,
+          "employeeForm");
+    });
   }
 
   @Override
@@ -144,6 +175,15 @@ public class EmployeeView extends SimpleView implements View {
     tiSearch.setRightIcon("search.svg", scale);
   }
 
+  private GlassPaneChild getForm() {
+    GlassPaneChild form = new GlassPaneChild();
+    form.setLayout(new MigLayout("debug"));
+
+    form.add(new JLabel("aqui irian un text input"));
+
+    return form;
+  }
+
   private GoatPanel banner;
   private JPanel container;
   private JLabel lblTitle;
@@ -153,4 +193,5 @@ public class EmployeeView extends SimpleView implements View {
   private JButton btnEdit;
   private JButton btnDelete;
   private JTable tableEmployee;
+
 }

@@ -65,16 +65,20 @@ public class LoginView extends JPanel implements View {
 
     lblTitle.putClientProperty(FlatClientProperties.STYLE,
         "font: bold +10;" +
-            "foreground: #7E3819;");
+            "foreground: @primaryColor;");
 
     btnLogin.putClientProperty(FlatClientProperties.STYLE,
-        "background: #7E3819;" +
-            "foreground: #ffffff;" +
+        "background: @accentColor;" +
+            "foreground: @light;" +
             "font: bold;" +
             "borderWidth: 0;" +
             "focusWidth: 0;" +
             "innerFocusWidth: 0");
     btnLogin.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+    tiUsername.setLeftIcon("user.svg", 0.35f);
+    tiPassword.setLeftIcon("password.svg", 0.35f);
+
   }
 
   @Override
