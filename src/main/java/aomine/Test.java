@@ -23,52 +23,45 @@ import aomine.components.GoatPanel;
 import aomine.components.TextInput;
 import net.miginfocom.swing.MigLayout;
 
-interface Testing<T> {
-  void hello(T name);
-}
-
 public class Test extends JFrame {
-  public static void main(String[] args) {
-    Testing<Integer> t = (name) -> {
-      System.out.println("testing: " + name);
-    };
-
-    t.hello(5);
+  public Test() {
+    init();
   }
-  // public Test() {
-  // init();
-  // }
 
-  // private void init() {
-  // setTitle("Test");
-  // setSize(400, 300);
-  // setLocationRelativeTo(null);
-  // setDefaultCloseOperation(EXIT_ON_CLOSE);
-  // System.out.println(System.getProperty("user.home"));
-  // String imagePath = "react.png";
-  // System.out.println(Paths.get("uploads/images",
-  // imagePath).toAbsolutePath().toString());
+  private void init() {
+    setTitle("Test");
+    setSize(400, 300);
+    setLocationRelativeTo(null);
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-  // GoatPanel panel = new GoatPanel.GoatPanelBuilder()
-  // .setPathFromResources("background/react.png")
-  // .build();
-  // panel.setLayout(new MigLayout("fill", "[center]"));
-  // JButton btn = new JButton("Test");
+    System.out.println(System.getProperty("user.home"));
+    String imagePath = "react.png";
+    System.out.println(Paths.get("uploads/images",
+        imagePath).toAbsolutePath().toString());
 
-  // panel.putClientProperty(FlatClientProperties.STYLE, "background: #9ab8e6;");
+    GoatPanel panel = new GoatPanel.GoatPanelBuilder()
+        .setPathFromResources("background/react.png")
+        .build();
+    panel.setLayout(new MigLayout("fill", "[center]"));
+    TextInput input = new TextInput.TextInputBuilder()
+        .setMask("########", '#')
+        .setLabelText("mask")
+        .build();
+    panel.add(input.getInput());
+    input.onChanged(e -> {
+      System.out.println(input.getText());
+    });
+    setContentPane(panel);
+  }
 
-  // panel.add(btn);
-  // setContentPane(panel);
-  // }
+  public static void main(String[] args) {
+    FlatRobotoFont.install();
 
-  // public static void main(String[] args) {
-  // FlatRobotoFont.install();
+    UIManager.put("defaultFont", new Font(FlatRobotoFont.FAMILY, Font.PLAIN,
+        13));
 
-  // UIManager.put("defaultFont", new Font(FlatRobotoFont.FAMILY, Font.PLAIN,
-  // 13));
+    FlatLightLaf.setup();
 
-  // FlatLightLaf.setup();
-
-  // EventQueue.invokeLater(() -> new Test().setVisible(true));
-  // }
+    EventQueue.invokeLater(() -> new Test().setVisible(true));
+  }
 }

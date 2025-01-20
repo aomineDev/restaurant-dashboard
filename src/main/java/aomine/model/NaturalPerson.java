@@ -12,8 +12,11 @@ public abstract class NaturalPerson extends Person {
   @Column(name = "dni", nullable = false, unique = true)
   protected int dni;
 
-  @Column(name = "name", nullable = false, length = 50)
-  protected String name;
+  @Column(name = "first_name", nullable = false, length = 50)
+  protected String firstName;
+
+  @Column(name = "second_Name", length = 50)
+  protected String secondName;
 
   @Column(name = "paternal_lastname", nullable = false, length = 50)
   protected String paternalLastname;
@@ -24,7 +27,8 @@ public abstract class NaturalPerson extends Person {
   @Column(name = "birthdate")
   protected LocalDate birthdate;
 
-  public NaturalPerson() {}
+  public NaturalPerson() {
+  }
 
   public int getDni() {
     return dni;
@@ -34,12 +38,20 @@ public abstract class NaturalPerson extends Person {
     this.dni = dni;
   }
 
-  public String getName() {
-    return name;
+  public String getFirstName() {
+    return firstName;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+
+  public String getSecondName() {
+    return secondName;
+  }
+
+  public void setSecondName(String secondName) {
+    this.secondName = secondName;
   }
 
   public String getPaternalLastname() {

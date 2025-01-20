@@ -184,14 +184,24 @@ public class EmployeeView extends SimpleView implements View {
     return form;
   }
 
+  // layout
   private GoatPanel banner;
   private JPanel container;
   private JLabel lblTitle;
   private JPanel tableContainer;
+
+  // table
   private TextInput tiSearch;
   private JButton btnAdd;
   private JButton btnEdit;
   private JButton btnDelete;
   private JTable tableEmployee;
+
+  // Form
+  private TextInput tiFirstName;
+  private TextInput tiLastName;
+  private TextInput tiPaternalLastName;
+  private TextInput tiMaternalLastName;
+  private TextInput tiDni;
 
 }

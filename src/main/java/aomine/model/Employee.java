@@ -8,6 +8,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "employees")
+
 public class Employee extends NaturalPerson {
   @Column(name = "username", unique = true, nullable = false, length = 50)
   private String username;
@@ -19,7 +20,8 @@ public class Employee extends NaturalPerson {
   @JoinColumn(name = "role_id", nullable = false)
   private Role role;
 
-  public Employee() {}
+  public Employee() {
+  }
 
   public String getUsername() {
     return username;

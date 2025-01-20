@@ -97,7 +97,7 @@ public class LoginController {
     user.setRole(admin);
     user.setUsername("admin");
     user.setPassword(encryptedPassword);
-    user.setName("admin");
+    user.setFirstName("admin");
     user.setPaternalLastname("root");
     user.setMaternalLastname("toor");
     user.setDni(13246578);

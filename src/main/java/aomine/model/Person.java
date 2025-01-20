@@ -1,5 +1,8 @@
 package aomine.model;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,6 +15,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "people")
 @Inheritance(strategy = InheritanceType.JOINED)
+@OnDelete(action = OnDeleteAction.CASCADE)
 public abstract class Person {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +31,8 @@ public abstract class Person {
   @Column(name = "email", unique = true, length = 100)
   protected String email;
 
-  public Person() {}
+  public Person() {
+  }
 
   public long getPersonId() {
     return personId;

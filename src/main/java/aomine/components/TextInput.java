@@ -1,11 +1,13 @@
 package aomine.components;
 
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
+import javax.swing.text.MaskFormatter;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -21,6 +23,9 @@ public class TextInput {
   private String value;
   private String lblErrorText;
   private boolean isPassword;
+  private String mask;
+  private char maskPlaceholder;
+
   private boolean errorHintState;
 
   private JTextComponent input;
@@ -38,6 +43,9 @@ public class TextInput {
     this.value = builder.value;
     this.lblErrorText = builder.lblErrorText;
     this.isPassword = builder.isPassword;
+    this.mask = builder.mask;
+    this.maskPlaceholder = builder.maskPlaceholder;
+
     this.errorHintState = false;
 
     init();
@@ -57,8 +65,13 @@ public class TextInput {
       };
 
       this.input.putClientProperty(FlatClientProperties.STYLE, "showRevealButton: true");
-    } else
+    } else if (mask != null) {
+
+      this.input = new JFormattedTextField(createFormatter());
+      ((JFormattedTextField) this.input).setColumns(mask.length());
+    } else {
       this.input = new JTextField(this.value);
+    }
 
     this.input.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, this.placeholder);
 
@@ -149,6 +162,18 @@ public class TextInput {
     return new FlatSVGIcon("aomine/icons/" + iconPath, scale);
   }
 
+  private MaskFormatter createFormatter() {
+    try {
+      MaskFormatter formatter = new MaskFormatter(this.mask);
+      formatter.setPlaceholderCharacter(this.maskPlaceholder);
+
+      return formatter;
+    } catch (Exception e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
+
   public String getText() {
     return this.input.getText();
   }
@@ -191,10 +216,14 @@ public class TextInput {
     private String value;
     private String lblErrorText;
     private boolean isPassword;
+    private String mask;
+    private char maskPlaceholder;
 
     public TextInputBuilder() {
+      this.value = "";
       this.placeholder = "";
       this.isPassword = false;
+      this.maskPlaceholder = ' ';
     }
 
     public TextInputBuilder setPlaceholder(String placeholder) {
@@ -217,8 +246,19 @@ public class TextInput {
       return this;
     }
 
-    public TextInputBuilder setPassword(boolean value) {
-      this.isPassword = value;
+    public TextInputBuilder setPassword(boolean isPassword) {
+      this.isPassword = isPassword;
+      return this;
+    }
+
+    public TextInputBuilder setMask(String mask) {
+      this.mask = mask;
+      return this;
+    }
+
+    public TextInputBuilder setMask(String mask, char maskPlaceholder) {
+      this.mask = mask;
+      this.maskPlaceholder = maskPlaceholder;
       return this;
     }
 
