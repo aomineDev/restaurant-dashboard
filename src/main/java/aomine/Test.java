@@ -20,7 +20,7 @@ import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
 
 import aomine.components.GoatPanel;
-import aomine.components.TextInput;
+import aomine.components.textInput.TextInput;
 import net.miginfocom.swing.MigLayout;
 
 public class Test extends JFrame {
@@ -44,7 +44,7 @@ public class Test extends JFrame {
         .build();
     panel.setLayout(new MigLayout("fill", "[center]"));
     TextInput input = new TextInput.TextInputBuilder()
-        .setMask("########", '#')
+        .setMask("########")
         .setLabelText("mask")
         .build();
     panel.add(input.getInput());

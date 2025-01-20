@@ -6,6 +6,7 @@ import java.awt.FlowLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -17,8 +18,9 @@ import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 
 import aomine.components.GoatPanel;
-import aomine.components.TextInput;
 import aomine.components.layout.view.SimpleView;
+import aomine.components.textInput.TextInput;
+import aomine.components.textInput.TextInputTypes;
 import aomine.view.View;
 import net.miginfocom.swing.MigLayout;
 import raven.popup.DefaultOption;
@@ -44,15 +46,76 @@ public class EmployeeView extends SimpleView implements View {
         .setArc(20)
         .build();
     container = new JPanel();
+
     lblTitle = new JLabel("Empleados");
     tableContainer = new JPanel();
+
     tiSearch = new TextInput.TextInputBuilder()
-        .setPlaceholder("Nombre")
-        .build();
+    .setPlaceholder("Nombre")
+    .build();
     btnAdd = new JButton("Nuevo");
     btnEdit = new JButton("Editar");
     btnDelete = new JButton("Eliminar");
     tableEmployee = new JTable();
+    
+    form = new GlassPaneChild();
+    tiFirstName = new TextInput.TextInputBuilder()
+        .setLabelText("Primer nombre")
+        .setPlaceholder("Inngrese el primer nombre")
+        .withErrorLabel()
+        .build();
+    tiSecondtName = new TextInput.TextInputBuilder()
+        .setLabelText("Segundo nombre")
+        .setPlaceholder("Ingrese el segundo nombre")
+        .withErrorLabel()
+        .build();
+    tiPaternalLastName = new TextInput.TextInputBuilder()
+        .setLabelText("Apellido paterno")
+        .setPlaceholder("Ingrese el Apellido paterno")
+        .withErrorLabel()
+        .build();
+    tiMaternalLastName = new TextInput.TextInputBuilder()
+        .setLabelText("Apellido materno")
+        .setPlaceholder("Ingrese el apellido materno")
+        .withErrorLabel()
+        .build();
+    tiDni = new TextInput.TextInputBuilder()
+        .setLabelText("DNI")
+        .setPlaceholder("Ingrese el DNI")
+        .withErrorLabel()
+        .setType(TextInputTypes.MASK)
+        .setMask("########")
+        .build();
+    // birthdate = new TextInput.TextInputBuilder()
+    tiPhoneNumber = new TextInput.TextInputBuilder()
+        .setLabelText("Celuluar")
+        .setPlaceholder("Ingrese el numero de celular")
+        .withErrorLabel()
+        .setType(TextInputTypes.MASK)
+        .setMask("### ### ###")
+        .build();
+    tiAddress = new TextInput.TextInputBuilder()
+        .setLabelText("Dirección")
+        .setPlaceholder("Ingrese la dirección")
+        .withErrorLabel()
+        .build();
+    tiEmail = new TextInput.TextInputBuilder()
+        .setLabelText("Email")
+        .setPlaceholder("Ingrese el email")
+        .withErrorLabel()
+        .build();
+    tiUsername = new TextInput.TextInputBuilder()
+        .setLabelText("Usuario")
+        .setPlaceholder("Ingrese el usuario")
+        .withErrorLabel()
+        .build();
+    tiPassword = new TextInput.TextInputBuilder()
+        .setLabelText("Contraseña")
+        .setPlaceholder("Ingrese la contraseña")
+        .withErrorLabel()
+        .setType(TextInputTypes.PASSWORD)
+        .build();
+    // cbRole = new TextInput.TextInputBuilder()
   }
 
   @Override
@@ -62,6 +125,8 @@ public class EmployeeView extends SimpleView implements View {
     container.setLayout(new MigLayout("insets 0, flowy", "[grow]", "[]10[grow]"));
 
     tableContainer.setLayout(new MigLayout("insets 16, fillx", "[]push[][][]", "[]20[grow]"));
+
+    form.setLayout(new MigLayout("debug"));
   }
 
   @Override
@@ -89,9 +154,9 @@ public class EmployeeView extends SimpleView implements View {
     btnAdd.addActionListener(e -> {
       DefaultOption popupOption = new DefaultOption();
 
-      String[] actions = { "Cancelar", "Guardar" };
-
       SimplePopupBorderOption borderOption = new SimplePopupBorderOption();
+
+      String[] actions = { "Cancelar", "Guardar" };
 
       PopupCallbackAction callbackAction = (controller, action) -> {
         if (action == 0) {
@@ -102,7 +167,7 @@ public class EmployeeView extends SimpleView implements View {
       };
 
       GlassPanePopup.showPopup(
-          new SimplePopupBorder(getForm(), "Nuevo Empleado", borderOption, actions, callbackAction),
+          new SimplePopupBorder(form, "Nuevo Empleado", borderOption, actions, callbackAction),
           popupOption,
           "employeeForm");
     });
@@ -175,15 +240,6 @@ public class EmployeeView extends SimpleView implements View {
     tiSearch.setRightIcon("search.svg", scale);
   }
 
-  private GlassPaneChild getForm() {
-    GlassPaneChild form = new GlassPaneChild();
-    form.setLayout(new MigLayout("debug"));
-
-    form.add(new JLabel("aqui irian un text input"));
-
-    return form;
-  }
-
   // layout
   private GoatPanel banner;
   private JPanel container;
@@ -198,10 +254,18 @@ public class EmployeeView extends SimpleView implements View {
   private JTable tableEmployee;
 
   // Form
+  private GlassPaneChild form;
   private TextInput tiFirstName;
-  private TextInput tiLastName;
+  private TextInput tiSecondtName;
   private TextInput tiPaternalLastName;
   private TextInput tiMaternalLastName;
   private TextInput tiDni;
+  private TextInput birthdate;
+  private TextInput tiPhoneNumber;
+  private TextInput tiAddress;
+  private TextInput tiEmail;
+  private TextInput tiUsername;
+  private TextInput tiPassword;
+  private JComboBox cbRole;
 
 }

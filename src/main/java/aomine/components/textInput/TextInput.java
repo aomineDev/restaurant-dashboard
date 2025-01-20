@@ -1,4 +1,4 @@
-package aomine.components;
+package aomine.components.textInput;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
@@ -22,7 +22,7 @@ public class TextInput {
   private String lblText;
   private String value;
   private String lblErrorText;
-  private boolean isPassword;
+  private TextInputTypes type;
   private String mask;
   private char maskPlaceholder;
 
@@ -42,7 +42,7 @@ public class TextInput {
     this.lblText = builder.lblText;
     this.value = builder.value;
     this.lblErrorText = builder.lblErrorText;
-    this.isPassword = builder.isPassword;
+    this.type = builder.type;
     this.mask = builder.mask;
     this.maskPlaceholder = builder.maskPlaceholder;
 
@@ -56,7 +56,7 @@ public class TextInput {
       this.lbl = new JLabel(this.lblText);
     }
 
-    if (isPassword) {
+    if (type == TextInputTypes.PASSWORD) {
       this.input = new JPasswordField(this.value) {
         @Override
         public String getText() {
@@ -65,10 +65,8 @@ public class TextInput {
       };
 
       this.input.putClientProperty(FlatClientProperties.STYLE, "showRevealButton: true");
-    } else if (mask != null) {
-
+    } else if (type == TextInputTypes.MASK) {
       this.input = new JFormattedTextField(createFormatter());
-      ((JFormattedTextField) this.input).setColumns(mask.length());
     } else {
       this.input = new JTextField(this.value);
     }
@@ -215,14 +213,14 @@ public class TextInput {
     private String lblText;
     private String value;
     private String lblErrorText;
-    private boolean isPassword;
+    private TextInputTypes type;
     private String mask;
     private char maskPlaceholder;
 
     public TextInputBuilder() {
       this.value = "";
       this.placeholder = "";
-      this.isPassword = false;
+      this.type = TextInputTypes.TEXT;
       this.maskPlaceholder = ' ';
     }
 
@@ -246,8 +244,8 @@ public class TextInput {
       return this;
     }
 
-    public TextInputBuilder setPassword(boolean isPassword) {
-      this.isPassword = isPassword;
+    public TextInputBuilder setType(TextInputTypes type) {
+      this.type = type;
       return this;
     }
 
