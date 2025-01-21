@@ -1,6 +1,6 @@
 package aomine.utils.validate;
 
-import aomine.components.textInput.TextInput;
+import aomine.components.TextInput;
 
 public class ValError {
   private TextInput input;

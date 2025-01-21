@@ -10,8 +10,7 @@ import javax.swing.JPanel;
 import com.formdev.flatlaf.FlatClientProperties;
 
 import aomine.components.GoatPanel;
-import aomine.components.textInput.TextInput;
-import aomine.components.textInput.TextInputTypes;
+import aomine.components.TextInput;
 import aomine.controller.login.LoginController;
 import aomine.view.View;
 import net.miginfocom.swing.MigLayout;
@@ -41,7 +40,7 @@ public class LoginView extends JPanel implements View {
         .setPlaceholder("Ingrese su contraseña")
         .setLabelText("Contraseña")
         .withErrorLabel()
-        .setType(TextInputTypes.PASSWORD)
+        .setType(TextInput.TextInputTypes.PASSWORD)
         .build();
     btnLogin = new JButton("Login");
   }

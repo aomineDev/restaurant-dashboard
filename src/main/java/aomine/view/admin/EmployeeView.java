@@ -3,10 +3,12 @@ package aomine.view.admin;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.time.LocalDate;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -18,11 +20,11 @@ import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 
 import aomine.components.GoatPanel;
+import aomine.components.TextInput;
 import aomine.components.layout.view.SimpleView;
-import aomine.components.textInput.TextInput;
-import aomine.components.textInput.TextInputTypes;
 import aomine.view.View;
 import net.miginfocom.swing.MigLayout;
+import raven.datetime.component.date.DatePicker;
 import raven.popup.DefaultOption;
 import raven.popup.GlassPanePopup;
 import raven.popup.GlassPopup;
@@ -51,13 +53,13 @@ public class EmployeeView extends SimpleView implements View {
     tableContainer = new JPanel();
 
     tiSearch = new TextInput.TextInputBuilder()
-    .setPlaceholder("Nombre")
-    .build();
+        .setPlaceholder("Nombre")
+        .build();
     btnAdd = new JButton("Nuevo");
     btnEdit = new JButton("Editar");
     btnDelete = new JButton("Eliminar");
     tableEmployee = new JTable();
-    
+
     form = new GlassPaneChild();
     tiFirstName = new TextInput.TextInputBuilder()
         .setLabelText("Primer nombre")
@@ -83,15 +85,24 @@ public class EmployeeView extends SimpleView implements View {
         .setLabelText("DNI")
         .setPlaceholder("Ingrese el DNI")
         .withErrorLabel()
-        .setType(TextInputTypes.MASK)
+        .setType(TextInput.TextInputTypes.MASK)
         .setMask("########")
         .build();
-    // birthdate = new TextInput.TextInputBuilder()
+    datePicker = new DatePicker();
+    tiBirthdate = new TextInput.TextInputBuilder()
+        .setLabelText("Fecha de nacimiento")
+        .setPlaceholder("Ingrese la fecha de nacimiento")
+        .withErrorLabel()
+        .setType(TextInput.TextInputTypes.DATE)
+        .build();
+    datePicker.setEditor((JFormattedTextField) tiBirthdate.getInput());
+    datePicker.setUsePanelOption(true);
+    datePicker.setDateSelectionAble(localDate -> !localDate.isAfter(LocalDate.now()));
     tiPhoneNumber = new TextInput.TextInputBuilder()
         .setLabelText("Celuluar")
         .setPlaceholder("Ingrese el numero de celular")
         .withErrorLabel()
-        .setType(TextInputTypes.MASK)
+        .setType(TextInput.TextInputTypes.MASK)
         .setMask("### ### ###")
         .build();
     tiAddress = new TextInput.TextInputBuilder()
@@ -113,9 +124,9 @@ public class EmployeeView extends SimpleView implements View {
         .setLabelText("Contraseña")
         .setPlaceholder("Ingrese la contraseña")
         .withErrorLabel()
-        .setType(TextInputTypes.PASSWORD)
+        .setType(TextInput.TextInputTypes.PASSWORD)
         .build();
-    // cbRole = new TextInput.TextInputBuilder()
+    cbRole = new JComboBox<Object>();
   }
 
   @Override
@@ -184,6 +195,19 @@ public class EmployeeView extends SimpleView implements View {
     tableContainer.add(btnEdit);
     tableContainer.add(btnDelete, "wrap");
     tableContainer.add(new JScrollPane(tableEmployee), "span, grow");
+
+    form.add(tiFirstName.getInput());
+    form.add(tiSecondtName.getInput());
+    form.add(tiPaternalLastName.getInput());
+    form.add(tiMaternalLastName.getInput());
+    form.add(tiDni.getInput());
+    form.add(tiBirthdate.getInput());
+    form.add(tiPhoneNumber.getInput());
+    form.add(tiAddress.getInput());
+    form.add(tiEmail.getInput());
+    form.add(tiUsername.getInput());
+    form.add(tiPassword.getInput());
+    form.add(cbRole);
   }
 
   private void applyTableStyles() {
@@ -260,12 +284,13 @@ public class EmployeeView extends SimpleView implements View {
   private TextInput tiPaternalLastName;
   private TextInput tiMaternalLastName;
   private TextInput tiDni;
-  private TextInput birthdate;
+  private DatePicker datePicker;
+  private TextInput tiBirthdate;
   private TextInput tiPhoneNumber;
   private TextInput tiAddress;
   private TextInput tiEmail;
   private TextInput tiUsername;
   private TextInput tiPassword;
-  private JComboBox cbRole;
+  private JComboBox<Object> cbRole;
 
 }

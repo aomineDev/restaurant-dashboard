@@ -3,9 +3,11 @@ package aomine;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -20,8 +22,9 @@ import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
 
 import aomine.components.GoatPanel;
-import aomine.components.textInput.TextInput;
+import aomine.components.TextInput;
 import net.miginfocom.swing.MigLayout;
+import raven.datetime.component.date.DatePicker;
 
 public class Test extends JFrame {
   public Test() {
@@ -43,14 +46,12 @@ public class Test extends JFrame {
         .setPathFromResources("background/react.png")
         .build();
     panel.setLayout(new MigLayout("fill", "[center]"));
-    TextInput input = new TextInput.TextInputBuilder()
-        .setMask("########")
-        .setLabelText("mask")
-        .build();
-    panel.add(input.getInput());
-    input.onChanged(e -> {
-      System.out.println(input.getText());
-    });
+    DatePicker dp = new DatePicker();
+    JFormattedTextField ft = new JFormattedTextField();
+    dp.setEditor(ft);
+    dp.setUsePanelOption(true);
+    dp.setDateSelectionAble(localDate -> !localDate.isAfter(LocalDate.now()));
+    panel.add(ft, "w 200");
     setContentPane(panel);
   }
 

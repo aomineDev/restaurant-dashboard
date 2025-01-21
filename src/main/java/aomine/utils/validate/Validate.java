@@ -2,7 +2,7 @@ package aomine.utils.validate;
 
 import java.util.ArrayList;
 
-import aomine.components.textInput.TextInput;
+import aomine.components.TextInput;
 
 public class Validate {
   private TextInput input;

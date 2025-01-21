@@ -1,4 +1,4 @@
-package aomine.components.textInput;
+package aomine.components;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
@@ -67,6 +67,8 @@ public class TextInput {
       this.input.putClientProperty(FlatClientProperties.STYLE, "showRevealButton: true");
     } else if (type == TextInputTypes.MASK) {
       this.input = new JFormattedTextField(createFormatter());
+    } else if (type == TextInputTypes.DATE) {
+      this.input = new JFormattedTextField();
     } else {
       this.input = new JTextField(this.value);
     }
@@ -206,6 +208,10 @@ public class TextInput {
 
   public void onChanged(Consumer<DocumentEvent> handleChanged) {
     this.handleChanged = handleChanged;
+  }
+
+  public static enum TextInputTypes {
+    TEXT, PASSWORD, MASK, DATE
   }
 
   public static class TextInputBuilder {
