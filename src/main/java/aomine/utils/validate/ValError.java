@@ -1,17 +1,17 @@
 package aomine.utils.validate;
 
-import aomine.components.TextInput;
+import aomine.components.input.TextComponent;
 
 public class ValError {
-  private TextInput input;
+  private TextComponent input;
   private String message;
 
-  public ValError(TextInput input, String message) {
+  public ValError(TextComponent input, String message) {
     this.input = input;
     this.message = message;
   }
 
-  public TextInput getInput() {
+  public TextComponent getInput() {
     return input;
   }
 
@@ -19,7 +19,7 @@ public class ValError {
     return message;
   }
 
-  public void setInput(TextInput input) {
+  public void setInput(TextComponent input) {
     this.input = input;
   }
 

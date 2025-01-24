@@ -34,12 +34,12 @@ public class LoginController {
     // employeeDAO = new EmployeeDAO();
   }
 
-  public void fastLogin(ActionEvent evt) {
+  public void handleFastLogin(ActionEvent evt) {
     ViewManager.showView(new EmployeeView());
     ViewManager.login();
   }
 
-  public void handleLoginClick(ActionEvent evt) {
+  public void handleLogin(ActionEvent evt) {
     // Verificacion de primer ingreso
     if (employeeDAO.isEmpty())
       createAdmin();
@@ -55,7 +55,7 @@ public class LoginController {
       // Save User
       Store.setUser(user);
 
-      // Root
+      // Router
       if (user.getRole().getName().equals(Role.ADMIN)) {
         ViewManager.showView(new Test());
       }
@@ -63,7 +63,7 @@ public class LoginController {
       ViewManager.login();
     } catch (Exception e) {
       errorMessage(e.getMessage());
-      view.getTiPassword().setText("");
+      view.getPiPassword().setText("");
     }
   }
 
@@ -73,14 +73,14 @@ public class LoginController {
     validate.setElement(view.getTiUsername())
         .isRequired("campo requerido");
 
-    validate.setElement(view.getTiPassword())
+    validate.setElement(view.getPiPassword())
         .isRequired("campo requerido ")
         .minLength("minimo 8 caracteres", 8);
 
     if (validate.getErrorCount() > 0) {
       for (ValError error : validate.getValErrorList()) {
         error.getInput().setErrorHint(true);
-        error.getInput().setLblErrorText(error.getMessage());
+        error.getInput().setLabelErrorText(error.getMessage());
       }
     }
   }

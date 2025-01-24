@@ -10,7 +10,9 @@ import javax.swing.JPanel;
 import com.formdev.flatlaf.FlatClientProperties;
 
 import aomine.components.GoatPanel;
-import aomine.components.TextInput;
+import aomine.components.input.PasswordInput;
+import aomine.components.input.TextComponent;
+import aomine.components.input.TextInput;
 import aomine.controller.login.LoginController;
 import aomine.view.View;
 import net.miginfocom.swing.MigLayout;
@@ -36,11 +38,10 @@ public class LoginView extends JPanel implements View {
         .setLabelText("Usuario")
         .withErrorLabel()
         .build();
-    tiPassword = new TextInput.TextInputBuilder()
+    piPassword = new PasswordInput.PasswordInputBuilder()
         .setPlaceholder("Ingrese su contraseña")
         .setLabelText("Contraseña")
         .withErrorLabel()
-        .setType(TextInput.TextInputTypes.PASSWORD)
         .build();
     btnLogin = new JButton("Login");
   }
@@ -77,8 +78,7 @@ public class LoginView extends JPanel implements View {
     btnLogin.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
     tiUsername.setLeftIcon("user.svg", 0.35f);
-    tiPassword.setLeftIcon("password.svg", 0.35f);
-
+    piPassword.setLeftIcon("password.svg", 0.35f);
   }
 
   @Override
@@ -87,19 +87,19 @@ public class LoginView extends JPanel implements View {
       resetField(tiUsername);
     });
 
-    tiPassword.onKeyTyped(e -> {
+    piPassword.onKeyTyped(e -> {
       if (e.getKeyChar() == '\n')
         return;
 
-      resetField(tiPassword);
+      resetField(piPassword);
     });
 
-    tiPassword.onKeyPressed(e -> {
+    piPassword.onKeyPressed(e -> {
       if (e.getKeyCode() == KeyEvent.VK_ENTER)
-        controller.fastLogin(null);
+        controller.handleFastLogin(null);
     });
 
-    btnLogin.addActionListener(controller::fastLogin);
+    btnLogin.addActionListener(controller::handleFastLogin);
   }
 
   @Override
@@ -111,29 +111,29 @@ public class LoginView extends JPanel implements View {
     login.add(tiUsername.getLabel());
     login.add(tiUsername.getInput());
     login.add(tiUsername.getErrorLabel());
-    login.add(tiPassword.getLabel());
-    login.add(tiPassword.getInput());
-    login.add(tiPassword.getErrorLabel());
+    login.add(piPassword.getLabel());
+    login.add(piPassword.getInput());
+    login.add(piPassword.getErrorLabel());
     login.add(btnLogin, "gapy 10");
   }
 
-  private void resetField(TextInput ti) {
+  private void resetField(TextComponent ti) {
     ti.setErrorHint(false);
-    ti.setLblErrorText("");
+    ti.setLabelErrorText("");
   }
 
   public TextInput getTiUsername() {
     return tiUsername;
   }
 
-  public TextInput getTiPassword() {
-    return tiPassword;
+  public PasswordInput getPiPassword() {
+    return piPassword;
   }
 
   private GoatPanel background;
   private JLabel lblTitle;
   private JPanel login;
   private TextInput tiUsername;
-  private TextInput tiPassword;
+  private PasswordInput piPassword;
   private JButton btnLogin;
 }

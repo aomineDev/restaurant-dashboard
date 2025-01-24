@@ -2,10 +2,10 @@ package aomine.utils.validate;
 
 import java.util.ArrayList;
 
-import aomine.components.TextInput;
+import aomine.components.input.TextComponent;
 
 public class Validate {
-  private TextInput input;
+  private TextComponent input;
   private String text;
   private boolean isValid;
   private ArrayList<ValError> valErrorList;
@@ -20,7 +20,7 @@ public class Validate {
     this.valErrorList = new ArrayList<>();
   }
 
-  public Validate setElement(TextInput input) {
+  public Validate setElement(TextComponent input) {
     this.input = input;
     this.text = input.getText();
     this.isValid = true;

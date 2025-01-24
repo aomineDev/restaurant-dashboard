@@ -20,7 +20,9 @@ import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 
 import aomine.components.GoatPanel;
-import aomine.components.TextInput;
+import aomine.components.input.MaskInput;
+import aomine.components.input.PasswordInput;
+import aomine.components.input.TextInput;
 import aomine.components.layout.view.SimpleView;
 import aomine.view.View;
 import net.miginfocom.swing.MigLayout;
@@ -60,72 +62,79 @@ public class EmployeeView extends SimpleView implements View {
     btnDelete = new JButton("Eliminar");
     tableEmployee = new JTable();
 
+    // Form
     form = new GlassPaneChild();
+
     tiFirstName = new TextInput.TextInputBuilder()
         .setLabelText("Primer nombre")
         .setPlaceholder("Inngrese el primer nombre")
         .withErrorLabel()
         .build();
+
     tiSecondtName = new TextInput.TextInputBuilder()
         .setLabelText("Segundo nombre")
         .setPlaceholder("Ingrese el segundo nombre")
         .withErrorLabel()
         .build();
+
     tiPaternalLastName = new TextInput.TextInputBuilder()
         .setLabelText("Apellido paterno")
         .setPlaceholder("Ingrese el Apellido paterno")
         .withErrorLabel()
         .build();
+
     tiMaternalLastName = new TextInput.TextInputBuilder()
         .setLabelText("Apellido materno")
         .setPlaceholder("Ingrese el apellido materno")
         .withErrorLabel()
         .build();
-    tiDni = new TextInput.TextInputBuilder()
+
+    miDni = new MaskInput.MaskInputBuilder()
         .setLabelText("DNI")
-        .setPlaceholder("Ingrese el DNI")
         .withErrorLabel()
-        .setType(TextInput.TextInputTypes.MASK)
         .setMask("########")
         .build();
+
     datePicker = new DatePicker();
-    tiBirthdate = new TextInput.TextInputBuilder()
+    miBirthdate = new MaskInput.MaskInputBuilder()
         .setLabelText("Fecha de nacimiento")
         .setPlaceholder("Ingrese la fecha de nacimiento")
         .withErrorLabel()
-        .setType(TextInput.TextInputTypes.DATE)
         .build();
-    datePicker.setEditor((JFormattedTextField) tiBirthdate.getInput());
+    datePicker.setEditor(miBirthdate.getInput());
     datePicker.setUsePanelOption(true);
     datePicker.setDateSelectionAble(localDate -> !localDate.isAfter(LocalDate.now()));
-    tiPhoneNumber = new TextInput.TextInputBuilder()
+
+    miPhoneNumber = new MaskInput.MaskInputBuilder()
         .setLabelText("Celuluar")
-        .setPlaceholder("Ingrese el numero de celular")
         .withErrorLabel()
-        .setType(TextInput.TextInputTypes.MASK)
         .setMask("### ### ###")
         .build();
+
     tiAddress = new TextInput.TextInputBuilder()
         .setLabelText("Dirección")
         .setPlaceholder("Ingrese la dirección")
         .withErrorLabel()
         .build();
+
     tiEmail = new TextInput.TextInputBuilder()
         .setLabelText("Email")
         .setPlaceholder("Ingrese el email")
         .withErrorLabel()
         .build();
+
     tiUsername = new TextInput.TextInputBuilder()
         .setLabelText("Usuario")
         .setPlaceholder("Ingrese el usuario")
         .withErrorLabel()
         .build();
-    tiPassword = new TextInput.TextInputBuilder()
+
+    piPassword = new PasswordInput.PasswordInputBuilder()
         .setLabelText("Contraseña")
         .setPlaceholder("Ingrese la contraseña")
         .withErrorLabel()
-        .setType(TextInput.TextInputTypes.PASSWORD)
         .build();
+
     cbRole = new JComboBox<Object>();
   }
 
@@ -188,25 +197,49 @@ public class EmployeeView extends SimpleView implements View {
   public void renderComponents() {
     add(banner);
     add(container);
+
     container.add(lblTitle);
     container.add(tableContainer, "grow");
+
     tableContainer.add(tiSearch.getInput(), "w 200");
     tableContainer.add(btnAdd);
     tableContainer.add(btnEdit);
     tableContainer.add(btnDelete, "wrap");
     tableContainer.add(new JScrollPane(tableEmployee), "span, grow");
 
+    form.add(tiFirstName.getLabel());
     form.add(tiFirstName.getInput());
+    form.add(tiFirstName.getErrorLabel());
+    form.add(tiSecondtName.getLabel());
     form.add(tiSecondtName.getInput());
+    form.add(tiSecondtName.getErrorLabel());
     form.add(tiPaternalLastName.getInput());
+    form.add(tiPaternalLastName.getInput());
+    form.add(tiPaternalLastName.getErrorLabel());
+    form.add(tiMaternalLastName.getLabel());
     form.add(tiMaternalLastName.getInput());
-    form.add(tiDni.getInput());
-    form.add(tiBirthdate.getInput());
-    form.add(tiPhoneNumber.getInput());
+    form.add(tiMaternalLastName.getErrorLabel());
+    form.add(miDni.getLabel());
+    form.add(miDni.getInput());
+    form.add(miDni.getErrorLabel());
+    form.add(miBirthdate.getLabel());
+    form.add(miBirthdate.getInput());
+    form.add(miBirthdate.getErrorLabel());
+    form.add(miPhoneNumber.getLabel());
+    form.add(miPhoneNumber.getInput());
+    form.add(miPhoneNumber.getErrorLabel());
+    form.add(tiAddress.getLabel());
     form.add(tiAddress.getInput());
+    form.add(tiAddress.getErrorLabel());
+    form.add(tiEmail.getLabel());
     form.add(tiEmail.getInput());
+    form.add(tiEmail.getErrorLabel());
+    form.add(tiUsername.getLabel());
     form.add(tiUsername.getInput());
-    form.add(tiPassword.getInput());
+    form.add(tiUsername.getErrorLabel());
+    form.add(piPassword.getLabel());
+    form.add(piPassword.getInput());
+    form.add(piPassword.getErrorLabel());
     form.add(cbRole);
   }
 
@@ -283,14 +316,14 @@ public class EmployeeView extends SimpleView implements View {
   private TextInput tiSecondtName;
   private TextInput tiPaternalLastName;
   private TextInput tiMaternalLastName;
-  private TextInput tiDni;
+  private MaskInput miDni;
   private DatePicker datePicker;
-  private TextInput tiBirthdate;
-  private TextInput tiPhoneNumber;
+  private MaskInput miBirthdate;
+  private MaskInput miPhoneNumber;
   private TextInput tiAddress;
   private TextInput tiEmail;
   private TextInput tiUsername;
-  private TextInput tiPassword;
+  private PasswordInput piPassword;
   private JComboBox<Object> cbRole;
 
 }
