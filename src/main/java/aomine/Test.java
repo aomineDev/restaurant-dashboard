@@ -1,9 +1,12 @@
 package aomine;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -45,35 +48,14 @@ public class Test extends JFrame {
         imagePath).toAbsolutePath().toString());
 
     GoatPanel panel = new GoatPanel.GoatPanelBuilder()
-        .setPathFromResources("background/react.png")
         .build();
-    panel.setLayout(new MigLayout("flowy, debug", ""));
-    DatePicker dp = new DatePicker();
-    JFormattedTextField ft = new JFormattedTextField(createFormatter("####", '#'));
-    ft.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "1111");
-    // dp.setEditor(ft);
-    dp.setUsePanelOption(true);
-    dp.setDateSelectionAble(localDate -> !localDate.isAfter(LocalDate.now()));
-    panel.add(ft, "w 200");
-    TextInput sdf = new TextInput.TextInputBuilder()
-        .setLabelText("asd")
-        .setPlaceholder("xdddddd")
-        .build();
-    panel.add(sdf.getLabel());
-    panel.add(sdf.getInput());
+    JPanel pnl = new JPanel();
+    panel.setLayout(new MigLayout("debug, fill", "[center]"));
+    pnl.setLayout(new MigLayout("debug, fillx", "[]"));
+    pnl.setPreferredSize(new Dimension(200, 0));
+    panel.add(pnl);
+    pnl.add(new JLabel("Testing"));
     setContentPane(panel);
-  }
-
-  private MaskFormatter createFormatter(String mask, char maskPlaceholder) {
-    try {
-      MaskFormatter formatter = new MaskFormatter(mask);
-      formatter.setPlaceholderCharacter(maskPlaceholder);
-
-      return formatter;
-    } catch (Exception e) {
-      e.printStackTrace();
-      return null;
-    }
   }
 
   public static void main(String[] args) {
@@ -86,6 +68,4 @@ public class Test extends JFrame {
 
     EventQueue.invokeLater(() -> new Test().setVisible(true));
   }
-
-  // private void
 }

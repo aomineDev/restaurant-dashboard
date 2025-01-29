@@ -2,6 +2,8 @@ package aomine.components.input;
 
 import javax.swing.JPasswordField;
 
+import com.formdev.flatlaf.FlatClientProperties;
+
 public class PasswordInput extends GoatTextInput<JPasswordField> {
   private String value;
 
@@ -18,6 +20,8 @@ public class PasswordInput extends GoatTextInput<JPasswordField> {
   protected void initialize() {
     initComponents();
 
+    applyStyles();
+
     super.applyPlaceholder();
 
     super.initialize();
@@ -25,6 +29,10 @@ public class PasswordInput extends GoatTextInput<JPasswordField> {
 
   private void initComponents() {
     this.input = new JPasswordField(value);
+  }
+
+  private void applyStyles() {
+    this.input.putClientProperty(FlatClientProperties.STYLE, "showRevealButton: true");
   }
 
   @Override

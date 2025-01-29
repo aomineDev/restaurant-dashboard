@@ -2,13 +2,11 @@ package aomine.view.admin;
 
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.time.LocalDate;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -29,7 +27,6 @@ import net.miginfocom.swing.MigLayout;
 import raven.datetime.component.date.DatePicker;
 import raven.popup.DefaultOption;
 import raven.popup.GlassPanePopup;
-import raven.popup.GlassPopup;
 import raven.popup.component.GlassPaneChild;
 import raven.popup.component.PopupCallbackAction;
 import raven.popup.component.SimplePopupBorder;
@@ -37,6 +34,7 @@ import raven.popup.component.SimplePopupBorderOption;
 
 public class EmployeeView extends SimpleView implements View {
   public EmployeeView() {
+    formWidth = 800;
     initialize();
     setModel();
     testData();
@@ -79,7 +77,7 @@ public class EmployeeView extends SimpleView implements View {
 
     tiPaternalLastName = new TextInput.TextInputBuilder()
         .setLabelText("Apellido paterno")
-        .setPlaceholder("Ingrese el Apellido paterno")
+        .setPlaceholder("Ingrese el apellido paterno")
         .withErrorLabel()
         .build();
 
@@ -92,23 +90,23 @@ public class EmployeeView extends SimpleView implements View {
     miDni = new MaskInput.MaskInputBuilder()
         .setLabelText("DNI")
         .withErrorLabel()
-        .setMask("########")
+        .setMask("########", '-')
         .build();
 
     datePicker = new DatePicker();
     miBirthdate = new MaskInput.MaskInputBuilder()
         .setLabelText("Fecha de nacimiento")
-        .setPlaceholder("Ingrese la fecha de nacimiento")
         .withErrorLabel()
         .build();
     datePicker.setEditor(miBirthdate.getInput());
     datePicker.setUsePanelOption(true);
     datePicker.setDateSelectionAble(localDate -> !localDate.isAfter(LocalDate.now()));
+    datePicker.setCloseAfterSelected(true);
 
     miPhoneNumber = new MaskInput.MaskInputBuilder()
         .setLabelText("Celuluar")
         .withErrorLabel()
-        .setMask("### ### ###")
+        .setMask("### ### ###", '-')
         .build();
 
     tiAddress = new TextInput.TextInputBuilder()
@@ -146,7 +144,7 @@ public class EmployeeView extends SimpleView implements View {
 
     tableContainer.setLayout(new MigLayout("insets 16, fillx", "[]push[][][]", "[]20[grow]"));
 
-    form.setLayout(new MigLayout("debug"));
+    applyFormLayout();
   }
 
   @Override
@@ -165,16 +163,20 @@ public class EmployeeView extends SimpleView implements View {
     btnEdit.putClientProperty(FlatClientProperties.STYLE_CLASS, "table_style");
     btnDelete.putClientProperty(FlatClientProperties.STYLE_CLASS, "table_style");
 
+    miBirthdate.getInput().putClientProperty(FlatClientProperties.OUTLINE, null);
+
     setIcons();
   }
 
   @Override
   public void applyEvents() {
-
     btnAdd.addActionListener(e -> {
-      DefaultOption popupOption = new DefaultOption();
+      int height = 550;
 
       SimplePopupBorderOption borderOption = new SimplePopupBorderOption();
+
+      borderOption.useScroll();
+      borderOption.setWidth(formWidth);
 
       String[] actions = { "Cancelar", "Guardar" };
 
@@ -183,11 +185,18 @@ public class EmployeeView extends SimpleView implements View {
           GlassPanePopup.closePopup("employeeForm");
         } else if (action == 1) {
           System.out.println("ok");
+          System.out.println(miDni.getInput().getWidth());
         }
       };
 
+      SimplePopupBorder popup = new SimplePopupBorder(form, "Nuevo Empleado", borderOption, actions, callbackAction);
+
+      popup.setMaximumSize(new Dimension(formWidth, height));
+
+      DefaultOption popupOption = new DefaultOption();
+
       GlassPanePopup.showPopup(
-          new SimplePopupBorder(form, "Nuevo Empleado", borderOption, actions, callbackAction),
+          popup,
           popupOption,
           "employeeForm");
     });
@@ -207,40 +216,52 @@ public class EmployeeView extends SimpleView implements View {
     tableContainer.add(btnDelete, "wrap");
     tableContainer.add(new JScrollPane(tableEmployee), "span, grow");
 
-    form.add(tiFirstName.getLabel());
-    form.add(tiFirstName.getInput());
-    form.add(tiFirstName.getErrorLabel());
-    form.add(tiSecondtName.getLabel());
-    form.add(tiSecondtName.getInput());
-    form.add(tiSecondtName.getErrorLabel());
-    form.add(tiPaternalLastName.getInput());
-    form.add(tiPaternalLastName.getInput());
-    form.add(tiPaternalLastName.getErrorLabel());
-    form.add(tiMaternalLastName.getLabel());
-    form.add(tiMaternalLastName.getInput());
-    form.add(tiMaternalLastName.getErrorLabel());
-    form.add(miDni.getLabel());
-    form.add(miDni.getInput());
-    form.add(miDni.getErrorLabel());
-    form.add(miBirthdate.getLabel());
-    form.add(miBirthdate.getInput());
-    form.add(miBirthdate.getErrorLabel());
-    form.add(miPhoneNumber.getLabel());
-    form.add(miPhoneNumber.getInput());
-    form.add(miPhoneNumber.getErrorLabel());
-    form.add(tiAddress.getLabel());
-    form.add(tiAddress.getInput());
-    form.add(tiAddress.getErrorLabel());
-    form.add(tiEmail.getLabel());
-    form.add(tiEmail.getInput());
-    form.add(tiEmail.getErrorLabel());
-    form.add(tiUsername.getLabel());
-    form.add(tiUsername.getInput());
-    form.add(tiUsername.getErrorLabel());
-    form.add(piPassword.getLabel());
-    form.add(piPassword.getInput());
-    form.add(piPassword.getErrorLabel());
-    form.add(cbRole);
+    form.add(tiFirstName.getLabel(), "span 3");
+    form.add(tiSecondtName.getLabel(), "span 3, wrap");
+    form.add(tiFirstName.getInput(), "span 3");
+    form.add(tiSecondtName.getInput(), "span 3, wrap");
+    form.add(tiFirstName.getErrorLabel(), "span 3");
+    form.add(tiSecondtName.getErrorLabel(), "span 3, wrap");
+    form.add(tiPaternalLastName.getLabel(), "span 3");
+    form.add(tiMaternalLastName.getLabel(), "span 3, wrap");
+    form.add(tiPaternalLastName.getInput(), "span 3");
+    form.add(tiMaternalLastName.getInput(), "span 3, wrap");
+    form.add(tiPaternalLastName.getErrorLabel(), "span 3");
+    form.add(tiMaternalLastName.getErrorLabel(), "span 3, wrap");
+    form.add(miDni.getLabel(), "span 2");
+    form.add(miBirthdate.getLabel(), "span 2");
+    form.add(miPhoneNumber.getLabel(), "span 2, wrap");
+    form.add(miDni.getInput(), "span 2");
+    form.add(miBirthdate.getInput(), "span 2");
+    form.add(miPhoneNumber.getInput(), "wrap, span 2");
+    form.add(miDni.getErrorLabel(), "span 2");
+    form.add(miBirthdate.getErrorLabel(), "span 2");
+    form.add(miPhoneNumber.getErrorLabel(), "span 2, wrap");
+    form.add(tiAddress.getLabel(), "span, wrap");
+    form.add(tiAddress.getInput(), "span, wrap");
+    form.add(tiAddress.getErrorLabel(), "span, wrap");
+    form.add(tiEmail.getLabel(), "span, wrap");
+    form.add(tiEmail.getInput(), "span, wrap");
+    form.add(tiEmail.getErrorLabel(), "span, wrap");
+    form.add(tiUsername.getLabel(), "span 2");
+    form.add(piPassword.getLabel(), "span 2");
+    form.add(new JLabel("rol"), "span 2, wrap");
+    form.add(tiUsername.getInput(), "span 2");
+    form.add(piPassword.getInput(), "span 2");
+    form.add(cbRole, "span 2, wrap");
+    form.add(tiUsername.getErrorLabel(), "span 2");
+    form.add(piPassword.getErrorLabel(), "span 2");
+    form.add(new JLabel(""), "span 2");
+  }
+
+  private void applyFormLayout() {
+    int formInsets = 24;
+    int formGapx = 10;
+    double cellWidth = (formWidth - (formInsets * 2) - (formGapx * 5)) / 6;
+    String formLayoutConstraints = String.format("ins %d, gapx %d", formInsets, formGapx);
+    String formColConstraints = String.format("[fill, %f]", cellWidth).repeat(6);
+
+    form.setLayout(new MigLayout(formLayoutConstraints, formColConstraints));
   }
 
   private void applyTableStyles() {
@@ -326,4 +347,5 @@ public class EmployeeView extends SimpleView implements View {
   private PasswordInput piPassword;
   private JComboBox<Object> cbRole;
 
+  private int formWidth;
 }

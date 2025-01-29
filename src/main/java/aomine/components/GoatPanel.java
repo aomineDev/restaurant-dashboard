@@ -22,6 +22,7 @@ public class GoatPanel extends JPanel {
     this.imagePath = builder.imagePath;
     this.aspectRatio = builder.aspectRatio;
     this.arc = builder.arc;
+
     setImage();
   }
 
