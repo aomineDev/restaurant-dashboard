@@ -86,7 +86,10 @@ public abstract class GoatInput<T> {
   }
 
   public JComponent getInput() {
-    return (JComponent) this.input;
+    if (this.input instanceof JComponent)
+      return (JComponent) this.input;
+
+    return null;
   }
 
   public JLabel getLabel() {
@@ -97,7 +100,7 @@ public abstract class GoatInput<T> {
     return this.lblError;
   }
 
-  protected static abstract class GoatInputBuilder<U> {
+  protected static abstract class GoatInputBuilder<U, V> {
     protected String lblText;
     protected String lblErrorText;
 
@@ -112,5 +115,7 @@ public abstract class GoatInput<T> {
     }
 
     protected abstract U self();
+
+    public abstract V build();
   }
 }

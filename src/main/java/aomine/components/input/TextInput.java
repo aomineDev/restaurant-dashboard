@@ -11,12 +11,12 @@ public class TextInput extends GoatTextInput<JTextField> {
     this.value = builder.value;
     this.placeholder = builder.placeholder;
 
-    initialize();
+    this.initialize();
   }
 
   @Override
   protected void initialize() {
-    initComponents();
+    this.initComponents();
 
     super.applyPlaceholder();
 
@@ -37,7 +37,7 @@ public class TextInput extends GoatTextInput<JTextField> {
     return this.input;
   }
 
-  public static class TextInputBuilder extends GoatTextInput.GoatTextInputBuilder<TextInputBuilder> {
+  public static class TextInputBuilder extends GoatTextInput.GoatTextInputBuilder<TextInputBuilder, TextInput> {
     private String value;
 
     public TextInputBuilder setValue(String value) {
@@ -50,6 +50,7 @@ public class TextInput extends GoatTextInput<JTextField> {
       return this;
     }
 
+    @Override
     public TextInput build() {
       return new TextInput(this);
     }

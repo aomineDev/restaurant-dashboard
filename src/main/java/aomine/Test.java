@@ -10,12 +10,15 @@ import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.text.JTextComponent;
@@ -27,6 +30,7 @@ import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
 
 import aomine.components.GoatPanel;
+import aomine.components.input.SelectInput;
 import aomine.components.input.TextInput;
 import net.miginfocom.swing.MigLayout;
 import raven.datetime.component.date.DatePicker;
@@ -38,7 +42,7 @@ public class Test extends JFrame {
 
   private void init() {
     setTitle("Test");
-    setSize(400, 300);
+    setSize(500, 400);
     setLocationRelativeTo(null);
     setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -49,12 +53,15 @@ public class Test extends JFrame {
 
     GoatPanel panel = new GoatPanel.GoatPanelBuilder()
         .build();
-    JPanel pnl = new JPanel();
-    panel.setLayout(new MigLayout("debug, fill", "[center]"));
-    pnl.setLayout(new MigLayout("debug, fillx", "[]"));
-    pnl.setPreferredSize(new Dimension(200, 0));
-    panel.add(pnl);
-    pnl.add(new JLabel("Testing"));
+
+    JComboBox<String> s = new JComboBox<>();
+    JTextField t = new JTextField();
+    t.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "asd");
+    panel.setLayout(new MigLayout());
+
+    panel.add(s);
+    panel.add(t);
+
     setContentPane(panel);
   }
 

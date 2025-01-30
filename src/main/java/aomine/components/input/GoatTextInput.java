@@ -97,10 +97,13 @@ public abstract class GoatTextInput<T> extends GoatInput<T> implements TextCompo
 
   @Override
   public JTextComponent getInput() {
-    return (JTextComponent) this.input;
+    if (this.input instanceof JTextComponent)
+      return (JTextComponent) this.input;
+
+    return null;
   }
 
-  protected static abstract class GoatTextInputBuilder<U> extends GoatInput.GoatInputBuilder<U> {
+  protected static abstract class GoatTextInputBuilder<U, V> extends GoatInput.GoatInputBuilder<U, V> {
     protected String placeholder;
 
     public U setPlaceholder(String placeholder) {

@@ -13,14 +13,14 @@ public class PasswordInput extends GoatTextInput<JPasswordField> {
     this.value = builder.value;
     this.placeholder = builder.placeholder;
 
-    initialize();
+    this.initialize();
   }
 
   @Override
   protected void initialize() {
-    initComponents();
+    this.initComponents();
 
-    applyStyles();
+    this.applyStyles();
 
     super.applyPlaceholder();
 
@@ -45,7 +45,8 @@ public class PasswordInput extends GoatTextInput<JPasswordField> {
     return this.input;
   }
 
-  public static class PasswordInputBuilder extends GoatTextInput.GoatTextInputBuilder<PasswordInputBuilder> {
+  public static class PasswordInputBuilder
+      extends GoatTextInput.GoatTextInputBuilder<PasswordInputBuilder, PasswordInput> {
     private String value;
 
     public PasswordInputBuilder setValue(String value) {
@@ -58,6 +59,7 @@ public class PasswordInput extends GoatTextInput<JPasswordField> {
       return this;
     }
 
+    @Override
     public PasswordInput build() {
       return new PasswordInput(this);
     }

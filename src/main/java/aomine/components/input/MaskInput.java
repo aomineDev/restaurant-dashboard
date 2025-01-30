@@ -13,12 +13,12 @@ public class MaskInput extends GoatTextInput<JFormattedTextField> {
     this.mask = builder.mask;
     this.maskPlaceholder = builder.maskPlaceholder;
 
-    initialize();
+    this.initialize();
   }
 
   @Override
   protected void initialize() {
-    initComponents();
+    this.initComponents();
 
     super.initialize();
   }
@@ -54,7 +54,7 @@ public class MaskInput extends GoatTextInput<JFormattedTextField> {
     return formatter;
   }
 
-  public static class MaskInputBuilder extends GoatTextInput.GoatTextInputBuilder<MaskInputBuilder> {
+  public static class MaskInputBuilder extends GoatTextInput.GoatTextInputBuilder<MaskInputBuilder, MaskInput> {
     private String mask;
     private char maskPlaceholder;
 
@@ -73,6 +73,7 @@ public class MaskInput extends GoatTextInput<JFormattedTextField> {
       return this;
     }
 
+    @Override
     public MaskInput build() {
       return new MaskInput(this);
     }

@@ -6,7 +6,6 @@ import java.time.LocalDate;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -20,8 +19,10 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import aomine.components.GoatPanel;
 import aomine.components.input.MaskInput;
 import aomine.components.input.PasswordInput;
+import aomine.components.input.SelectInput;
 import aomine.components.input.TextInput;
 import aomine.components.layout.view.SimpleView;
+import aomine.model.Role;
 import aomine.view.View;
 import net.miginfocom.swing.MigLayout;
 import raven.datetime.component.date.DatePicker;
@@ -133,7 +134,9 @@ public class EmployeeView extends SimpleView implements View {
         .withErrorLabel()
         .build();
 
-    cbRole = new JComboBox<Object>();
+    cbRole = new SelectInput.SelectInputBuilder<Role>()
+        .setLabelText("Rol")
+        .build();
   }
 
   @Override
@@ -245,13 +248,12 @@ public class EmployeeView extends SimpleView implements View {
     form.add(tiEmail.getErrorLabel(), "span, wrap");
     form.add(tiUsername.getLabel(), "span 2");
     form.add(piPassword.getLabel(), "span 2");
-    form.add(new JLabel("rol"), "span 2, wrap");
+    form.add(cbRole.getLabel(), "span 2, wrap");
     form.add(tiUsername.getInput(), "span 2");
     form.add(piPassword.getInput(), "span 2");
-    form.add(cbRole, "span 2, wrap");
+    form.add(cbRole.getInput(), "span 2, wrap");
     form.add(tiUsername.getErrorLabel(), "span 2");
     form.add(piPassword.getErrorLabel(), "span 2");
-    form.add(new JLabel(""), "span 2");
   }
 
   private void applyFormLayout() {
@@ -345,7 +347,7 @@ public class EmployeeView extends SimpleView implements View {
   private TextInput tiEmail;
   private TextInput tiUsername;
   private PasswordInput piPassword;
-  private JComboBox<Object> cbRole;
+  private SelectInput<Role> cbRole;
 
   private int formWidth;
 }
