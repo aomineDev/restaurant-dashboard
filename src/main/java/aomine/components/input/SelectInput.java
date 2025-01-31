@@ -3,10 +3,8 @@ package aomine.components.input;
 import javax.swing.JComboBox;
 
 public class SelectInput<T> extends GoatInput<JComboBox<T>> {
-  public SelectInput(SelectInputBuilder<T> builder) {
-    this.lblText = builder.lblText;
-    this.lblErrorText = builder.lblErrorText;
-
+  public SelectInput(SelectInputBuilder<?> builder) {
+    super(builder);
     this.initialize();
   }
 
@@ -30,7 +28,7 @@ public class SelectInput<T> extends GoatInput<JComboBox<T>> {
     return this.input;
   }
 
-  public static class SelectInputBuilder<T> extends GoatInput.GoatInputBuilder<SelectInputBuilder<T>, SelectInput<T>> {
+  public static class SelectInputBuilder<T> extends GoatInput.GoatInputBuilder<SelectInputBuilder<T>, JComboBox<T>> {
     @Override
     protected SelectInputBuilder<T> self() {
       return this;
@@ -38,8 +36,7 @@ public class SelectInput<T> extends GoatInput<JComboBox<T>> {
 
     @Override
     public SelectInput<T> build() {
-      return new SelectInput<>(this);
+      return new SelectInput<T>(this);
     }
-
   }
 }

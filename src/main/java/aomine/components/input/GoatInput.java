@@ -6,7 +6,7 @@ import javax.swing.JLabel;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 
-public abstract class GoatInput<T> {
+public abstract class GoatInput<T extends JComponent> {
   protected String lblText;
   protected String lblErrorText;
 
@@ -16,13 +16,15 @@ public abstract class GoatInput<T> {
   protected JLabel lbl;
   protected T input;
 
-  public GoatInput() {
-    errorHintState = false;
+  public GoatInput(GoatInputBuilder<?, ?> builder) {
+    this.lblText = builder.lblText;
+    this.lblErrorText = builder.lblErrorText;
+    this.errorHintState = false;
   }
 
   protected void initialize() {
-    initComponents();
-    applyStyle();
+    this.initComponents();
+    this.applyStyle();
   }
 
   private void initComponents() {
@@ -44,13 +46,13 @@ public abstract class GoatInput<T> {
   }
 
   public void setErrorHint(boolean newState) {
-    if (errorHintState == newState)
+    if (this.errorHintState == newState)
       return;
 
-    errorHintState = newState;
+    this.errorHintState = newState;
     String outline = newState ? FlatClientProperties.OUTLINE_ERROR : null;
 
-    this.getInput().putClientProperty(FlatClientProperties.OUTLINE, outline);
+    this.input.putClientProperty(FlatClientProperties.OUTLINE, outline);
   }
 
   public void setLabelErrorText(String str) {
@@ -63,7 +65,7 @@ public abstract class GoatInput<T> {
     this.lblError.setText(str);
   }
 
-  public void setLabel(String str) {
+  public void setLabelText(String str) {
     if (this.lbl == null)
       return;
 
@@ -74,22 +76,15 @@ public abstract class GoatInput<T> {
   }
 
   public void setLeftIcon(String iconPath, float scale) {
-    this.getInput().putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON, getSVGIcon(iconPath, scale));
+    this.input.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON, getSVGIcon(iconPath, scale));
   }
 
   public void setRightIcon(String iconPath, float scale) {
-    this.getInput().putClientProperty(FlatClientProperties.TEXT_FIELD_TRAILING_ICON, getSVGIcon(iconPath, scale));
+    this.input.putClientProperty(FlatClientProperties.TEXT_FIELD_TRAILING_ICON, getSVGIcon(iconPath, scale));
   }
 
   private FlatSVGIcon getSVGIcon(String iconPath, float scale) {
     return new FlatSVGIcon("aomine/icons/" + iconPath, scale);
-  }
-
-  public JComponent getInput() {
-    if (this.input instanceof JComponent)
-      return (JComponent) this.input;
-
-    return null;
   }
 
   public JLabel getLabel() {
@@ -100,7 +95,9 @@ public abstract class GoatInput<T> {
     return this.lblError;
   }
 
-  protected static abstract class GoatInputBuilder<U, V> {
+  public abstract JComponent getInput();
+
+  protected static abstract class GoatInputBuilder<U, T extends JComponent> {
     protected String lblText;
     protected String lblErrorText;
 
@@ -116,6 +113,6 @@ public abstract class GoatInput<T> {
 
     protected abstract U self();
 
-    public abstract V build();
+    public abstract GoatInput<T> build();
   }
 }

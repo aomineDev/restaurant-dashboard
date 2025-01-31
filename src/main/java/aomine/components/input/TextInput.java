@@ -6,10 +6,8 @@ public class TextInput extends GoatTextInput<JTextField> {
   private String value;
 
   public TextInput(TextInputBuilder builder) {
-    this.lblText = builder.lblText;
-    this.lblErrorText = builder.lblErrorText;
+    super(builder);
     this.value = builder.value;
-    this.placeholder = builder.placeholder;
 
     this.initialize();
   }
@@ -37,7 +35,7 @@ public class TextInput extends GoatTextInput<JTextField> {
     return this.input;
   }
 
-  public static class TextInputBuilder extends GoatTextInput.GoatTextInputBuilder<TextInputBuilder, TextInput> {
+  public static class TextInputBuilder extends GoatTextInput.GoatTextInputBuilder<TextInputBuilder, JTextField> {
     private String value;
 
     public TextInputBuilder setValue(String value) {

@@ -275,7 +275,7 @@ public class EmployeeView extends SimpleView implements View {
             "track: $Table.background;" +
             "trackArc: 999;" +
             "thumbArc: 999;" +
-            "width: 10;");
+            "width: 8;");
 
     // Add styles class to the table
     JTableHeader tableHeader = tableEmployee.getTableHeader();

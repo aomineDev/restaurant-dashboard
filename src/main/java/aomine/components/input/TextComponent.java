@@ -17,7 +17,7 @@ public interface TextComponent {
 
   public JLabel getLabel();
 
-  void setLabel(String str);
+  void setLabelText(String str);
 
   void setLeftIcon(String iconPath, float scale);
 

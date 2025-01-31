@@ -8,8 +8,7 @@ public class MaskInput extends GoatTextInput<JFormattedTextField> {
   private char maskPlaceholder;
 
   public MaskInput(MaskInputBuilder builder) {
-    this.lblText = builder.lblText;
-    this.lblErrorText = builder.lblErrorText;
+    super(builder);
     this.mask = builder.mask;
     this.maskPlaceholder = builder.maskPlaceholder;
 
@@ -54,7 +53,8 @@ public class MaskInput extends GoatTextInput<JFormattedTextField> {
     return formatter;
   }
 
-  public static class MaskInputBuilder extends GoatTextInput.GoatTextInputBuilder<MaskInputBuilder, MaskInput> {
+  public static class MaskInputBuilder
+      extends GoatTextInput.GoatTextInputBuilder<MaskInputBuilder, JFormattedTextField> {
     private String mask;
     private char maskPlaceholder;
 
