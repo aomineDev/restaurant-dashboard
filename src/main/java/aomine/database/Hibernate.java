@@ -1,11 +1,10 @@
 package aomine.database;
 
 import org.hibernate.SessionFactory;
+import org.hibernate.Session;
 import org.hibernate.cfg.Configuration;
 
 import io.github.cdimascio.dotenv.Dotenv;
-
-import org.hibernate.Session;
 
 public class Hibernate {
   private static Hibernate instance;
@@ -32,7 +31,8 @@ public class Hibernate {
   }
 
   public static Hibernate getInstance() {
-    if (instance == null) instance = new Hibernate();
+    if (instance == null)
+      instance = new Hibernate();
 
     return instance;
   }

@@ -15,7 +15,7 @@ public abstract class NaturalPerson extends Person {
   @Column(name = "first_name", nullable = false, length = 50)
   protected String firstName;
 
-  @Column(name = "second_Name", length = 50)
+  @Column(name = "second_name", length = 50)
   protected String secondName;
 
   @Column(name = "paternal_lastname", nullable = false, length = 50)

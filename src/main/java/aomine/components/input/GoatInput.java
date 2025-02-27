@@ -95,7 +95,9 @@ public abstract class GoatInput<T extends JComponent> {
     return this.lblError;
   }
 
-  public abstract JComponent getInput();
+  public T getInput() {
+    return this.input;
+  }
 
   protected static abstract class GoatInputBuilder<U, T extends JComponent> {
     protected String lblText;

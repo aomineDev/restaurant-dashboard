@@ -15,7 +15,6 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "people")
 @Inheritance(strategy = InheritanceType.JOINED)
-@OnDelete(action = OnDeleteAction.CASCADE)
 public abstract class Person {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

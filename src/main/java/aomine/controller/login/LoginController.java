@@ -11,10 +11,10 @@ import aomine.store.Store;
 import aomine.utils.validate.ValError;
 import aomine.utils.validate.Validate;
 import aomine.view.admin.EmployeeView;
-import aomine.view.admin.Test;
 import aomine.view.login.LoginView;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import at.favre.lib.crypto.bcrypt.BCrypt.Result;
+import io.github.cdimascio.dotenv.Dotenv;
 import raven.alerts.MessageAlerts;
 
 public class LoginController {
@@ -23,15 +23,24 @@ public class LoginController {
   private EmployeeDAO employeeDAO;
   private Validate validate;
 
-  // from vview
+  // from view
   private String username;
   private String password;
 
   public LoginController(LoginView view) {
     this.view = view;
-    validate = new Validate();
-    // roleDAO = new RoleDAO();
-    // employeeDAO = new EmployeeDAO();
+    this.validate = new Validate();
+    this.roleDAO = new RoleDAO();
+    this.employeeDAO = new EmployeeDAO();
+
+    this.handleEmptyDB();
+  }
+
+  private void handleEmptyDB() {
+    if (employeeDAO.isEmpty()) {
+      createRoles();
+      createAdmin();
+    }
   }
 
   public void handleFastLogin(ActionEvent evt) {
@@ -40,12 +49,13 @@ public class LoginController {
   }
 
   public void handleLogin(ActionEvent evt) {
-    // Verificacion de primer ingreso
-    if (employeeDAO.isEmpty())
-      createAdmin();
-
     // Validacion de campos
-    validateFields();
+    if (!validateFields())
+      return;
+
+    // asignacion de campos
+    username = view.getTiUsername().getText();
+    password = view.getPiPassword().getText();
 
     // Validacio de credenciales
     try {
@@ -56,8 +66,8 @@ public class LoginController {
       Store.setUser(user);
 
       // Router
-      if (user.getRole().getName().equals(Role.ADMIN)) {
-        ViewManager.showView(new Test());
+      if (user.getRole().getName().equals(Role.Types.ADMIN.getName())) {
+        ViewManager.showView(new EmployeeView());
       }
 
       ViewManager.login();
@@ -67,7 +77,7 @@ public class LoginController {
     }
   }
 
-  private void validateFields() {
+  private boolean validateFields() {
     validate.reset();
 
     validate.setElement(view.getTiUsername())
@@ -77,21 +87,45 @@ public class LoginController {
         .isRequired("campo requerido ")
         .minLength("minimo 8 caracteres", 8);
 
-    if (validate.getErrorCount() > 0) {
+    if (!validate.getIsValid()) {
       for (ValError error : validate.getValErrorList()) {
         error.getInput().setErrorHint(true);
         error.getInput().setLabelErrorText(error.getMessage());
       }
     }
+
+    return validate.getIsValid();
+  }
+
+  private Employee verifyUsername(String username) throws Exception {
+    Employee user = employeeDAO.findByUsername(username);
+
+    if (user == null)
+      throw new Exception("Usuario y/o contraseña invalidos");
+    else
+      return user;
+  }
+
+  private void verifyPassword(String password, String encryptedPassword) throws Exception {
+    Result result = BCrypt.verifyer().verify(password.toCharArray(), encryptedPassword);
+
+    if (!result.verified)
+      throw new Exception("Usuario y/o contraseña invalidos");
+  }
+
+  private void createRoles() {
+    for (Role.Types role : Role.Types.values()) {
+      roleDAO.add(new Role(role.getName()));
+    }
   }
 
   private void createAdmin() {
-    Role admin = new Role();
-    admin.setName(Role.ADMIN);
-    roleDAO.add(admin);
+    Dotenv dotenv = Dotenv.load();
 
-    String password = "securepass";
+    String password = dotenv.get("DEFAULT_PASSWORD");
     String encryptedPassword = BCrypt.withDefaults().hashToString(12, password.toCharArray());
+
+    Role admin = roleDAO.findByName(Role.Types.ADMIN);
 
     Employee user = new Employee();
     user.setRole(admin);
@@ -110,21 +144,5 @@ public class LoginController {
         "Error!",
         msg,
         MessageAlerts.MessageType.ERROR);
-  }
-
-  private Employee verifyUsername(String username) throws Exception {
-    Employee user = employeeDAO.getByUsername(username);
-
-    if (user == null)
-      throw new Exception("Usurio y/o contraseña invalidos");
-    else
-      return user;
-  }
-
-  private void verifyPassword(String password, String encryptedPassword) throws Exception {
-    Result result = BCrypt.verifyer().verify(password.toCharArray(), encryptedPassword);
-
-    if (!result.verified)
-      throw new Exception("Usurio y/o contraseña invalidos");
   }
 }

@@ -29,40 +29,40 @@ public class Validate {
   }
 
   public Validate isRequired(String msg) {
-    if (!isValid)
+    if (!this.isValid)
       return this;
 
     if (text.equals("")) {
-      isValid = false;
+      this.isValid = false;
       this.valErrorList.add(new ValError(this.input, msg));
-      errorCount++;
+      this.errorCount++;
     }
 
     return this;
   }
 
   public Validate minLength(String msg, int min) {
-    if (!isValid)
+    if (!this.isValid)
       return this;
 
     if (text.length() < min) {
-      isValid = false;
+      this.isValid = false;
       this.valErrorList.add(new ValError(this.input, msg));
-      errorCount++;
+      this.errorCount++;
     }
 
     return this;
   }
 
   public boolean getIsValid() {
-    return isValid;
+    return this.errorCount == 0;
   }
 
   public int getErrorCount() {
-    return errorCount;
+    return this.errorCount;
   }
 
   public ArrayList<ValError> getValErrorList() {
-    return valErrorList;
+    return this.valErrorList;
   }
 }

@@ -4,7 +4,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.function.Consumer;
 
-import javax.swing.JComponent;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
@@ -107,8 +106,9 @@ public abstract class GoatTextInput<T extends JTextComponent> extends GoatInput<
     this.input.setText(str);
   }
 
-  @Override
-  public abstract String getText();
+  public String getText() {
+    return this.input.getText();
+  }
 
   protected static abstract class GoatTextInputBuilder<U, T extends JTextComponent>
       extends GoatInput.GoatInputBuilder<U, T> {

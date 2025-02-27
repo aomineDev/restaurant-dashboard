@@ -15,13 +15,15 @@ public class Role {
   @Column(name = "role_id")
   private long roleId;
 
-  @Column(name = "name")
+  @Column(name = "name", unique = true, nullable = false, length = 50)
   private String name;
 
-  public static final String ADMIN = "administrador";
-  public static final String WAITER = "mesero";
-  public static final String CHEF = "cocinero";
-  public static final String CASHIER = "cajero";
+  public Role(String name) {
+    this.name = name;
+  }
+
+  public Role() {
+  }
 
   public long getRoleId() {
     return roleId;
@@ -37,5 +39,27 @@ public class Role {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  @Override
+  public String toString() {
+    return this.name;
+  }
+
+  public static enum Types {
+    ADMIN("Administrador"),
+    WAITER("Mesero"),
+    CHEF("Cocinero"),
+    CASHIER("Cajero");
+
+    private String name;
+
+    Types(String name) {
+      this.name = name;
+    }
+
+    public String getName() {
+      return name;
+    }
   }
 }

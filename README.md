@@ -64,11 +64,50 @@ public class RoundedPanel extends JPanel {
 ## Usando Flat laf
 
 ```java
-login = new JPanel();
+panel = new JPanel();
 
-login.putClientProperty(FlatClientProperties.STYLE, "arc: 50;");
+panel.putClientProperty(FlatClientProperties.STYLE, "arc: 50;");
 ```
 
 - Usara el color del fondo del padre para redondear el panel
 - Si el padre es un panel con imagen no funcionara
-> necesitaremos usar `login.setOpaque(false)` para que funcione
+> necesitaremos usar `panel.setOpaque(false)` para que funcione
+
+# Obtener instancia de una clase hija en una clase padre
+
+## Cambiando el tipo de retorno
+
+- se tiene acceso a la instancia de la clase hija
+- no se tiene acceso a la clase hija
+
+```java
+abstract class Padre {
+  
+  public abstract Padre self();
+}
+
+class Hijo extends Padre {
+  @Override
+  public Hijo self() {
+    return this;
+  }
+}
+```
+## Usando genericos
+
+- se tiene acceso a la instancia de la clase hija
+- se tiene acceso a la clase hija
+
+```java
+abstract class Padre<T extends Padre<T>> {
+
+  public abstract T self();
+}
+
+class Hijo extends Padre<Hijo> {
+  @Override
+  public Hijo self() {
+    return this;
+  }
+}
+```

@@ -25,16 +25,6 @@ public class TextInput extends GoatTextInput<JTextField> {
     this.input = new JTextField(value);
   }
 
-  @Override
-  public String getText() {
-    return this.input.getText();
-  }
-
-  @Override
-  public JTextField getInput() {
-    return this.input;
-  }
-
   public static class TextInputBuilder extends GoatTextInput.GoatTextInputBuilder<TextInputBuilder, JTextField> {
     private String value;
 

@@ -96,10 +96,10 @@ public class LoginView extends JPanel implements View {
 
     piPassword.onKeyPressed(e -> {
       if (e.getKeyCode() == KeyEvent.VK_ENTER)
-        controller.handleFastLogin(null);
+        controller.handleLogin(null);
     });
 
-    btnLogin.addActionListener(controller::handleFastLogin);
+    btnLogin.addActionListener(controller::handleLogin);
   }
 
   @Override

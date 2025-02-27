@@ -1,5 +1,8 @@
 package aomine.model;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -8,7 +11,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "employees")
-
+@OnDelete(action = OnDeleteAction.CASCADE)
 public class Employee extends NaturalPerson {
   @Column(name = "username", unique = true, nullable = false, length = 50)
   private String username;

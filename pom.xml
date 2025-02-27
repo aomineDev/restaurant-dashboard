@@ -45,6 +45,11 @@
             <systemPath>${basedir}/lib/swing-jnafilechooser.jar</systemPath>
         </dependency>
         <dependency>
+            <groupId>io.github.dj-raven</groupId>
+            <artifactId>modal-dialog</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <dependency>
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf</artifactId>
             <version>3.5.1</version>

@@ -38,11 +38,6 @@ public class PasswordInput extends GoatTextInput<JPasswordField> {
     return String.valueOf(this.input.getPassword());
   }
 
-  @Override
-  public JPasswordField getInput() {
-    return this.input;
-  }
-
   public static class PasswordInputBuilder
       extends GoatTextInput.GoatTextInputBuilder<PasswordInputBuilder, JPasswordField> {
     private String value;

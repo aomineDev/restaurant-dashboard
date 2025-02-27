@@ -10,6 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
@@ -22,24 +23,31 @@ import aomine.components.input.PasswordInput;
 import aomine.components.input.SelectInput;
 import aomine.components.input.TextInput;
 import aomine.components.layout.view.SimpleView;
+import aomine.controller.admin.EmployeeController;
 import aomine.model.Role;
 import aomine.view.View;
 import net.miginfocom.swing.MigLayout;
+import raven.alerts.MessageAlerts;
 import raven.datetime.component.date.DatePicker;
 import raven.popup.DefaultOption;
 import raven.popup.GlassPanePopup;
-import raven.popup.component.GlassPaneChild;
 import raven.popup.component.PopupCallbackAction;
 import raven.popup.component.SimplePopupBorder;
 import raven.popup.component.SimplePopupBorderOption;
 
 public class EmployeeView extends SimpleView implements View {
+  private int formWidth;
+  private EmployeeController controller;
+
   public EmployeeView() {
     formWidth = 800;
+    controller = new EmployeeController(this);
+
     initialize();
     setModel();
     testData();
     applyTableStyles();
+    controller.setAllRoles();
   }
 
   @Override
@@ -62,7 +70,7 @@ public class EmployeeView extends SimpleView implements View {
     tableEmployee = new JTable();
 
     // Form
-    form = new GlassPaneChild();
+    form = new JPanel();
 
     tiFirstName = new TextInput.TextInputBuilder()
         .setLabelText("Primer nombre")
@@ -137,6 +145,7 @@ public class EmployeeView extends SimpleView implements View {
     cbRole = new SelectInput.SelectInputBuilder<Role>()
         .setLabelText("Rol")
         .build();
+
   }
 
   @Override
@@ -175,11 +184,13 @@ public class EmployeeView extends SimpleView implements View {
   public void applyEvents() {
     btnAdd.addActionListener(e -> {
       int height = 550;
+      int scrollWidth = 10;
+      int popupWidht = formWidth + scrollWidth;
 
       SimplePopupBorderOption borderOption = new SimplePopupBorderOption();
 
       borderOption.useScroll();
-      borderOption.setWidth(formWidth);
+      borderOption.setWidth(popupWidht);
 
       String[] actions = { "Cancelar", "Guardar" };
 
@@ -187,14 +198,15 @@ public class EmployeeView extends SimpleView implements View {
         if (action == 0) {
           GlassPanePopup.closePopup("employeeForm");
         } else if (action == 1) {
-          System.out.println("ok");
-          System.out.println(miDni.getInput().getWidth());
+          System.out.println("Guardar empleado");
         }
       };
 
+      SwingUtilities.updateComponentTreeUI(form);
+
       SimplePopupBorder popup = new SimplePopupBorder(form, "Nuevo Empleado", borderOption, actions, callbackAction);
 
-      popup.setMaximumSize(new Dimension(formWidth, height));
+      popup.setMaximumSize(new Dimension(popupWidht, height));
 
       DefaultOption popupOption = new DefaultOption();
 
@@ -202,6 +214,13 @@ public class EmployeeView extends SimpleView implements View {
           popup,
           popupOption,
           "employeeForm");
+    });
+
+    btnEdit.addActionListener(e -> {
+      MessageAlerts.getInstance().showMessage(
+          "Error!",
+          "asdasd",
+          MessageAlerts.MessageType.ERROR);
     });
   }
 
@@ -320,6 +339,10 @@ public class EmployeeView extends SimpleView implements View {
     tiSearch.setRightIcon("search.svg", scale);
   }
 
+  public SelectInput<Role> getCbRole() {
+    return cbRole;
+  }
+
   // layout
   private GoatPanel banner;
   private JPanel container;
@@ -334,7 +357,7 @@ public class EmployeeView extends SimpleView implements View {
   private JTable tableEmployee;
 
   // Form
-  private GlassPaneChild form;
+  private JPanel form;
   private TextInput tiFirstName;
   private TextInput tiSecondtName;
   private TextInput tiPaternalLastName;
@@ -348,6 +371,4 @@ public class EmployeeView extends SimpleView implements View {
   private TextInput tiUsername;
   private PasswordInput piPassword;
   private SelectInput<Role> cbRole;
-
-  private int formWidth;
 }

@@ -14,17 +14,17 @@ public class RoleDAO implements DAO<Role> {
     session = Hibernate.getInstance().getSession();
   }
 
-
   @Override
   public ArrayList<Role> getAll() {
-    String query = "FROM roles";
-    
-    return new ArrayList<>(session.createQuery(query, Role.class).list());
+    String query = "FROM Role";
+
+    return new ArrayList<>(session.createQuery(query, Role.class).getResultList());
   }
 
   @Override
   public Role get(long id) {
     return session.find(Role.class, id);
+
   }
 
   @Override
@@ -47,5 +47,13 @@ public class RoleDAO implements DAO<Role> {
     Role role = get(id);
     session.remove(role);
     session.getTransaction().commit();
+  }
+
+  public Role findByName(Role.Types type) {
+    String query = "FROM Role r where r.name = :name";
+
+    return session.createQuery(query, Role.class)
+        .setParameter("name", type.getName())
+        .uniqueResult();
   }
 }

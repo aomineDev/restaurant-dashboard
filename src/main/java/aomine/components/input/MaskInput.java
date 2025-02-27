@@ -30,16 +30,6 @@ public class MaskInput extends GoatTextInput<JFormattedTextField> {
 
   }
 
-  @Override
-  public String getText() {
-    return this.input.getText();
-  }
-
-  @Override
-  public JFormattedTextField getInput() {
-    return this.input;
-  }
-
   private MaskFormatter createFormatter() {
     MaskFormatter formatter = null;
 
