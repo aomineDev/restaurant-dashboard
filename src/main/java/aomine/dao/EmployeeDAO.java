@@ -1,11 +1,10 @@
 package aomine.dao;
 
-import java.util.ArrayList;
-
 import org.hibernate.Session;
 
 import aomine.database.Hibernate;
 import aomine.model.Employee;
+import aomine.utils.GoatList;
 
 public class EmployeeDAO implements DAO<Employee> {
   private Session session;
@@ -14,10 +13,10 @@ public class EmployeeDAO implements DAO<Employee> {
     session = Hibernate.getInstance().getSession();
   }
 
-  public ArrayList<Employee> getAll() {
+  public GoatList<Employee> getAll() {
     String query = "FROM employees";
 
-    return new ArrayList<>(session.createQuery(query, Employee.class).list());
+    return new GoatList<>(session.createQuery(query, Employee.class).getResultList());
   }
 
   public Employee get(long id) {

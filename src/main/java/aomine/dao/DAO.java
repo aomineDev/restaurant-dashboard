@@ -1,11 +1,15 @@
 package aomine.dao;
 
-import java.util.ArrayList;
+import aomine.utils.GoatList;
 
 public interface DAO<T> {
-  ArrayList<T> getAll();
+  GoatList<T> getAll();
+
   T get(long id);
+
   void add(T t);
+
   void update(T t);
+
   void delete(long id);
 }

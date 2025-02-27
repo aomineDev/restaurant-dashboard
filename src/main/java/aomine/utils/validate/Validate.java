@@ -1,14 +1,13 @@
 package aomine.utils.validate;
 
-import java.util.ArrayList;
-
 import aomine.components.input.TextComponent;
+import aomine.utils.GoatList;
 
 public class Validate {
   private TextComponent input;
   private String text;
   private boolean isValid;
-  private ArrayList<ValError> valErrorList;
+  private GoatList<ValError> valErrorList;
   private int errorCount;
 
   public Validate() {
@@ -17,7 +16,7 @@ public class Validate {
 
   public void reset() {
     this.errorCount = 0;
-    this.valErrorList = new ArrayList<>();
+    this.valErrorList = new GoatList<>();
   }
 
   public Validate setElement(TextComponent input) {
@@ -62,7 +61,7 @@ public class Validate {
     return this.errorCount;
   }
 
-  public ArrayList<ValError> getValErrorList() {
+  public GoatList<ValError> getValErrorList() {
     return this.valErrorList;
   }
 }

@@ -1,6 +1,7 @@
 package aomine.utils;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
@@ -9,6 +10,13 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 public class GoatList<T> extends ArrayList<T> {
+  public GoatList(List<T> list) {
+    super(list);
+  }
+
+  public GoatList() {
+  }
+
   public GoatList<T> filter(Predicate<T> predicate) {
     GoatList<T> filteredList = new GoatList<>();
 

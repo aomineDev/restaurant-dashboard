@@ -1,10 +1,9 @@
 package aomine.controller.admin;
 
-import java.util.ArrayList;
-
 import aomine.dao.EmployeeDAO;
 import aomine.dao.RoleDAO;
 import aomine.model.Role;
+import aomine.utils.GoatList;
 import aomine.view.admin.EmployeeView;
 
 public class EmployeeController {
@@ -19,7 +18,7 @@ public class EmployeeController {
   }
 
   public void setAllRoles() {
-    ArrayList<Role> roleList = this.roleDAO.getAll();
+    GoatList<Role> roleList = this.roleDAO.getAll();
 
     roleList.forEach(role -> view.getCbRole().getInput().addItem(role));
   }

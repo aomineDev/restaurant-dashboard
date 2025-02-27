@@ -1,11 +1,10 @@
 package aomine.dao;
 
-import java.util.ArrayList;
-
 import org.hibernate.Session;
 
 import aomine.database.Hibernate;
 import aomine.model.Role;
+import aomine.utils.GoatList;
 
 public class RoleDAO implements DAO<Role> {
   private Session session;
@@ -15,10 +14,10 @@ public class RoleDAO implements DAO<Role> {
   }
 
   @Override
-  public ArrayList<Role> getAll() {
+  public GoatList<Role> getAll() {
     String query = "FROM Role";
 
-    return new ArrayList<>(session.createQuery(query, Role.class).getResultList());
+    return new GoatList<>(session.createQuery(query, Role.class).getResultList());
   }
 
   @Override
