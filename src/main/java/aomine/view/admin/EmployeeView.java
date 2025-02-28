@@ -47,7 +47,7 @@ public class EmployeeView extends SimpleView implements View {
     setModel();
     testData();
     applyTableStyles();
-    controller.setAllRoles();
+
   }
 
   @Override
@@ -146,6 +146,7 @@ public class EmployeeView extends SimpleView implements View {
         .setLabelText("Rol")
         .build();
 
+    controller.setAllRoles();
   }
 
   @Override
@@ -339,8 +340,65 @@ public class EmployeeView extends SimpleView implements View {
     tiSearch.setRightIcon("search.svg", scale);
   }
 
+  // getters
   public SelectInput<Role> getCbRole() {
     return cbRole;
+  }
+
+  public TextInput getTiSearch() {
+    return tiSearch;
+  }
+
+  public JTable getTableEmployee() {
+    return tableEmployee;
+  }
+
+  public TextInput getTiFirstName() {
+    return tiFirstName;
+  }
+
+  public TextInput getTiSecondtName() {
+    return tiSecondtName;
+  }
+
+  public TextInput getTiPaternalLastName() {
+    return tiPaternalLastName;
+  }
+
+  public TextInput getTiMaternalLastName() {
+    return tiMaternalLastName;
+  }
+
+  public MaskInput getMiDni() {
+    return miDni;
+  }
+
+  public DatePicker getDatePicker() {
+    return datePicker;
+  }
+
+  public MaskInput getMiBirthdate() {
+    return miBirthdate;
+  }
+
+  public MaskInput getMiPhoneNumber() {
+    return miPhoneNumber;
+  }
+
+  public TextInput getTiAddress() {
+    return tiAddress;
+  }
+
+  public TextInput getTiEmail() {
+    return tiEmail;
+  }
+
+  public TextInput getTiUsername() {
+    return tiUsername;
+  }
+
+  public PasswordInput getPiPassword() {
+    return piPassword;
   }
 
   // layout

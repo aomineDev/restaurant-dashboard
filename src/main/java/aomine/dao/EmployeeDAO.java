@@ -10,7 +10,7 @@ public class EmployeeDAO implements DAO<Employee> {
   private Session session;
 
   public EmployeeDAO() {
-    session = Hibernate.getInstance().getSession();
+    session = Hibernate.getSession();
   }
 
   public GoatList<Employee> getAll() {
@@ -43,10 +43,8 @@ public class EmployeeDAO implements DAO<Employee> {
   }
 
   public boolean isEmpty() {
-    String hql = "SELECT COUNT(e) FROM Employee e";
-    Long count = session.createQuery(hql, Long.class).uniqueResult();
-
-    return count == 0;
+    String hql = "SELECT COUNT(*) FROM Employee e";
+    return session.createQuery(hql, Long.class).uniqueResult() == 0;
   }
 
   public Employee findByUsername(String username) {

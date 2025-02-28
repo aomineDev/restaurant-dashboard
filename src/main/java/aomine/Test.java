@@ -19,24 +19,16 @@ import com.formdev.flatlaf.util.LoggingFacade;
 
 import aomine.components.GoatPanel;
 import aomine.components.input.TextInput;
+import aomine.dao.EmployeeDAO;
+import aomine.database.Hibernate;
+import aomine.model.Employee;
+import aomine.utils.validate.ValError;
+import aomine.utils.validate.Validate;
 import net.miginfocom.swing.MigLayout;
-
-abstract class Padre {
-  public abstract Padre self();
-}
-
-class Hijo extends Padre {
-  @Override
-  public Hijo self() {
-    return this;
-  }
-}
 
 public class Test extends JFrame {
   public Test() {
-    // init();
-    Hijo hijo = new Hijo();
-
+    init();
   }
 
   private void init() {
@@ -44,6 +36,9 @@ public class Test extends JFrame {
     setSize(500, 400);
     setLocationRelativeTo(null);
     setDefaultCloseOperation(EXIT_ON_CLOSE);
+    Hibernate.install();
+    Validate val = new Validate();
+    EmployeeDAO dao = new EmployeeDAO();
 
     System.out.println(System.getProperty("user.home"));
     String imagePath = "react.png";
@@ -60,41 +55,37 @@ public class Test extends JFrame {
         .setPlaceholder("Ingrese su nombre")
         .build();
 
-    JButton btn = new JButton("switch");
-    btn.addActionListener(e -> switchTheme());
+    JButton btn = new JButton("validate");
+    btn.addActionListener(e -> {
+      if (dao.isEmpty())
+        System.out.println("Vacio");
+      else
+        System.out.println("Hay datos en la db");
+      System.out.println(Employee.class.getSimpleName());
 
-    JButton btn2 = new JButton("add panel");
+      val.reset();
+      val.setElement(tiName)
+          .isRequired("Usuario es requerido")
+          .isUnique("Error!!! >:D", Employee.class, "username");
 
-    container = new JPanel(new MigLayout());
-    tfAge = new JTextField();
-    container.add(new JLabel("Age"));
-    container.add(tfAge);
-
-    btn2.addActionListener(e -> {
-      // SwingUtilities.updateComponentTreeUI(container);
-      panel.add(container);
-      panel.repaint();
-      panel.revalidate();
+      if (val.getIsValid()) {
+        System.out.println("Valid");
+      } else {
+        for (ValError error : val.getValErrorList()) {
+          System.out.println(error.getMessage());
+          error.getInput().setErrorHint(true);
+        }
+      }
     });
 
-    panel.add(btn, "wrap");
+    tiName.onChanged((e) -> {
+      tiName.setErrorHint(false);
+    });
+
     panel.add(tiName.getLabel());
-    panel.add(tiName.getInput(), "wrap");
-    panel.add(btn2, "wrap");
+    panel.add(tiName.getInput(), "wrap, w 200");
+    panel.add(btn);
     setContentPane(panel);
-  }
-
-  private void switchTheme() {
-    String lafClassName = FlatLaf.isLafDark() ? FlatLightLaf.class.getName() : FlatDarkLaf.class.getName();
-    FlatAnimatedLafChange.showSnapshot();
-    try {
-      UIManager.setLookAndFeel(lafClassName);
-    } catch (Exception e) {
-      LoggingFacade.INSTANCE.logSevere(null, e);
-    }
-    FlatLaf.updateUI();
-    FlatAnimatedLafChange.hideSnapshotWithAnimation();
-
   }
 
   public static void main(String[] args) {
@@ -107,7 +98,4 @@ public class Test extends JFrame {
 
     EventQueue.invokeLater(() -> new Test().setVisible(true));
   }
-
-  private JPanel container;
-  private JTextField tfAge;
 }

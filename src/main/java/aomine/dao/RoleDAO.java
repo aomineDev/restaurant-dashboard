@@ -10,7 +10,7 @@ public class RoleDAO implements DAO<Role> {
   private Session session;
 
   public RoleDAO() {
-    session = Hibernate.getInstance().getSession();
+    session = Hibernate.getSession();
   }
 
   @Override
@@ -23,7 +23,6 @@ public class RoleDAO implements DAO<Role> {
   @Override
   public Role get(long id) {
     return session.find(Role.class, id);
-
   }
 
   @Override

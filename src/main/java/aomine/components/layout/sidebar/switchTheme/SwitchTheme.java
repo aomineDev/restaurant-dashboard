@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
+import javax.swing.UIManager;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.FlatDarkLaf;
@@ -66,23 +67,21 @@ public class SwitchTheme extends JPanel {
 
   public void toogleThemes(boolean toDark) {
     if (FlatLaf.isLafDark() != toDark) {
-      if (toDark) {
-        EventQueue.invokeLater(() -> {
-          FlatAnimatedLafChange.showSnapshot();
-          FlatDarkLaf.setup();
-          FlatLaf.updateUI();
-          ViewManager.updateTempViewUI();
-          FlatAnimatedLafChange.hideSnapshotWithAnimation();
-        });
-      } else {
-        EventQueue.invokeLater(() -> {
-          FlatAnimatedLafChange.showSnapshot();
-          FlatLightLaf.setup();
-          FlatLaf.updateUI();
-          ViewManager.updateTempViewUI();
-          FlatAnimatedLafChange.hideSnapshotWithAnimation();
-        });
-      }
+      String lafClassName = FlatLaf.isLafDark() ? FlatLightLaf.class.getName() : FlatDarkLaf.class.getName();
+
+      EventQueue.invokeLater(() -> {
+        FlatAnimatedLafChange.showSnapshot();
+
+        try {
+          UIManager.setLookAndFeel(lafClassName);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+
+        FlatLaf.updateUI();
+        ViewManager.updateTempViewUI();
+        FlatAnimatedLafChange.hideSnapshotWithAnimation();
+      });
     }
   }
 

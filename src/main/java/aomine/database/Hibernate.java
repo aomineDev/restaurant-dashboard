@@ -26,8 +26,9 @@ public class Hibernate {
     session = factory.openSession();
   }
 
-  public Session getSession() {
-    return session;
+  public static void install() {
+    if (instance == null)
+      instance = new Hibernate();
   }
 
   public static Hibernate getInstance() {
@@ -35,5 +36,9 @@ public class Hibernate {
       instance = new Hibernate();
 
     return instance;
+  }
+
+  public static Session getSession() {
+    return instance.session;
   }
 }

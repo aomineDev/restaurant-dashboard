@@ -3,6 +3,7 @@ package aomine.controller.login;
 import java.awt.event.ActionEvent;
 
 import aomine.ViewManager;
+import aomine.controller.Controller;
 import aomine.dao.EmployeeDAO;
 import aomine.dao.RoleDAO;
 import aomine.model.Employee;
@@ -17,7 +18,7 @@ import at.favre.lib.crypto.bcrypt.BCrypt.Result;
 import io.github.cdimascio.dotenv.Dotenv;
 import raven.alerts.MessageAlerts;
 
-public class LoginController {
+public class LoginController implements Controller {
   private LoginView view;
   private RoleDAO roleDAO;
   private EmployeeDAO employeeDAO;
@@ -77,7 +78,8 @@ public class LoginController {
     }
   }
 
-  private boolean validateFields() {
+  @Override
+  public boolean validateFields() {
     validate.reset();
 
     validate.setElement(view.getTiUsername())

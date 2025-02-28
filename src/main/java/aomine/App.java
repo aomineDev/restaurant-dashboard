@@ -11,6 +11,7 @@ import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 
 import aomine.components.layout.view.Background;
+import aomine.database.Hibernate;
 import aomine.store.Store;
 import raven.popup.GlassPanePopup;
 
@@ -32,6 +33,7 @@ public class App extends JFrame {
     GlassPanePopup.install(this);
     ViewManager.install(this);
     Store.install();
+    Hibernate.install();
 
     getRootPane().putClientProperty(FlatClientProperties.FULL_WINDOW_CONTENT, true);
 
