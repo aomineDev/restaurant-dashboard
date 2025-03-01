@@ -11,7 +11,7 @@ import aomine.utils.GoatList;
 public class Validate {
   private TextComponent input;
   private String text;
-  private boolean isValid;
+  private boolean valid;
   private GoatList<ValError> valErrorList;
   private int errorCount;
   private Session session;
@@ -29,17 +29,17 @@ public class Validate {
   public Validate setElement(TextComponent input) {
     this.input = input;
     this.text = input.getText();
-    this.isValid = true;
+    this.valid = true;
 
     return this;
   }
 
   public Validate isRequired(String msg) {
-    if (!this.isValid)
+    if (!this.valid)
       return this;
 
     if (text.equals("")) {
-      this.isValid = false;
+      this.valid = false;
       this.valErrorList.add(new ValError(this.input, msg));
       this.errorCount++;
     }
@@ -48,11 +48,11 @@ public class Validate {
   }
 
   public Validate minLength(String msg, int min) {
-    if (!this.isValid)
+    if (!this.valid)
       return this;
 
     if (text.length() < min) {
-      this.isValid = false;
+      this.valid = false;
       this.valErrorList.add(new ValError(this.input, msg));
       this.errorCount++;
     }
@@ -61,11 +61,11 @@ public class Validate {
   }
 
   public Validate maxLength(String msg, int max) {
-    if (!this.isValid)
+    if (!this.valid)
       return this;
 
     if (text.length() > max) {
-      this.isValid = false;
+      this.valid = false;
       this.valErrorList.add(new ValError(this.input, msg));
       this.errorCount++;
     }
@@ -74,11 +74,11 @@ public class Validate {
   }
 
   public Validate equalLength(String msg, int equal) {
-    if (!this.isValid)
+    if (!this.valid)
       return this;
 
     if (text.length() != equal) {
-      this.isValid = false;
+      this.valid = false;
       this.valErrorList.add(new ValError(this.input, msg));
       this.errorCount++;
     }
@@ -87,11 +87,11 @@ public class Validate {
   }
 
   public Validate isNumber(String msg) {
-    if (!this.isValid)
+    if (!this.valid)
       return this;
 
     if (!text.matches("[0-9]+")) {
-      this.isValid = false;
+      this.valid = false;
       this.valErrorList.add(new ValError(this.input, msg));
       this.errorCount++;
     }
@@ -100,13 +100,13 @@ public class Validate {
   }
 
   public Validate isInteger(String msg) {
-    if (!this.isValid)
+    if (!this.valid)
       return this;
 
     try {
       Integer.parseInt(text);
     } catch (Exception e) {
-      this.isValid = false;
+      this.valid = false;
       this.valErrorList.add(new ValError(this.input, msg));
       this.errorCount++;
     }
@@ -115,13 +115,13 @@ public class Validate {
   }
 
   public Validate isDouble(String msg) {
-    if (!this.isValid)
+    if (!this.valid)
       return this;
 
     try {
       Double.parseDouble(text);
     } catch (Exception e) {
-      this.isValid = false;
+      this.valid = false;
       this.valErrorList.add(new ValError(this.input, msg));
       this.errorCount++;
     }
@@ -130,13 +130,13 @@ public class Validate {
   }
 
   public Validate isLong(String msg) {
-    if (!this.isValid)
+    if (!this.valid)
       return this;
 
     try {
       Long.parseLong(text);
     } catch (Exception e) {
-      this.isValid = false;
+      this.valid = false;
       this.valErrorList.add(new ValError(this.input, msg));
       this.errorCount++;
     }
@@ -145,11 +145,11 @@ public class Validate {
   }
 
   public Validate selfValidate(String msg, Predicate<String> predicate) {
-    if (!this.isValid)
+    if (!this.valid)
       return this;
 
     if (predicate.test(text)) {
-      this.isValid = false;
+      this.valid = false;
       this.valErrorList.add(new ValError(this.input, msg));
       this.errorCount++;
     }
@@ -158,11 +158,11 @@ public class Validate {
   }
 
   public Validate isEmail(String msg) {
-    if (!this.isValid)
+    if (!this.valid)
       return this;
 
     if (!text.matches("^[a-zA-Z0-9.-_+%]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$")) {
-      this.isValid = false;
+      this.valid = false;
       this.valErrorList.add(new ValError(this.input, msg));
       this.errorCount++;
     }
@@ -171,7 +171,7 @@ public class Validate {
   }
 
   public Validate isUnique(String msg, Class<?> Entity, String column) {
-    if (!this.isValid)
+    if (!this.valid)
       return this;
 
     String query = String.format("FROM %s WHERE %s = :%s", Entity.getSimpleName(), column, column);
@@ -183,7 +183,7 @@ public class Validate {
     System.out.println(obj);
 
     if (obj != null) {
-      this.isValid = false;
+      this.valid = false;
       this.valErrorList.add(new ValError(this.input, msg));
       this.errorCount++;
     }
@@ -191,7 +191,7 @@ public class Validate {
     return this;
   }
 
-  public boolean getIsValid() {
+  public boolean isValid() {
     return this.errorCount == 0;
   }
 

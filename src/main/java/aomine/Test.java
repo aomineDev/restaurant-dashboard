@@ -68,7 +68,7 @@ public class Test extends JFrame {
           .isRequired("Usuario es requerido")
           .isUnique("Error!!! >:D", Employee.class, "username");
 
-      if (val.getIsValid()) {
+      if (val.isValid()) {
         System.out.println("Valid");
       } else {
         for (ValError error : val.getValErrorList()) {

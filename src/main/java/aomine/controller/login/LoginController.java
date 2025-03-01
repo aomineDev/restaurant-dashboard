@@ -89,14 +89,14 @@ public class LoginController implements Controller {
         .isRequired("campo requerido ")
         .minLength("minimo 8 caracteres", 8);
 
-    if (!validate.getIsValid()) {
+    if (!validate.isValid()) {
       for (ValError error : validate.getValErrorList()) {
         error.getInput().setErrorHint(true);
         error.getInput().setLabelErrorText(error.getMessage());
       }
     }
 
-    return validate.getIsValid();
+    return validate.isValid();
   }
 
   private Employee verifyUsername(String username) throws Exception {

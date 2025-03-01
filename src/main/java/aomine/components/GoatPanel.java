@@ -93,7 +93,7 @@ public class GoatPanel extends JPanel {
 
     public GoatPanelBuilder setPathFromRoot(String imagePath) {
       this.imagePath = Paths.get("uploads/images", imagePath).toAbsolutePath().toString();
-      // this.imagePath = new File("uploads/" + imagePath).getAbsolutePath();
+      // this.imagePath = new File("uploads/images" + imagePath).getAbsolutePath();
 
       return this;
     }
