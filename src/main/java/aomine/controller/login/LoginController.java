@@ -50,11 +50,9 @@ public class LoginController implements Controller {
   }
 
   public void handleLogin(ActionEvent evt) {
-    // Validacion de campos
     if (!validateFields())
       return;
 
-    // asignacion de campos
     username = view.getTiUsername().getText();
     password = view.getPiPassword().getText();
 
@@ -91,8 +89,8 @@ public class LoginController implements Controller {
 
     if (!validate.isValid()) {
       for (ValError error : validate.getValErrorList()) {
-        error.getInput().setErrorHint(true);
-        error.getInput().setLabelErrorText(error.getMessage());
+        error.getComponent().setErrorHint(true);
+        error.getComponent().setLabelErrorText(error.getMessage());
       }
     }
 

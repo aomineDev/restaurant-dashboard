@@ -6,12 +6,13 @@ import java.awt.event.KeyEvent;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.text.JTextComponent;
 
 import com.formdev.flatlaf.FlatClientProperties;
 
 import aomine.components.GoatPanel;
+import aomine.components.input.GoatTextInput;
 import aomine.components.input.PasswordInput;
-import aomine.components.input.TextComponent;
 import aomine.components.input.TextInput;
 import aomine.controller.login.LoginController;
 import aomine.view.View;
@@ -83,28 +84,25 @@ public class LoginView extends JPanel implements View {
 
   @Override
   public void applyEvents() {
-    tiUsername.onKeyTyped(e -> {
-      resetField(tiUsername);
-    });
+    tiUsername.onKeyTyped(e -> cleanErrorOnInput(tiUsername));
 
     piPassword.onKeyTyped(e -> {
       if (e.getKeyChar() == '\n')
         return;
 
-      resetField(piPassword);
+      cleanErrorOnInput(piPassword);
     });
 
     piPassword.onKeyPressed(e -> {
       if (e.getKeyCode() == KeyEvent.VK_ENTER)
-        controller.handleLogin(null);
+        controller.handleFastLogin(null);
     });
 
-    btnLogin.addActionListener(controller::handleLogin);
+    btnLogin.addActionListener(controller::handleFastLogin);
   }
 
   @Override
   public void renderComponents() {
-
     add(background, "grow");
     background.add(login);
     login.add(lblTitle, "grow 0, center");
@@ -117,7 +115,7 @@ public class LoginView extends JPanel implements View {
     login.add(btnLogin, "gapy 10");
   }
 
-  private void resetField(TextComponent ti) {
+  private void cleanErrorOnInput(GoatTextInput<? extends JTextComponent> ti) {
     ti.setErrorHint(false);
     ti.setLabelErrorText("");
   }
@@ -128,6 +126,10 @@ public class LoginView extends JPanel implements View {
 
   public PasswordInput getPiPassword() {
     return piPassword;
+  }
+
+  public JButton getBtnLogin() {
+    return btnLogin;
   }
 
   private GoatPanel background;

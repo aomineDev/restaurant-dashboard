@@ -14,7 +14,7 @@ public class EmployeeDAO implements DAO<Employee> {
   }
 
   public GoatList<Employee> getAll() {
-    String query = "FROM employees";
+    String query = "FROM Employee e";
 
     return new GoatList<>(session.createQuery(query, Employee.class).getResultList());
   }

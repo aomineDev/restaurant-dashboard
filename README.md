@@ -111,3 +111,20 @@ class Hijo extends Padre<Hijo> {
   }
 }
 ```
+
+# Rutas
+
+## Obtener ruta a la carpeta resources
+
+## Obtener ruta a la raiz del proyecto
+
+## Obtener ruta a la carpeta user en el disco C
+
+# Componentes Internos
+## GoatPanel
+## Inputs
+### TextInput
+### PasswordInput
+### MaskInput
+### SelectInput
+## Validate

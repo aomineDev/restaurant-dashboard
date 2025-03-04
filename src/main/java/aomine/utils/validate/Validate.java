@@ -1,15 +1,18 @@
 package aomine.utils.validate;
 
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
+
+import javax.swing.text.JTextComponent;
 
 import org.hibernate.Session;
 
-import aomine.components.input.TextComponent;
+import aomine.components.input.GoatTextInput;
 import aomine.database.Hibernate;
 import aomine.utils.GoatList;
 
 public class Validate {
-  private TextComponent input;
+  private GoatTextInput<? extends JTextComponent> input;
   private String text;
   private boolean valid;
   private GoatList<ValError> valErrorList;
@@ -26,7 +29,7 @@ public class Validate {
     this.valErrorList = new GoatList<>();
   }
 
-  public Validate setElement(TextComponent input) {
+  public Validate setElement(GoatTextInput<? extends JTextComponent> input) {
     this.input = input;
     this.text = input.getText();
     this.valid = true;
@@ -148,7 +151,7 @@ public class Validate {
     if (!this.valid)
       return this;
 
-    if (predicate.test(text)) {
+    if (!predicate.test(text)) {
       this.valid = false;
       this.valErrorList.add(new ValError(this.input, msg));
       this.errorCount++;
@@ -170,6 +173,19 @@ public class Validate {
     return this;
   }
 
+  public Validate isDate(String msg) {
+    if (!this.valid)
+      return this;
+
+    if (!text.matches("^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/[0-9]{4}$")) {
+      this.valid = false;
+      this.valErrorList.add(new ValError(this.input, msg));
+      this.errorCount++;
+    }
+
+    return this;
+  }
+
   public Validate isUnique(String msg, Class<?> Entity, String column) {
     if (!this.valid)
       return this;
@@ -180,13 +196,17 @@ public class Validate {
         .setParameter(column, text)
         .uniqueResult();
 
-    System.out.println(obj);
-
     if (obj != null) {
       this.valid = false;
       this.valErrorList.add(new ValError(this.input, msg));
       this.errorCount++;
     }
+
+    return this;
+  }
+
+  public Validate setText(UnaryOperator<String> operator) {
+    this.text = operator.apply(this.text);
 
     return this;
   }
@@ -202,4 +222,5 @@ public class Validate {
   public GoatList<ValError> getValErrorList() {
     return this.valErrorList;
   }
+
 }

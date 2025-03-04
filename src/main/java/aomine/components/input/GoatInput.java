@@ -10,7 +10,7 @@ public abstract class GoatInput<T extends JComponent> {
   protected String lblText;
   protected String lblErrorText;
 
-  private boolean errorHintState;
+  private boolean errorHint;
 
   protected JLabel lblError;
   protected JLabel lbl;
@@ -19,7 +19,7 @@ public abstract class GoatInput<T extends JComponent> {
   public GoatInput(GoatInputBuilder<?, ?> builder) {
     this.lblText = builder.lblText;
     this.lblErrorText = builder.lblErrorText;
-    this.errorHintState = false;
+    this.errorHint = false;
   }
 
   protected void initialize() {
@@ -46,10 +46,11 @@ public abstract class GoatInput<T extends JComponent> {
   }
 
   public void setErrorHint(boolean newState) {
-    if (this.errorHintState == newState)
+    if (this.errorHint == newState)
       return;
 
-    this.errorHintState = newState;
+    this.errorHint = newState;
+
     String outline = newState ? FlatClientProperties.OUTLINE_ERROR : null;
 
     this.input.putClientProperty(FlatClientProperties.OUTLINE, outline);

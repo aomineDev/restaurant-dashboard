@@ -13,11 +13,14 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumnModel;
+import javax.swing.text.JTextComponent;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 
 import aomine.components.GoatPanel;
+import aomine.components.input.GoatTextInput;
 import aomine.components.input.MaskInput;
 import aomine.components.input.PasswordInput;
 import aomine.components.input.SelectInput;
@@ -44,10 +47,10 @@ public class EmployeeView extends SimpleView implements View {
     controller = new EmployeeController(this);
 
     initialize();
-    setModel();
-    testData();
-    applyTableStyles();
 
+    applyTableStyles();
+    setTableModel();
+    setTableData();
   }
 
   @Override
@@ -183,7 +186,7 @@ public class EmployeeView extends SimpleView implements View {
 
   @Override
   public void applyEvents() {
-    btnAdd.addActionListener(e -> {
+    btnAdd.addActionListener(evt -> {
       int height = 550;
       int scrollWidth = 10;
       int popupWidht = formWidth + scrollWidth;
@@ -195,11 +198,11 @@ public class EmployeeView extends SimpleView implements View {
 
       String[] actions = { "Cancelar", "Guardar" };
 
-      PopupCallbackAction callbackAction = (controller, action) -> {
+      PopupCallbackAction callbackAction = (ctrl, action) -> {
         if (action == 0) {
           GlassPanePopup.closePopup("employeeForm");
         } else if (action == 1) {
-          System.out.println("Guardar empleado");
+          controller.handleAddEmployee(evt);
         }
       };
 
@@ -223,6 +226,21 @@ public class EmployeeView extends SimpleView implements View {
           "asdasd",
           MessageAlerts.MessageType.ERROR);
     });
+
+    // btn delete
+
+    // Clean Inputs after error
+    tiFirstName.onKeyTyped(e -> cleanErrorOnInput(tiFirstName));
+    tiSecondtName.onKeyTyped(e -> cleanErrorOnInput(tiSecondtName));
+    tiPaternalLastName.onKeyTyped(e -> cleanErrorOnInput(tiPaternalLastName));
+    tiMaternalLastName.onKeyTyped(e -> cleanErrorOnInput(tiMaternalLastName));
+    miDni.onKeyTyped(e -> cleanErrorOnInput(miDni));
+    miBirthdate.onChanged(e -> cleanErrorOnInput(miBirthdate));
+    miPhoneNumber.onKeyTyped(e -> cleanErrorOnInput(miPhoneNumber));
+    tiAddress.onKeyTyped(e -> cleanErrorOnInput(tiAddress));
+    tiEmail.onKeyTyped(e -> cleanErrorOnInput(tiEmail));
+    tiUsername.onKeyTyped(e -> cleanErrorOnInput(tiUsername));
+    piPassword.onKeyTyped(e -> cleanErrorOnInput(piPassword));
   }
 
   @Override
@@ -302,12 +320,16 @@ public class EmployeeView extends SimpleView implements View {
 
     tableHeader.putClientProperty(FlatClientProperties.STYLE_CLASS, "table_style");
     tableEmployee.putClientProperty(FlatClientProperties.STYLE_CLASS, "table_style");
+
+    tableHeader.setReorderingAllowed(false);
   }
 
-  private void setModel() {
-    Object[] columns = { "ID", "Nombre" };
+  private void setTableModel() {
+    Object[] columns = { "ID", "P. Nombre", "S. Nombre", "Apellido P.", "Apellido M.", "DNI", "Fecha de nacimiento",
+        "Celular", "Dirección", "Email", "Usuario", "Rol" };
+
     DefaultTableModel model = new DefaultTableModel(null, columns) {
-      boolean[] canEdit = { false, false };
+      boolean[] canEdit = { false, false, false, false, false, false, false, false, false, false, false, false };
 
       @Override
       public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -316,14 +338,35 @@ public class EmployeeView extends SimpleView implements View {
     };
 
     tableEmployee.setModel(model);
+
+    // Ocultar la columna ID
+    TableColumnModel tcm = tableEmployee.getColumnModel();
+    tcm.removeColumn(tcm.getColumn(0));
   }
 
-  private void testData() {
+  public void setTableData() {
     DefaultTableModel model = (DefaultTableModel) tableEmployee.getModel();
 
-    for (int i = 1; i < 50; i++) {
-      model.addRow(new Object[] { i, "Empleado " + i });
-    }
+    model.setRowCount(0);
+
+    controller.getEmployeeList().forEach(employee -> {
+      Object[] row = {
+          employee.getPersonId(),
+          employee.getFirstName(),
+          employee.getSecondName(),
+          employee.getPaternalLastname(),
+          employee.getMaternalLastname(),
+          employee.getDni(),
+          employee.getBirthdate(),
+          employee.getPhoneNumber(),
+          employee.getAddress(),
+          employee.getEmail(),
+          employee.getUsername(),
+          employee.getRole().getName()
+      };
+
+      model.addRow(row);
+    });
   }
 
   private void setIcons() {
@@ -338,6 +381,25 @@ public class EmployeeView extends SimpleView implements View {
     }
 
     tiSearch.setRightIcon("search.svg", scale);
+  }
+
+  private void cleanErrorOnInput(GoatTextInput<? extends JTextComponent> ti) {
+    ti.setErrorHint(false);
+    ti.setLabelErrorText("");
+  }
+
+  public void cleanInputs() {
+    tiFirstName.setText("");
+    tiSecondtName.setText("");
+    tiPaternalLastName.setText("");
+    tiMaternalLastName.setText("");
+    miDni.setText("");
+    miBirthdate.setText("");
+    miPhoneNumber.setText("");
+    tiAddress.setText("");
+    tiEmail.setText("");
+    tiUsername.setText("");
+    piPassword.setText("");
   }
 
   // getters

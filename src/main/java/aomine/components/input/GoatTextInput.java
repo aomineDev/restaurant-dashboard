@@ -10,7 +10,7 @@ import javax.swing.text.JTextComponent;
 
 import com.formdev.flatlaf.FlatClientProperties;
 
-public abstract class GoatTextInput<T extends JTextComponent> extends GoatInput<T> implements TextComponent {
+public abstract class GoatTextInput<T extends JTextComponent> extends GoatInput<T> {
   protected String placeholder;
   private Consumer<KeyEvent> handleKeyTyped;
   private Consumer<KeyEvent> handleKeyPressed;
@@ -81,27 +81,22 @@ public abstract class GoatTextInput<T extends JTextComponent> extends GoatInput<
     this.input.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, this.placeholder);
   }
 
-  @Override
   public void onKeyTyped(Consumer<KeyEvent> handleKeyTyped) {
     this.handleKeyTyped = handleKeyTyped;
   }
 
-  @Override
   public void onKeyPressed(Consumer<KeyEvent> handleKeyPressed) {
     this.handleKeyPressed = handleKeyPressed;
   }
 
-  @Override
   public void onKeyReleased(Consumer<KeyEvent> handleKeyReleased) {
     this.handleKeyReleased = handleKeyReleased;
   }
 
-  @Override
   public void onChanged(Consumer<DocumentEvent> handleChanged) {
     this.handleChanged = handleChanged;
   }
 
-  @Override
   public void setText(String str) {
     this.input.setText(str);
   }

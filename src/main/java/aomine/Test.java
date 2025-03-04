@@ -18,6 +18,7 @@ import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
 import com.formdev.flatlaf.util.LoggingFacade;
 
 import aomine.components.GoatPanel;
+import aomine.components.input.MaskInput;
 import aomine.components.input.TextInput;
 import aomine.dao.EmployeeDAO;
 import aomine.database.Hibernate;
@@ -26,9 +27,49 @@ import aomine.utils.validate.ValError;
 import aomine.utils.validate.Validate;
 import net.miginfocom.swing.MigLayout;
 
+abstract class Padre<T> {
+  protected T t;
+
+  public abstract void print();
+
+  public T getT() {
+    return t;
+  }
+
+  public void setT(T t) {
+    this.t = t;
+  }
+}
+
+class Hijo1 extends Padre<String> {
+  Hijo1() {
+    this.t = "Hijo1";
+  }
+
+  @Override
+  public void print() {
+    System.out.println("Hola: " + t);
+  }
+}
+
+class Hijo2 extends Padre<Integer> {
+  Hijo2() {
+    this.t = 2;
+  }
+
+  @Override
+  public void print() {
+    System.out.println("Hola: Hijo" + t);
+  }
+}
+
 public class Test extends JFrame {
   public Test() {
     init();
+  }
+
+  public void print(Padre<? extends String> p) {
+    p.print();
   }
 
   private void init() {
@@ -37,8 +78,6 @@ public class Test extends JFrame {
     setLocationRelativeTo(null);
     setDefaultCloseOperation(EXIT_ON_CLOSE);
     Hibernate.install();
-    Validate val = new Validate();
-    EmployeeDAO dao = new EmployeeDAO();
 
     System.out.println(System.getProperty("user.home"));
     String imagePath = "react.png";
@@ -50,32 +89,14 @@ public class Test extends JFrame {
 
     panel.setLayout(new MigLayout());
 
-    TextInput tiName = new TextInput.TextInputBuilder()
+    MaskInput tiName = new MaskInput.MaskInputBuilder()
         .setLabelText("Nombre")
-        .setPlaceholder("Ingrese su nombre")
+        .setMask("###", '-')
         .build();
 
-    JButton btn = new JButton("validate");
+    JButton btn = new JButton("Reset");
     btn.addActionListener(e -> {
-      if (dao.isEmpty())
-        System.out.println("Vacio");
-      else
-        System.out.println("Hay datos en la db");
-      System.out.println(Employee.class.getSimpleName());
-
-      val.reset();
-      val.setElement(tiName)
-          .isRequired("Usuario es requerido")
-          .isUnique("Error!!! >:D", Employee.class, "username");
-
-      if (val.isValid()) {
-        System.out.println("Valid");
-      } else {
-        for (ValError error : val.getValErrorList()) {
-          System.out.println(error.getMessage());
-          error.getInput().setErrorHint(true);
-        }
-      }
+      tiName.setText("");
     });
 
     tiName.onChanged((e) -> {

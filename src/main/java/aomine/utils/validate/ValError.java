@@ -1,26 +1,28 @@
 package aomine.utils.validate;
 
-import aomine.components.input.TextComponent;
+import javax.swing.text.JTextComponent;
+
+import aomine.components.input.GoatTextInput;
 
 public class ValError {
-  private TextComponent input;
+  private GoatTextInput<? extends JTextComponent> component;
   private String message;
 
-  public ValError(TextComponent input, String message) {
-    this.input = input;
+  public ValError(GoatTextInput<? extends JTextComponent> component, String message) {
+    this.component = component;
     this.message = message;
   }
 
-  public TextComponent getInput() {
-    return input;
+  public GoatTextInput<? extends JTextComponent> getComponent() {
+    return component;
+  }
+
+  public void setComponent(GoatTextInput<? extends JTextComponent> component) {
+    this.component = component;
   }
 
   public String getMessage() {
     return message;
-  }
-
-  public void setInput(TextComponent input) {
-    this.input = input;
   }
 
   public void setMessage(String message) {

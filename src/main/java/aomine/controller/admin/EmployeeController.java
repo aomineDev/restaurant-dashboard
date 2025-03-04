@@ -12,6 +12,7 @@ import aomine.utils.GoatList;
 import aomine.utils.validate.ValError;
 import aomine.utils.validate.Validate;
 import aomine.view.admin.EmployeeView;
+import raven.popup.GlassPanePopup;
 
 public class EmployeeController implements Controller {
   private EmployeeView view;
@@ -56,8 +57,9 @@ public class EmployeeController implements Controller {
     maternalLastname = view.getTiMaternalLastName().getText();
     dni = Integer.parseInt(view.getMiDni().getText());
     birthdate = view.getDatePicker().getSelectedDate();
-    phoneNumber = Integer.parseInt(view.getMiPhoneNumber().getText());
+    phoneNumber = Integer.parseInt(view.getMiPhoneNumber().getText().replaceAll(" ", ""));
     email = view.getTiEmail().getText();
+    address = view.getTiAddress().getText();
     username = view.getTiUsername().getText();
     password = view.getPiPassword().getText();
     role = view.getCbRole().getSelectedItem();
@@ -72,16 +74,23 @@ public class EmployeeController implements Controller {
     employee.setBirthdate(birthdate);
     employee.setPhoneNumber(phoneNumber);
     employee.setEmail(email);
+    employee.setAddress(address);
     employee.setUsername(username);
     employee.setPassword(password);
     employee.setRole(role);
 
     employeeDAO.add(employee);
+
+    GlassPanePopup.closePopup("employeeForm");
+
+    view.cleanInputs();
+    view.setTableData();
   }
 
   @Override
   public boolean validateFields() {
     validate.reset();
+
     validate.setElement(view.getTiFirstName())
         .isRequired("Campo requerido");
 
@@ -92,16 +101,28 @@ public class EmployeeController implements Controller {
         .isRequired("Campo requerido");
 
     validate.setElement(view.getMiDni())
-        .isRequired("Campo requerido")
-        .minLength("minimo 8 caracteres", 8);
+        .selfValidate("Campo requerido", text -> !text.equals("--------"))
+        .isInteger("DNI invalido")
+        .isUnique("DNI ya registrado", Employee.class, "dni");
 
-    validate.setElement(view.getMiPhoneNumber())
-        .minLength("minimo 9 caracteres", 9);
+    if (!view.getMiBirthdate().getText().equals("--/--/----"))
+      validate.setElement(view.getMiBirthdate())
+          .isDate("Fecha invalida");
 
-    validate.setElement(view.getTiEmail());
+    if (!view.getMiPhoneNumber().getText().equals("--- --- ---"))
+      validate.setElement(view.getMiPhoneNumber())
+          .setText(text -> text.replaceAll(" ", ""))
+          .isInteger("telefono invalido")
+          .isUnique("telefono ya registrado", Employee.class, "phoneNumber");
+
+    if (!view.getTiEmail().getText().equals(""))
+      validate.setElement(view.getTiEmail())
+          .isEmail("email invalido")
+          .isUnique("email ya registrado", Employee.class, "email");
 
     validate.setElement(view.getTiUsername())
-        .isRequired("campo requerido");
+        .isRequired("campo requerido")
+        .isUnique("username ya registrado", Employee.class, "username");
 
     validate.setElement(view.getPiPassword())
         .isRequired("campo requerido")
@@ -109,11 +130,16 @@ public class EmployeeController implements Controller {
 
     if (!validate.isValid()) {
       for (ValError error : validate.getValErrorList()) {
-        error.getInput().setErrorHint(true);
-        error.getInput().setLabelErrorText(error.getMessage());
+        error.getComponent().setErrorHint(true);
+        error.getComponent().setLabelErrorText(error.getMessage());
+        error.getComponent().setText("");
       }
     }
 
     return validate.isValid();
+  }
+
+  public GoatList<Employee> getEmployeeList() {
+    return employeeDAO.getAll();
   }
 }
