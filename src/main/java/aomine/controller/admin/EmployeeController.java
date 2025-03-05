@@ -83,7 +83,7 @@ public class EmployeeController implements Controller {
 
     GlassPanePopup.closePopup("employeeForm");
 
-    view.cleanInputs();
+    // view.cleanInputs();
     view.setTableData();
   }
 
@@ -129,11 +129,11 @@ public class EmployeeController implements Controller {
         .minLength("minimo 8 caracteres", 8);
 
     if (!validate.isValid()) {
-      for (ValError error : validate.getValErrorList()) {
+      validate.getValErrorList().forEach(error -> {
         error.getComponent().setErrorHint(true);
         error.getComponent().setLabelErrorText(error.getMessage());
         error.getComponent().setText("");
-      }
+      });
     }
 
     return validate.isValid();

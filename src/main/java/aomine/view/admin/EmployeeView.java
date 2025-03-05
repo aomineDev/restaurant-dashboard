@@ -6,6 +6,7 @@ import java.time.LocalDate;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -20,6 +21,7 @@ import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 
 import aomine.components.GoatPanel;
+import aomine.components.input.GoatInput;
 import aomine.components.input.GoatTextInput;
 import aomine.components.input.MaskInput;
 import aomine.components.input.PasswordInput;
@@ -28,6 +30,7 @@ import aomine.components.input.TextInput;
 import aomine.components.layout.view.SimpleView;
 import aomine.controller.admin.EmployeeController;
 import aomine.model.Role;
+import aomine.utils.GoatList;
 import aomine.view.View;
 import net.miginfocom.swing.MigLayout;
 import raven.alerts.MessageAlerts;
@@ -41,6 +44,7 @@ import raven.popup.component.SimplePopupBorderOption;
 public class EmployeeView extends SimpleView implements View {
   private int formWidth;
   private EmployeeController controller;
+  private GoatList<GoatInput<? extends JComponent>> formInputList;
 
   public EmployeeView() {
     formWidth = 800;
@@ -51,6 +55,8 @@ public class EmployeeView extends SimpleView implements View {
     applyTableStyles();
     setTableModel();
     setTableData();
+
+    fillFormInputList();
   }
 
   @Override
@@ -201,6 +207,11 @@ public class EmployeeView extends SimpleView implements View {
       PopupCallbackAction callbackAction = (ctrl, action) -> {
         if (action == 0) {
           GlassPanePopup.closePopup("employeeForm");
+          this.cleanInputs(formInputList);
+          this.cleanErrorOnInput(formInputList);
+        } else if (action == -1) {
+          this.cleanInputs(formInputList);
+          this.cleanErrorOnInput(formInputList);
         } else if (action == 1) {
           controller.handleAddEmployee(evt);
         }
@@ -383,23 +394,44 @@ public class EmployeeView extends SimpleView implements View {
     tiSearch.setRightIcon("search.svg", scale);
   }
 
-  private void cleanErrorOnInput(GoatTextInput<? extends JTextComponent> ti) {
+  private void fillFormInputList() {
+    formInputList = new GoatList<>();
+
+    formInputList.add(tiFirstName);
+    formInputList.add(tiSecondtName);
+    formInputList.add(tiPaternalLastName);
+    formInputList.add(tiMaternalLastName);
+    formInputList.add(miDni);
+    formInputList.add(miBirthdate);
+    formInputList.add(miPhoneNumber);
+    formInputList.add(tiAddress);
+    formInputList.add(tiEmail);
+    formInputList.add(tiUsername);
+    formInputList.add(piPassword);
+    formInputList.add(cbRole);
+  }
+
+  private void cleanErrorOnInput(GoatInput<? extends JComponent> ti) {
     ti.setErrorHint(false);
     ti.setLabelErrorText("");
   }
 
-  public void cleanInputs() {
-    tiFirstName.setText("");
-    tiSecondtName.setText("");
-    tiPaternalLastName.setText("");
-    tiMaternalLastName.setText("");
-    miDni.setText("");
-    miBirthdate.setText("");
-    miPhoneNumber.setText("");
-    tiAddress.setText("");
-    tiEmail.setText("");
-    tiUsername.setText("");
-    piPassword.setText("");
+  private void cleanErrorOnInput(GoatList<GoatInput<? extends JComponent>> formInputList) {
+    formInputList.forEach(input -> {
+      input.setErrorHint(false);
+      input.setLabelErrorText("");
+    });
+  }
+
+  public void cleanInputs(GoatList<GoatInput<? extends JComponent>> formInputList) {
+
+    formInputList.forEach(input -> {
+      if (input instanceof GoatTextInput) {
+        ((GoatTextInput<?>) input).setText("");
+      } else if (input instanceof SelectInput) {
+        ((SelectInput<?>) input).getInput().setSelectedIndex(0);
+      }
+    });
   }
 
   // getters
@@ -461,6 +493,10 @@ public class EmployeeView extends SimpleView implements View {
 
   public PasswordInput getPiPassword() {
     return piPassword;
+  }
+
+  public GoatList<GoatInput<? extends JComponent>> getFormInputList() {
+    return formInputList;
   }
 
   // layout
