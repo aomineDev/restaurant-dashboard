@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @Table(name = "natural_people")
@@ -72,6 +73,15 @@ public abstract class NaturalPerson extends Person {
 
   public LocalDate getBirthdate() {
     return birthdate;
+  }
+
+  public String getBirthdateFomramtted() {
+    if (birthdate == null)
+      return "";
+
+    DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+    return birthdate.format(df);
   }
 
   public void setBirthdate(LocalDate birthdate) {

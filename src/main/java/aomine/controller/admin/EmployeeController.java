@@ -8,11 +8,12 @@ import aomine.dao.EmployeeDAO;
 import aomine.dao.RoleDAO;
 import aomine.model.Employee;
 import aomine.model.Role;
+import aomine.utils.Form;
 import aomine.utils.GoatList;
-import aomine.utils.validate.ValError;
 import aomine.utils.validate.Validate;
 import aomine.view.admin.EmployeeView;
 import raven.popup.GlassPanePopup;
+import raven.toast.Notifications;
 
 public class EmployeeController implements Controller {
   private EmployeeView view;
@@ -79,12 +80,23 @@ public class EmployeeController implements Controller {
     employee.setPassword(password);
     employee.setRole(role);
 
-    employeeDAO.add(employee);
+    try {
+      employeeDAO.add(employee);
 
-    GlassPanePopup.closePopup("employeeForm");
+      GlassPanePopup.closePopup("employeeForm");
 
-    // view.cleanInputs();
-    view.setTableData();
+      Form.cleanInputs(view.getFormInputList());
+
+      view.setTableData();
+
+      Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_RIGHT,
+          "Empleado Creado Exitosamente");
+    } catch (Exception e) {
+      Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_RIGHT,
+          "Error al crear el empleado");
+
+      e.printStackTrace();
+    }
   }
 
   @Override

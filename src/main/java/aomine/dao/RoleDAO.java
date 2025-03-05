@@ -4,6 +4,7 @@ import org.hibernate.Session;
 
 import aomine.database.Hibernate;
 import aomine.model.Role;
+import aomine.model.Role.Types;
 import aomine.utils.GoatList;
 
 public class RoleDAO implements DAO<Role> {
@@ -47,7 +48,7 @@ public class RoleDAO implements DAO<Role> {
     session.getTransaction().commit();
   }
 
-  public Role findByName(Role.Types type) {
+  public Role findByName(Types type) {
     String query = "FROM Role r where r.name = :name";
 
     return session.createQuery(query, Role.class)

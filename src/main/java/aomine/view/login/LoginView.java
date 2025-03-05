@@ -15,6 +15,7 @@ import aomine.components.input.GoatTextInput;
 import aomine.components.input.PasswordInput;
 import aomine.components.input.TextInput;
 import aomine.controller.login.LoginController;
+import aomine.utils.Form;
 import aomine.view.View;
 import net.miginfocom.swing.MigLayout;
 
@@ -84,13 +85,13 @@ public class LoginView extends JPanel implements View {
 
   @Override
   public void applyEvents() {
-    tiUsername.onKeyTyped(e -> cleanErrorOnInput(tiUsername));
+    tiUsername.onKeyTyped(e -> Form.cleanErrorOnInput(tiUsername));
 
     piPassword.onKeyTyped(e -> {
       if (e.getKeyChar() == '\n')
         return;
 
-      cleanErrorOnInput(piPassword);
+      Form.cleanErrorOnInput(piPassword);
     });
 
     piPassword.onKeyPressed(e -> {
@@ -113,11 +114,6 @@ public class LoginView extends JPanel implements View {
     login.add(piPassword.getInput());
     login.add(piPassword.getErrorLabel());
     login.add(btnLogin, "gapy 10");
-  }
-
-  private void cleanErrorOnInput(GoatTextInput<? extends JTextComponent> ti) {
-    ti.setErrorHint(false);
-    ti.setLabelErrorText("");
   }
 
   public TextInput getTiUsername() {

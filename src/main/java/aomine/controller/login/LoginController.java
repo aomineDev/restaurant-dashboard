@@ -84,8 +84,7 @@ public class LoginController implements Controller {
         .isRequired("campo requerido");
 
     validate.setElement(view.getPiPassword())
-        .isRequired("campo requerido ")
-        .minLength("minimo 8 caracteres", 8);
+        .isRequired("campo requerido");
 
     if (!validate.isValid()) {
       for (ValError error : validate.getValErrorList()) {

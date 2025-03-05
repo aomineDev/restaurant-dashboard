@@ -15,7 +15,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
-import javax.swing.text.JTextComponent;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
@@ -30,6 +29,7 @@ import aomine.components.input.TextInput;
 import aomine.components.layout.view.SimpleView;
 import aomine.controller.admin.EmployeeController;
 import aomine.model.Role;
+import aomine.utils.Form;
 import aomine.utils.GoatList;
 import aomine.view.View;
 import net.miginfocom.swing.MigLayout;
@@ -207,11 +207,11 @@ public class EmployeeView extends SimpleView implements View {
       PopupCallbackAction callbackAction = (ctrl, action) -> {
         if (action == 0) {
           GlassPanePopup.closePopup("employeeForm");
-          this.cleanInputs(formInputList);
-          this.cleanErrorOnInput(formInputList);
+          Form.cleanInputs(formInputList);
+          Form.cleanErrorOnInput(formInputList);
         } else if (action == -1) {
-          this.cleanInputs(formInputList);
-          this.cleanErrorOnInput(formInputList);
+          Form.cleanInputs(formInputList);
+          Form.cleanErrorOnInput(formInputList);
         } else if (action == 1) {
           controller.handleAddEmployee(evt);
         }
@@ -239,19 +239,21 @@ public class EmployeeView extends SimpleView implements View {
     });
 
     // btn delete
+    btnDelete.addActionListener(e -> {
 
+    });
     // Clean Inputs after error
-    tiFirstName.onKeyTyped(e -> cleanErrorOnInput(tiFirstName));
-    tiSecondtName.onKeyTyped(e -> cleanErrorOnInput(tiSecondtName));
-    tiPaternalLastName.onKeyTyped(e -> cleanErrorOnInput(tiPaternalLastName));
-    tiMaternalLastName.onKeyTyped(e -> cleanErrorOnInput(tiMaternalLastName));
-    miDni.onKeyTyped(e -> cleanErrorOnInput(miDni));
-    miBirthdate.onChanged(e -> cleanErrorOnInput(miBirthdate));
-    miPhoneNumber.onKeyTyped(e -> cleanErrorOnInput(miPhoneNumber));
-    tiAddress.onKeyTyped(e -> cleanErrorOnInput(tiAddress));
-    tiEmail.onKeyTyped(e -> cleanErrorOnInput(tiEmail));
-    tiUsername.onKeyTyped(e -> cleanErrorOnInput(tiUsername));
-    piPassword.onKeyTyped(e -> cleanErrorOnInput(piPassword));
+    tiFirstName.onKeyTyped(e -> Form.cleanErrorOnInput(tiFirstName));
+    tiSecondtName.onKeyTyped(e -> Form.cleanErrorOnInput(tiSecondtName));
+    tiPaternalLastName.onKeyTyped(e -> Form.cleanErrorOnInput(tiPaternalLastName));
+    tiMaternalLastName.onKeyTyped(e -> Form.cleanErrorOnInput(tiMaternalLastName));
+    miDni.onKeyTyped(e -> Form.cleanErrorOnInput(miDni));
+    miBirthdate.onChanged(e -> Form.cleanErrorOnInput(miBirthdate));
+    miPhoneNumber.onKeyTyped(e -> Form.cleanErrorOnInput(miPhoneNumber));
+    tiAddress.onKeyTyped(e -> Form.cleanErrorOnInput(tiAddress));
+    tiEmail.onKeyTyped(e -> Form.cleanErrorOnInput(tiEmail));
+    tiUsername.onKeyTyped(e -> Form.cleanErrorOnInput(tiUsername));
+    piPassword.onKeyTyped(e -> Form.cleanErrorOnInput(piPassword));
   }
 
   @Override
@@ -368,7 +370,7 @@ public class EmployeeView extends SimpleView implements View {
           employee.getPaternalLastname(),
           employee.getMaternalLastname(),
           employee.getDni(),
-          employee.getBirthdate(),
+          employee.getBirthdateFomramtted(),
           employee.getPhoneNumber(),
           employee.getAddress(),
           employee.getEmail(),
@@ -409,29 +411,6 @@ public class EmployeeView extends SimpleView implements View {
     formInputList.add(tiUsername);
     formInputList.add(piPassword);
     formInputList.add(cbRole);
-  }
-
-  private void cleanErrorOnInput(GoatInput<? extends JComponent> ti) {
-    ti.setErrorHint(false);
-    ti.setLabelErrorText("");
-  }
-
-  private void cleanErrorOnInput(GoatList<GoatInput<? extends JComponent>> formInputList) {
-    formInputList.forEach(input -> {
-      input.setErrorHint(false);
-      input.setLabelErrorText("");
-    });
-  }
-
-  public void cleanInputs(GoatList<GoatInput<? extends JComponent>> formInputList) {
-
-    formInputList.forEach(input -> {
-      if (input instanceof GoatTextInput) {
-        ((GoatTextInput<?>) input).setText("");
-      } else if (input instanceof SelectInput) {
-        ((SelectInput<?>) input).getInput().setSelectedIndex(0);
-      }
-    });
   }
 
   // getters

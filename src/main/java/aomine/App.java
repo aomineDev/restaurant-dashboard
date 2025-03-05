@@ -14,6 +14,7 @@ import aomine.components.layout.view.Background;
 import aomine.database.Hibernate;
 import aomine.store.Store;
 import raven.popup.GlassPanePopup;
+import raven.toast.Notifications;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -30,10 +31,11 @@ public class App extends JFrame {
     setSize(new Dimension(1200, 700));
     setLocationRelativeTo(null);
 
-    GlassPanePopup.install(this);
     ViewManager.install(this);
     Store.install();
     Hibernate.install();
+    GlassPanePopup.install(this);
+    Notifications.getInstance().setJFrame(this);
 
     getRootPane().putClientProperty(FlatClientProperties.FULL_WINDOW_CONTENT, true);
 
