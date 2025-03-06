@@ -39,16 +39,6 @@ public class LoginController implements Controller {
     this.employeeDAO = new EmployeeDAO();
 
     this.handleEmptyDB();
-
-    Session session = Hibernate.getSession();
-    String query = String.format("SELECT name FROM Role where id != :id");
-
-    String id = session.createQuery(query, String.class)
-        .setParameter("id", 1)
-        .setMaxResults(1)
-        .uniqueResult();
-
-    System.out.println(id);
   }
 
   private void handleEmptyDB() {
