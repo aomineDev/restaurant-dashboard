@@ -9,6 +9,7 @@ import aomine.dao.RoleDAO;
 import aomine.model.Employee;
 import aomine.model.Role;
 import aomine.utils.Form;
+import aomine.utils.FormAction;
 import aomine.utils.GoatList;
 import aomine.utils.validate.Validate;
 import aomine.view.admin.EmployeeView;
@@ -20,6 +21,8 @@ public class EmployeeController implements Controller {
   private EmployeeDAO employeeDAO;
   private RoleDAO roleDAO;
   private Validate validate;
+  private FormAction action;
+  private Employee selectedEmployee;
 
   // Form inputs
   private String firstName;
@@ -48,7 +51,7 @@ public class EmployeeController implements Controller {
     roleList.forEach(role -> view.getCbRole().getInput().addItem(role));
   }
 
-  public void handleAddEmployee(ActionEvent evt) {
+  public void handleFormAction() {
     if (!validateFields())
       return;
 
@@ -114,31 +117,42 @@ public class EmployeeController implements Controller {
 
     validate.setElement(view.getMiDni())
         .selfValidate("Campo requerido", text -> !text.equals("--------"))
-        .isInteger("DNI invalido")
-        .isUnique("DNI ya registrado", Employee.class, "dni");
+        .isInteger("DNI invalido");
+
+    if (action == FormAction.ADD)
+      validate.isUnique("DNI ya registrado", Employee.class, "dni");
 
     if (!view.getMiBirthdate().getText().equals("--/--/----"))
       validate.setElement(view.getMiBirthdate())
           .isDate("Fecha invalida");
 
-    if (!view.getMiPhoneNumber().getText().equals("--- --- ---"))
+    if (!view.getMiPhoneNumber().getText().equals("--- --- ---")) {
       validate.setElement(view.getMiPhoneNumber())
           .setText(text -> text.replaceAll(" ", ""))
-          .isInteger("telefono invalido")
-          .isUnique("telefono ya registrado", Employee.class, "phoneNumber");
+          .isInteger("telefono invalido");
 
-    if (!view.getTiEmail().getText().equals(""))
+      if (action == FormAction.ADD)
+        validate.isUnique("telefono ya registrado", Employee.class, "phoneNumber");
+    }
+
+    if (!view.getTiEmail().getText().equals("")) {
       validate.setElement(view.getTiEmail())
-          .isEmail("email invalido")
-          .isUnique("email ya registrado", Employee.class, "email");
+          .isEmail("email invalido");
+
+      if (action == FormAction.ADD)
+        validate.isUnique("email ya registrado", Employee.class, "email");
+    }
 
     validate.setElement(view.getTiUsername())
-        .isRequired("campo requerido")
-        .isUnique("username ya registrado", Employee.class, "username");
+        .isRequired("campo requerido");
 
-    validate.setElement(view.getPiPassword())
-        .isRequired("campo requerido")
-        .minLength("minimo 8 caracteres", 8);
+    if (action == FormAction.ADD)
+      validate.isUnique("username ya registrado", Employee.class, "username");
+
+    if (action == FormAction.ADD)
+      validate.setElement(view.getPiPassword())
+          .isRequired("campo requerido")
+          .minLength("minimo 8 caracteres", 8);
 
     if (!validate.isValid()) {
       validate.getValErrorList().forEach(error -> {
@@ -153,5 +167,17 @@ public class EmployeeController implements Controller {
 
   public GoatList<Employee> getEmployeeList() {
     return employeeDAO.getAll();
+  }
+
+  public Employee getEmployee(int rowSelected) {
+    long id = (long) view.getTableEmployee().getModel().getValueAt(rowSelected, 0);
+
+    this.selectedEmployee = employeeDAO.get(id);
+
+    return this.selectedEmployee;
+  }
+
+  public void setAction(FormAction action) {
+    this.action = action;
   }
 }

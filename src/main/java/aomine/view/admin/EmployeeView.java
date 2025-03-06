@@ -2,7 +2,11 @@ package aomine.view.admin;
 
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -21,15 +25,16 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 
 import aomine.components.GoatPanel;
 import aomine.components.input.GoatInput;
-import aomine.components.input.GoatTextInput;
 import aomine.components.input.MaskInput;
 import aomine.components.input.PasswordInput;
 import aomine.components.input.SelectInput;
 import aomine.components.input.TextInput;
 import aomine.components.layout.view.SimpleView;
 import aomine.controller.admin.EmployeeController;
+import aomine.model.Employee;
 import aomine.model.Role;
 import aomine.utils.Form;
+import aomine.utils.FormAction;
 import aomine.utils.GoatList;
 import aomine.view.View;
 import net.miginfocom.swing.MigLayout;
@@ -45,6 +50,7 @@ public class EmployeeView extends SimpleView implements View {
   private int formWidth;
   private EmployeeController controller;
   private GoatList<GoatInput<? extends JComponent>> formInputList;
+  private int rowSelected;
 
   public EmployeeView() {
     formWidth = 800;
@@ -193,55 +199,34 @@ public class EmployeeView extends SimpleView implements View {
   @Override
   public void applyEvents() {
     btnAdd.addActionListener(evt -> {
-      int height = 550;
-      int scrollWidth = 10;
-      int popupWidht = formWidth + scrollWidth;
+      this.piPassword.getInput().setEnabled(true);
 
-      SimplePopupBorderOption borderOption = new SimplePopupBorderOption();
-
-      borderOption.useScroll();
-      borderOption.setWidth(popupWidht);
-
-      String[] actions = { "Cancelar", "Guardar" };
-
-      PopupCallbackAction callbackAction = (ctrl, action) -> {
-        if (action == 0) {
-          GlassPanePopup.closePopup("employeeForm");
-          Form.cleanInputs(formInputList);
-          Form.cleanErrorOnInput(formInputList);
-        } else if (action == -1) {
-          Form.cleanInputs(formInputList);
-          Form.cleanErrorOnInput(formInputList);
-        } else if (action == 1) {
-          controller.handleAddEmployee(evt);
-        }
-      };
-
-      SwingUtilities.updateComponentTreeUI(form);
-
-      SimplePopupBorder popup = new SimplePopupBorder(form, "Nuevo Empleado", borderOption, actions, callbackAction);
-
-      popup.setMaximumSize(new Dimension(popupWidht, height));
-
-      DefaultOption popupOption = new DefaultOption();
-
-      GlassPanePopup.showPopup(
-          popup,
-          popupOption,
-          "employeeForm");
+      showFormPopup(FormAction.ADD);
     });
 
     btnEdit.addActionListener(e -> {
-      MessageAlerts.getInstance().showMessage(
-          "Error!",
-          "asdasd",
-          MessageAlerts.MessageType.ERROR);
+      this.fillForm(controller.getEmployee(rowSelected));
+
+      this.piPassword.getInput().setEnabled(false);
+
+      this.showFormPopup(FormAction.EDIT);
     });
 
     // btn delete
     btnDelete.addActionListener(e -> {
-
+      MessageAlerts.getInstance().showMessage("Eliminar Empleado", "¿Está seguro de eliminar este empleado?",
+          MessageAlerts.MessageType.WARNING, MessageAlerts.YES_NO_OPTION, (ctr, act) -> {
+            System.out.println(act);
+          });
     });
+
+    tableEmployee.addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseClicked(MouseEvent evt) {
+        rowSelected = tableEmployee.rowAtPoint(evt.getPoint());
+      }
+    });
+
     // Clean Inputs after error
     tiFirstName.onKeyTyped(e -> Form.cleanErrorOnInput(tiFirstName));
     tiSecondtName.onKeyTyped(e -> Form.cleanErrorOnInput(tiSecondtName));
@@ -385,13 +370,16 @@ public class EmployeeView extends SimpleView implements View {
   private void setIcons() {
     String basePath = "aomine/icons/";
     float scale = 0.35f;
-    String[] iconNames = { "add", "edit", "delete" };
-    JButton[] buttons = { btnAdd, btnEdit, btnDelete };
 
-    for (int i = 0; i < buttons.length; i++) {
-      buttons[i].setIcon(new FlatSVGIcon(basePath + iconNames[i] + ".svg", scale));
-      buttons[i].setCursor(new Cursor(Cursor.HAND_CURSOR));
-    }
+    HashMap<String, JButton> buttonMap = new HashMap<>();
+    buttonMap.put("add", btnAdd);
+    buttonMap.put("edit", btnEdit);
+    buttonMap.put("delete", btnDelete);
+
+    buttonMap.forEach((key, btn) -> {
+      btn.setIcon(new FlatSVGIcon(basePath + key + ".svg", scale));
+      btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+    });
 
     tiSearch.setRightIcon("search.svg", scale);
   }
@@ -411,6 +399,72 @@ public class EmployeeView extends SimpleView implements View {
     formInputList.add(tiUsername);
     formInputList.add(piPassword);
     formInputList.add(cbRole);
+  }
+
+  private void fillForm(Employee employee) {
+    tiFirstName.setText(employee.getFirstName());
+    tiSecondtName.setText(employee.getSecondName());
+    tiPaternalLastName.setText(employee.getPaternalLastname());
+    tiMaternalLastName.setText(employee.getMaternalLastname());
+    miDni.setText(employee.getDni() + "");
+    miBirthdate.setText(employee.getBirthdateFomramtted());
+    miPhoneNumber.setText(employee.getPhoneNumber() + "");
+    tiAddress.setText(employee.getAddress());
+    tiEmail.setText(employee.getEmail());
+    tiUsername.setText(employee.getUsername());
+    cbRole.getInput().setSelectedItem(employee.getRole());
+  }
+
+  private void showFormPopup(FormAction action) {
+
+    String actionBtn = switch (action) {
+      case ADD -> "Agregar";
+      case EDIT -> "Editar";
+    };
+
+    String title = switch (action) {
+      case ADD -> "Agregar Empleado";
+      case EDIT -> "Editar Empleado";
+    };
+
+    int height = 550;
+    int scrollWidth = 10;
+    int popupWidht = formWidth + scrollWidth;
+
+    SimplePopupBorderOption borderOption = new SimplePopupBorderOption();
+
+    borderOption.useScroll();
+    borderOption.setWidth(popupWidht);
+
+    String[] actions = { "Cancelar", actionBtn };
+
+    PopupCallbackAction callbackAction = (ctrl, act) -> {
+      if (act == 0) {
+        GlassPanePopup.closePopup("employeeForm");
+        Form.cleanInputs(formInputList);
+        Form.cleanErrorOnInput(formInputList);
+      } else if (act == -1) {
+        Form.cleanInputs(formInputList);
+        Form.cleanErrorOnInput(formInputList);
+      } else if (act == 1) {
+        controller.setAction(action);
+
+        controller.handleFormAction();
+      }
+    };
+
+    SwingUtilities.updateComponentTreeUI(form);
+
+    SimplePopupBorder popup = new SimplePopupBorder(form, title, borderOption, actions, callbackAction);
+
+    popup.setMaximumSize(new Dimension(popupWidht, height));
+
+    DefaultOption popupOption = new DefaultOption();
+
+    GlassPanePopup.showPopup(
+        popup,
+        popupOption,
+        "employeeForm");
   }
 
   // getters

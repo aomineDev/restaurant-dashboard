@@ -1,11 +1,15 @@
 package aomine.controller.login;
 
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+
+import org.hibernate.Session;
 
 import aomine.ViewManager;
 import aomine.controller.Controller;
 import aomine.dao.EmployeeDAO;
 import aomine.dao.RoleDAO;
+import aomine.database.Hibernate;
 import aomine.model.Employee;
 import aomine.model.Role;
 import aomine.store.Store;
