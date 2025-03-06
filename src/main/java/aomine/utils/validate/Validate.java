@@ -205,6 +205,25 @@ public class Validate {
     return this;
   }
 
+  public Validate isUnique(String msg, Class<?> Entity, String column, long id) {
+    if (!this.valid)
+      return this;
+
+    String query = String.format("SELECT id FROM %s WHERE %s = :%s", Entity.getSimpleName(), column, column);
+
+    Object obj = session.createQuery(query, Entity)
+        .setParameter(column, text)
+        .uniqueResult();
+
+    if (obj != null) {
+      this.valid = false;
+      this.valErrorList.add(new ValError(this.input, msg));
+      this.errorCount++;
+    }
+
+    return this;
+  }
+
   public Validate setText(UnaryOperator<String> operator) {
     this.text = operator.apply(this.text);
 
