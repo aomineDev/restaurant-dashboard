@@ -41,65 +41,55 @@ public class Validate {
     if (!this.valid)
       return this;
 
-    if (text.equals("")) {
-      this.valid = false;
-      this.valErrorList.add(new ValError(this.input, msg));
-      this.errorCount++;
-    }
+    if (text.equals(""))
+      handleError(msg);
 
     return this;
+
   }
 
   public Validate minLength(String msg, int min) {
     if (!this.valid)
       return this;
 
-    if (text.length() < min) {
-      this.valid = false;
-      this.valErrorList.add(new ValError(this.input, msg));
-      this.errorCount++;
-    }
+    if (text.length() < min)
+      handleError(msg);
 
     return this;
+
   }
 
   public Validate maxLength(String msg, int max) {
     if (!this.valid)
       return this;
 
-    if (text.length() > max) {
-      this.valid = false;
-      this.valErrorList.add(new ValError(this.input, msg));
-      this.errorCount++;
-    }
+    if (text.length() > max)
+      handleError(msg);
 
     return this;
+
   }
 
   public Validate equalLength(String msg, int equal) {
     if (!this.valid)
       return this;
 
-    if (text.length() != equal) {
-      this.valid = false;
-      this.valErrorList.add(new ValError(this.input, msg));
-      this.errorCount++;
-    }
+    if (text.length() != equal)
+      handleError(msg);
 
     return this;
+
   }
 
   public Validate isNumber(String msg) {
     if (!this.valid)
       return this;
 
-    if (!text.matches("[0-9]+")) {
-      this.valid = false;
-      this.valErrorList.add(new ValError(this.input, msg));
-      this.errorCount++;
-    }
+    if (!text.matches("[0-9]+"))
+      handleError(msg);
 
     return this;
+
   }
 
   public Validate isInteger(String msg) {
@@ -109,12 +99,11 @@ public class Validate {
     try {
       Integer.parseInt(text);
     } catch (Exception e) {
-      this.valid = false;
-      this.valErrorList.add(new ValError(this.input, msg));
-      this.errorCount++;
+      handleError(msg);
     }
 
     return this;
+
   }
 
   public Validate isDouble(String msg) {
@@ -124,12 +113,11 @@ public class Validate {
     try {
       Double.parseDouble(text);
     } catch (Exception e) {
-      this.valid = false;
-      this.valErrorList.add(new ValError(this.input, msg));
-      this.errorCount++;
+      handleError(msg);
     }
 
     return this;
+
   }
 
   public Validate isLong(String msg) {
@@ -139,51 +127,44 @@ public class Validate {
     try {
       Long.parseLong(text);
     } catch (Exception e) {
-      this.valid = false;
-      this.valErrorList.add(new ValError(this.input, msg));
-      this.errorCount++;
+      handleError(msg);
     }
 
     return this;
+
   }
 
   public Validate selfValidate(String msg, Predicate<String> predicate) {
     if (!this.valid)
       return this;
 
-    if (!predicate.test(text)) {
-      this.valid = false;
-      this.valErrorList.add(new ValError(this.input, msg));
-      this.errorCount++;
-    }
+    if (!predicate.test(text))
+      handleError(msg);
 
     return this;
+
   }
 
   public Validate isEmail(String msg) {
     if (!this.valid)
       return this;
 
-    if (!text.matches("^[a-zA-Z0-9.-_+%]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$")) {
-      this.valid = false;
-      this.valErrorList.add(new ValError(this.input, msg));
-      this.errorCount++;
-    }
+    if (!text.matches("^[a-zA-Z0-9.-_+%]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$"))
+      handleError(msg);
 
     return this;
+
   }
 
   public Validate isDate(String msg) {
     if (!this.valid)
       return this;
 
-    if (!text.matches("^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/[0-9]{4}$")) {
-      this.valid = false;
-      this.valErrorList.add(new ValError(this.input, msg));
-      this.errorCount++;
-    }
+    if (!text.matches("^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/[0-9]{4}$"))
+      handleError(msg);
 
     return this;
+
   }
 
   public Validate isUnique(String msg, Class<?> Entity, String column) {
@@ -196,32 +177,36 @@ public class Validate {
         .setParameter(column, text)
         .uniqueResult();
 
-    if (obj != null) {
-      this.valid = false;
-      this.valErrorList.add(new ValError(this.input, msg));
-      this.errorCount++;
-    }
+    if (obj != null)
+      handleError(msg);
 
     return this;
+
   }
 
   public Validate isUnique(String msg, Class<?> Entity, String column, long id) {
     if (!this.valid)
       return this;
 
-    String query = String.format("SELECT id FROM %s WHERE %s = :%s", Entity.getSimpleName(), column, column);
+    String query = String.format("FROM %s WHERE %s = :%s AND %s != :%s", Entity.getSimpleName(), column, column, "id",
+        "id");
 
     Object obj = session.createQuery(query, Entity)
         .setParameter(column, text)
+        .setParameter("id", id)
         .uniqueResult();
 
-    if (obj != null) {
-      this.valid = false;
-      this.valErrorList.add(new ValError(this.input, msg));
-      this.errorCount++;
-    }
+    if (obj != null)
+      handleError(msg);
 
     return this;
+
+  }
+
+  private void handleError(String msg) {
+    this.valid = false;
+    this.valErrorList.add(new ValError(this.input, msg));
+    this.errorCount++;
   }
 
   public Validate setText(UnaryOperator<String> operator) {
