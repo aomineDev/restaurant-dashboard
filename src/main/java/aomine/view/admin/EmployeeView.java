@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
 import javax.swing.BorderFactory;
@@ -38,7 +37,6 @@ import aomine.utils.FormAction;
 import aomine.utils.GoatList;
 import aomine.view.View;
 import net.miginfocom.swing.MigLayout;
-import raven.alerts.MessageAlerts;
 import raven.datetime.component.date.DatePicker;
 import raven.popup.DefaultOption;
 import raven.popup.GlassPanePopup;
@@ -214,10 +212,7 @@ public class EmployeeView extends SimpleView implements View {
 
     // btn delete
     btnDelete.addActionListener(e -> {
-      MessageAlerts.getInstance().showMessage("Eliminar Empleado", "¿Está seguro de eliminar este empleado?",
-          MessageAlerts.MessageType.WARNING, MessageAlerts.YES_NO_OPTION, (ctr, act) -> {
-            System.out.println(act);
-          });
+      controller.handleDeleteEmployee(rowSelected);
     });
 
     tableEmployee.addMouseListener(new MouseAdapter() {

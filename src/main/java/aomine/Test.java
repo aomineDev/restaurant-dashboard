@@ -89,22 +89,38 @@ public class Test extends JFrame {
 
     panel.setLayout(new MigLayout());
 
-    MaskInput tiName = new MaskInput.MaskInputBuilder()
+    TextInput tiName = new TextInput.TextInputBuilder()
         .setLabelText("Nombre")
-        .setMask("###", '-')
+        .withErrorLabel()
+        .setPlaceholder("dni")
         .build();
 
-    JButton btn = new JButton("Reset");
+    JButton btn = new JButton("Check");
+
     btn.addActionListener(e -> {
-      tiName.setText("");
+      Validate validate = new Validate();
+
+      validate.setElement(tiName)
+          .isRequired("El nombre es requerido")
+          .isUnique("duplicado", Employee.class, "dni", 2);
+
+      if (!validate.isValid()) {
+        for (ValError error : validate.getValErrorList()) {
+          error.getComponent().setLabelErrorText(error.getMessage());
+        }
+      } else {
+        System.out.println("Valid");
+      }
     });
 
     tiName.onChanged((e) -> {
-      tiName.setErrorHint(false);
+      tiName.setLabelErrorText("");
     });
 
     panel.add(tiName.getLabel());
-    panel.add(tiName.getInput(), "wrap, w 200");
+    panel.add(tiName.getInput(), "w 200");
+    panel.add(tiName.getErrorLabel(), "wrap");
+
     panel.add(btn);
     setContentPane(panel);
   }

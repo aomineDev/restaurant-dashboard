@@ -137,7 +137,7 @@ public class LoginController implements Controller {
     user.setFirstName("admin");
     user.setPaternalLastname("root");
     user.setMaternalLastname("toor");
-    user.setDni(13246578);
+    user.setDni(12345678);
 
     employeeDAO.add(user);
   }

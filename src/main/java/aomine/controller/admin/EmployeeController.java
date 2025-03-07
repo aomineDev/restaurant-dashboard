@@ -1,6 +1,5 @@
 package aomine.controller.admin;
 
-import java.awt.event.ActionEvent;
 import java.time.LocalDate;
 
 import aomine.controller.Controller;
@@ -13,6 +12,7 @@ import aomine.utils.FormAction;
 import aomine.utils.GoatList;
 import aomine.utils.validate.Validate;
 import aomine.view.admin.EmployeeView;
+import raven.alerts.MessageAlerts;
 import raven.popup.GlassPanePopup;
 import raven.toast.Notifications;
 
@@ -68,23 +68,31 @@ public class EmployeeController implements Controller {
     password = view.getPiPassword().getText();
     role = view.getCbRole().getSelectedItem();
 
-    Employee employee = new Employee();
-
-    employee.setFirstName(firstName);
-    employee.setSecondName(secondName);
-    employee.setPaternalLastname(paternalLastname);
-    employee.setMaternalLastname(maternalLastname);
-    employee.setDni(dni);
-    employee.setBirthdate(birthdate);
-    employee.setPhoneNumber(phoneNumber);
-    employee.setEmail(email);
-    employee.setAddress(address);
-    employee.setUsername(username);
-    employee.setPassword(password);
-    employee.setRole(role);
-
+    String messageSuccess = switch (action) {
+      case ADD -> "Empleado creado correctamente";
+      case EDIT -> "Empleado editado correctamente";
+    };
+    String messageError = switch (action) {
+      case ADD -> "Error al creado empleado";
+      case EDIT -> "Error al editar empleado";
+    };
     try {
-      employeeDAO.add(employee);
+      switch (action) {
+        case ADD -> {
+
+          Employee employee = new Employee();
+
+          fillEmployee(employee);
+
+          employeeDAO.add(employee);
+        }
+        case EDIT -> {
+
+          fillEmployee(selectedEmployee);
+
+          employeeDAO.update(selectedEmployee);
+        }
+      }
 
       GlassPanePopup.closePopup("employeeForm");
 
@@ -92,14 +100,33 @@ public class EmployeeController implements Controller {
 
       view.setTableData();
 
-      Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_RIGHT,
-          "Empleado Creado Exitosamente");
+      Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_RIGHT, messageSuccess);
     } catch (Exception e) {
-      Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_RIGHT,
-          "Error al crear el empleado");
+      Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_RIGHT, messageError);
 
       e.printStackTrace();
     }
+  }
+
+  public void handleDeleteEmployee(int rowSelected) {
+    MessageAlerts.getInstance().showMessage("Eliminar Empleado", "¿Está seguro de eliminar este empleado?",
+        MessageAlerts.MessageType.WARNING, MessageAlerts.YES_NO_OPTION, (ctr, option) -> {
+          if (option == 0) {
+            try {
+              employeeDAO.delete(getIdFromRow(rowSelected));
+
+              view.setTableData();
+
+              Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_RIGHT,
+                  "Empleado eliminado correctamente");
+            } catch (Exception e) {
+              Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_RIGHT,
+                  "Error al eliminar empleado");
+
+              e.printStackTrace();
+            }
+          }
+        });
   }
 
   @Override
@@ -119,8 +146,10 @@ public class EmployeeController implements Controller {
         .selfValidate("Campo requerido", text -> !text.equals("--------"))
         .isInteger("DNI invalido");
 
-    if (action == FormAction.ADD)
-      validate.isUnique("DNI ya registrado", Employee.class, "dni");
+    switch (action) {
+      case ADD -> validate.isUnique("DNI ya registrado", Employee.class, "dni");
+      case EDIT -> validate.isUnique("DNI ya registrado", Employee.class, "dni", selectedEmployee.getPersonId());
+    }
 
     if (!view.getMiBirthdate().getText().equals("--/--/----"))
       validate.setElement(view.getMiBirthdate())
@@ -131,23 +160,33 @@ public class EmployeeController implements Controller {
           .setText(text -> text.replaceAll(" ", ""))
           .isInteger("telefono invalido");
 
-      if (action == FormAction.ADD)
-        validate.isUnique("telefono ya registrado", Employee.class, "phoneNumber");
+      switch (action) {
+        case ADD -> validate.isUnique("telefono ya registrado", Employee.class, "phoneNumber");
+        case EDIT ->
+          validate.isUnique("telefono ya registrado", Employee.class, "phoneNumber", selectedEmployee.getPersonId());
+      }
     }
 
     if (!view.getTiEmail().getText().equals("")) {
       validate.setElement(view.getTiEmail())
           .isEmail("email invalido");
 
-      if (action == FormAction.ADD)
-        validate.isUnique("email ya registrado", Employee.class, "email");
+      switch (action) {
+        case ADD -> validate.isUnique("email ya registrado", Employee.class, "email");
+        case EDIT -> validate.isUnique("email ya registrado", Employee.class, "email", selectedEmployee.getPersonId());
+      }
+
     }
 
     validate.setElement(view.getTiUsername())
         .isRequired("campo requerido");
 
-    if (action == FormAction.ADD)
-      validate.isUnique("username ya registrado", Employee.class, "username");
+    switch (action) {
+      case ADD ->
+        validate.isUnique("username ya registrado", Employee.class, "username");
+      case EDIT ->
+        validate.isUnique("username ya registrado", Employee.class, "username", selectedEmployee.getPersonId());
+    }
 
     if (action == FormAction.ADD)
       validate.setElement(view.getPiPassword())
@@ -165,14 +204,34 @@ public class EmployeeController implements Controller {
     return validate.isValid();
   }
 
+  public void fillEmployee(Employee employee) {
+    employee.setFirstName(firstName);
+    employee.setSecondName(secondName);
+    employee.setPaternalLastname(paternalLastname);
+    employee.setMaternalLastname(maternalLastname);
+    employee.setDni(dni);
+    employee.setBirthdate(birthdate);
+    employee.setPhoneNumber(phoneNumber);
+    employee.setEmail(email);
+    employee.setAddress(address);
+    employee.setUsername(username);
+
+    if (action == FormAction.ADD)
+      employee.setPassword(password);
+
+    employee.setRole(role);
+  }
+
+  public long getIdFromRow(int rowSelected) {
+    return (long) view.getTableEmployee().getModel().getValueAt(rowSelected, 0);
+  }
+
   public GoatList<Employee> getEmployeeList() {
     return employeeDAO.getAll();
   }
 
   public Employee getEmployee(int rowSelected) {
-    long id = (long) view.getTableEmployee().getModel().getValueAt(rowSelected, 0);
-
-    this.selectedEmployee = employeeDAO.get(id);
+    this.selectedEmployee = employeeDAO.get(getIdFromRow(rowSelected));
 
     return this.selectedEmployee;
   }

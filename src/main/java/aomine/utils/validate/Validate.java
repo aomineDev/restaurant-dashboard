@@ -21,6 +21,7 @@ public class Validate {
 
   public Validate() {
     this.session = Hibernate.getSession();
+    this.valErrorList = new GoatList<>();
     this.errorCount = 0;
   }
 
