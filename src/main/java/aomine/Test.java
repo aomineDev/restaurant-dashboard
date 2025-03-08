@@ -8,6 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import com.formdev.flatlaf.FlatDarkLaf;
@@ -30,10 +31,18 @@ import aomine.utils.validate.Validate;
 import net.miginfocom.swing.MigLayout;
 
 public class Test extends JFrame {
-  private Integer x;
 
   public Test() {
     init();
+  }
+
+  public boolean asd(MaskInput field, String text) {
+    try {
+      field.getInput().getFormatter().stringToValue(text);
+      return true;
+    } catch (Exception e) {
+      return false;
+    }
   }
 
   private void init() {
@@ -41,7 +50,7 @@ public class Test extends JFrame {
     setSize(500, 400);
     setLocationRelativeTo(null);
     setDefaultCloseOperation(EXIT_ON_CLOSE);
-    Hibernate.install();
+    // Hibernate.install();
 
     System.out.println(System.getProperty("user.home"));
     String imagePath = "react.png";
@@ -68,8 +77,16 @@ public class Test extends JFrame {
     JButton btn = new JButton("Check");
     JButton btn2 = new JButton("val");
 
+    JPasswordField jpf = new JPasswordField();
+
     btn.addActionListener(e -> {
-      miDni.getInput().setValue(null);
+      String t = "asdasdasd";
+      miDni.getInput().setText(t);
+
+      if (asd(miDni, miDni.getInput().getText())) {
+        miDni.getInput().setValue(miDni.getInput().getText());
+      }
+
       // Validate validate = new Validate();
 
       // validate.setElement(tiName)
@@ -86,7 +103,7 @@ public class Test extends JFrame {
     });
 
     btn2.addActionListener(e -> {
-      System.out.println(miDni.getInput().getValue());
+      System.out.println(miDni.getText());
     });
 
     tiName.onChanged((e) -> {
@@ -99,6 +116,7 @@ public class Test extends JFrame {
     panel.add(miDni.getLabel());
     panel.add(miDni.getInput(), "w 200");
     panel.add(miDni.getErrorLabel());
+    panel.add(jpf);
     panel.add(btn);
     panel.add(btn2);
     setContentPane(panel);

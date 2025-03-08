@@ -72,7 +72,7 @@ public class LoginController implements Controller {
       ViewManager.login();
     } catch (Exception e) {
       errorMessage(e.getMessage());
-      view.getPiPassword().setText("");
+      view.getPiPassword().clear();
     }
   }
 
@@ -88,8 +88,7 @@ public class LoginController implements Controller {
 
     if (!validate.isValid()) {
       for (ValError error : validate.getValErrorList()) {
-        error.getComponent().setErrorHint(true);
-        error.getComponent().setLabelErrorText(error.getMessage());
+        error.getComponent().setError(error.getMessage());
       }
     }
 

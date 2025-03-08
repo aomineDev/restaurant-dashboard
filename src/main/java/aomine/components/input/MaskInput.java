@@ -43,6 +43,37 @@ public class MaskInput extends GoatTextInput<JFormattedTextField> {
     return formatter;
   }
 
+  @Override
+  public String getText() {
+    if (this.input.getValue() == null)
+      return null;
+
+    return this.input.getValue().toString();
+  }
+
+  @Override
+  public void setText(String text) {
+    this.input.setText(text);
+
+    if (isValidFormat(this.input.getText())) {
+      this.input.setValue(this.input.getText());
+    }
+  }
+
+  public boolean isValidFormat(String text) {
+    try {
+      this.input.getFormatter().stringToValue(text);
+      return true;
+    } catch (Exception e) {
+      return false;
+    }
+  }
+
+  @Override
+  public void clear() {
+    this.input.setValue(null);
+  }
+
   public static class MaskInputBuilder
       extends GoatTextInput.GoatTextInputBuilder<MaskInputBuilder, JFormattedTextField> {
     private String mask;

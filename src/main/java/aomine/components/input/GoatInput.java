@@ -76,6 +76,16 @@ public abstract class GoatInput<T extends JComponent> {
     this.lbl.setText(str);
   }
 
+  public void setError(String msg) {
+    this.setErrorHint(true);
+    this.setLabelErrorText(msg);
+  }
+
+  public void clearError() {
+    this.setErrorHint(false);
+    this.setLabelErrorText("");
+  }
+
   public void setLeftIcon(String iconPath, float scale) {
     this.input.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON, getSVGIcon(iconPath, scale));
   }
@@ -99,6 +109,8 @@ public abstract class GoatInput<T extends JComponent> {
   public T getInput() {
     return this.input;
   }
+
+  public abstract void clear();
 
   protected static abstract class GoatInputBuilder<U, T extends JComponent> {
     protected String lblText;

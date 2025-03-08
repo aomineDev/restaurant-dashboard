@@ -62,7 +62,7 @@ public class EmployeeController implements Controller {
     dni = Integer.parseInt(view.getMiDni().getText());
     birthdate = view.getDatePicker().getSelectedDate();
 
-    if (!view.getMiPhoneNumber().getText().equals(view.getPhoneNumberMask()))
+    if (view.getMiPhoneNumber().getText() != null)
       phoneNumber = Integer.parseInt(view.getMiPhoneNumber().getText().replaceAll(" ", ""));
 
     email = view.getTiEmail().getText();
@@ -98,13 +98,13 @@ public class EmployeeController implements Controller {
 
       GlassPanePopup.closePopup("employeeForm");
 
-      Form.cleanInputs(view.getFormInputList());
+      Form.clearInputList(view.getFormInputList());
 
       view.setTableData();
 
-      Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_RIGHT, messageSuccess);
+      Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.BOTTOM_LEFT, messageSuccess);
     } catch (Exception e) {
-      Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_RIGHT, messageError);
+      Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.BOTTOM_LEFT, messageError);
       System.out.println("error p xd");
       System.out.println(e.getMessage());
       e.printStackTrace();
@@ -114,7 +114,12 @@ public class EmployeeController implements Controller {
   }
 
   public void handleDeleteEmployee(int rowSelected) {
-    MessageAlerts.getInstance().showMessage("Eliminar Empleado", "¿Está seguro de eliminar este empleado?",
+    String firstName = (String) view.getTableEmployee().getValueAt(rowSelected, 0);
+    String paternalLastName = (String) view.getTableEmployee().getValueAt(rowSelected, 2);
+
+    String msg = String.format("¿Está seguro de eliminar a \n %s %s?", firstName, paternalLastName);
+
+    MessageAlerts.getInstance().showMessage("Eliminar Empleado", msg,
         MessageAlerts.MessageType.WARNING, MessageAlerts.YES_NO_OPTION, (ctr, option) -> {
           if (option == 0) {
             try {
@@ -122,10 +127,10 @@ public class EmployeeController implements Controller {
 
               view.setTableData();
 
-              Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_RIGHT,
+              Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.BOTTOM_LEFT,
                   "Empleado eliminado correctamente");
             } catch (Exception e) {
-              Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_RIGHT,
+              Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.BOTTOM_LEFT,
                   "Error al eliminar empleado");
 
               e.printStackTrace();
@@ -150,7 +155,7 @@ public class EmployeeController implements Controller {
         .isRequired("Campo requerido");
 
     validate.setElement(view.getMiDni())
-        .selfValidate("Campo requerido", text -> !text.equals(view.getDniMask()))
+        .isRequired("Campo requerido")
         .isInteger("DNI invalido");
 
     switch (action) {
@@ -158,11 +163,13 @@ public class EmployeeController implements Controller {
       case EDIT -> validate.isUnique("DNI ya registrado", Employee.class, "dni", selectedEmployee.getPersonId());
     }
 
-    if (!view.getMiBirthdate().getText().equals(view.getBirthdateMask()))
+    if (view.getMiBirthdate().getText() != null)
       validate.setElement(view.getMiBirthdate())
           .isDate("Fecha invalida");
 
-    if (!view.getMiPhoneNumber().getText().equals(view.getPhoneNumberMask())) {
+    System.out.println("telefono: " + view.getMiPhoneNumber().getText());
+
+    if (view.getMiPhoneNumber().getText() != null) {
       validate.setElement(view.getMiPhoneNumber())
           .setText(text -> text.replaceAll(" ", ""))
           .isInteger("telefono invalido");
@@ -174,7 +181,7 @@ public class EmployeeController implements Controller {
       }
     }
 
-    if (!view.getTiEmail().getText().equals("")) {
+    if (view.getTiEmail().getText() != null) {
       validate.setElement(view.getTiEmail())
           .isEmail("email invalido");
 
@@ -182,7 +189,6 @@ public class EmployeeController implements Controller {
         case ADD -> validate.isUnique("email ya registrado", Employee.class, "email");
         case EDIT -> validate.isUnique("email ya registrado", Employee.class, "email", selectedEmployee.getPersonId());
       }
-
     }
 
     validate.setElement(view.getTiUsername())
@@ -202,9 +208,8 @@ public class EmployeeController implements Controller {
 
     if (!validate.isValid()) {
       validate.getValErrorList().forEach(error -> {
-        error.getComponent().setErrorHint(true);
-        error.getComponent().setLabelErrorText(error.getMessage());
-        error.getComponent().setText("");
+        error.getComponent().setError(error.getMessage());
+        error.getComponent().clear();
       });
     }
 

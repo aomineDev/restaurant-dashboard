@@ -35,6 +35,11 @@ public class PasswordInput extends GoatTextInput<JPasswordField> {
 
   @Override
   public String getText() {
+    String text = String.valueOf(this.input.getPassword());
+
+    if (text.equals(""))
+      return null;
+
     return String.valueOf(this.input.getPassword());
   }
 

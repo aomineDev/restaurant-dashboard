@@ -24,8 +24,8 @@ public class SelectInput<T> extends GoatInput<JComboBox<T>> {
   }
 
   @Override
-  public JComboBox<T> getInput() {
-    return this.input;
+  public void clear() {
+    this.input.setSelectedIndex(0);
   }
 
   public static class SelectInputBuilder<T> extends GoatInput.GoatInputBuilder<SelectInputBuilder<T>, JComboBox<T>> {

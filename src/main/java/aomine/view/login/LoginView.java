@@ -85,13 +85,13 @@ public class LoginView extends JPanel implements View {
 
   @Override
   public void applyEvents() {
-    tiUsername.onKeyTyped(e -> Form.cleanErrorOnInput(tiUsername));
+    tiUsername.onKeyTyped(e -> tiUsername.clearError());
 
     piPassword.onKeyTyped(e -> {
       if (e.getKeyChar() == '\n')
         return;
 
-      Form.cleanErrorOnInput(piPassword);
+      piPassword.clearError();
     });
 
     piPassword.onKeyPressed(e -> {

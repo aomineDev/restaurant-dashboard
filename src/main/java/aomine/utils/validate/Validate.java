@@ -42,7 +42,7 @@ public class Validate {
     if (!this.valid)
       return this;
 
-    if (text.equals(""))
+    if (text == null)
       handleError(msg);
 
     return this;

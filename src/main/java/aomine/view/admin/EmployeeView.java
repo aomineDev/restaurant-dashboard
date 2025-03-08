@@ -49,15 +49,9 @@ public class EmployeeView extends SimpleView implements View {
   private EmployeeController controller;
   private GoatList<GoatInput<? extends JComponent>> formInputList;
   private int rowSelected;
-  private String dniMask;
-  private String phoneNumberMask;
-  private String birthdateMask;
 
   public EmployeeView() {
     formWidth = 800;
-    dniMask = "--------";
-    phoneNumberMask = "--- --- ---";
-    birthdateMask = "--/--/----";
 
     controller = new EmployeeController(this);
 
@@ -121,7 +115,7 @@ public class EmployeeView extends SimpleView implements View {
     miDni = new MaskInput.MaskInputBuilder()
         .setLabelText("DNI")
         .withErrorLabel()
-        .setMask(dniMask.replaceAll("-", "#"), '-')
+        .setMask("########", '-')
         .build();
 
     datePicker = new DatePicker();
@@ -137,7 +131,7 @@ public class EmployeeView extends SimpleView implements View {
     miPhoneNumber = new MaskInput.MaskInputBuilder()
         .setLabelText("Celuluar")
         .withErrorLabel()
-        .setMask(phoneNumberMask.replaceAll("-", "#"), '-')
+        .setMask("### ### ###", '-')
         .build();
 
     tiAddress = new TextInput.TextInputBuilder()
@@ -233,17 +227,17 @@ public class EmployeeView extends SimpleView implements View {
     });
 
     // Clean Inputs after error
-    tiFirstName.onKeyTyped(e -> Form.cleanErrorOnInput(tiFirstName));
-    tiSecondtName.onKeyTyped(e -> Form.cleanErrorOnInput(tiSecondtName));
-    tiPaternalLastName.onKeyTyped(e -> Form.cleanErrorOnInput(tiPaternalLastName));
-    tiMaternalLastName.onKeyTyped(e -> Form.cleanErrorOnInput(tiMaternalLastName));
-    miDni.onKeyTyped(e -> Form.cleanErrorOnInput(miDni));
-    miBirthdate.onChanged(e -> Form.cleanErrorOnInput(miBirthdate));
-    miPhoneNumber.onKeyTyped(e -> Form.cleanErrorOnInput(miPhoneNumber));
-    tiAddress.onKeyTyped(e -> Form.cleanErrorOnInput(tiAddress));
-    tiEmail.onKeyTyped(e -> Form.cleanErrorOnInput(tiEmail));
-    tiUsername.onKeyTyped(e -> Form.cleanErrorOnInput(tiUsername));
-    piPassword.onKeyTyped(e -> Form.cleanErrorOnInput(piPassword));
+    tiFirstName.onKeyTyped(e -> tiFirstName.clearError());
+    tiSecondtName.onKeyTyped(e -> tiSecondtName.clearError());
+    tiPaternalLastName.onKeyTyped(e -> tiPaternalLastName.clearError());
+    tiMaternalLastName.onKeyTyped(e -> tiMaternalLastName.clearError());
+    miDni.onKeyTyped(e -> miDni.clearError());
+    miBirthdate.onChanged(e -> miBirthdate.clearError());
+    miPhoneNumber.onKeyTyped(e -> miPhoneNumber.clearError());
+    tiAddress.onKeyTyped(e -> tiAddress.clearError());
+    tiEmail.onKeyTyped(e -> tiEmail.clearError());
+    tiUsername.onKeyTyped(e -> tiUsername.clearError());
+    piPassword.onKeyTyped(e -> piPassword.clearError());
   }
 
   @Override
@@ -446,11 +440,9 @@ public class EmployeeView extends SimpleView implements View {
     PopupCallbackAction callbackAction = (ctrl, act) -> {
       if (act == 0) {
         GlassPanePopup.closePopup("employeeForm");
-        Form.cleanInputs(formInputList);
-        Form.cleanErrorOnInput(formInputList);
+        Form.fullClearInputList(formInputList);
       } else if (act == -1) {
-        Form.cleanInputs(formInputList);
-        Form.cleanErrorOnInput(formInputList);
+        Form.fullClearInputList(formInputList);
       } else if (act == 1) {
         controller.setAction(action);
 
@@ -540,18 +532,6 @@ public class EmployeeView extends SimpleView implements View {
 
   public GoatList<GoatInput<? extends JComponent>> getFormInputList() {
     return formInputList;
-  }
-
-  public String getDniMask() {
-    return dniMask;
-  }
-
-  public String getPhoneNumberMask() {
-    return phoneNumberMask;
-  }
-
-  public String getBirthdateMask() {
-    return birthdateMask;
   }
 
   // layout

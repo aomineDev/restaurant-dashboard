@@ -59,9 +59,6 @@ public abstract class Person {
   }
 
   public void setEmail(String email) {
-    if (email.trim().isEmpty())
-      this.email = null;
-    else
-      this.email = email;
+    this.email = email;
   }
 }

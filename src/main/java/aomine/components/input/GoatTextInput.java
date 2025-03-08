@@ -102,7 +102,15 @@ public abstract class GoatTextInput<T extends JTextComponent> extends GoatInput<
   }
 
   public String getText() {
+    if (this.input.getText().equals(""))
+      return null;
+
     return this.input.getText();
+  }
+
+  @Override
+  public void clear() {
+    this.input.setText(null);
   }
 
   protected static abstract class GoatTextInputBuilder<U, T extends JTextComponent>
