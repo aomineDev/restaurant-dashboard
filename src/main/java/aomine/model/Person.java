@@ -1,8 +1,5 @@
 package aomine.model;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -22,7 +19,7 @@ public abstract class Person {
   protected long personId;
 
   @Column(name = "phone_number", unique = true)
-  protected int phoneNumber;
+  protected Integer phoneNumber;
 
   @Column(name = "address", length = 100)
   protected String address;
@@ -41,11 +38,11 @@ public abstract class Person {
     this.personId = personId;
   }
 
-  public int getPhoneNumber() {
+  public Integer getPhoneNumber() {
     return phoneNumber;
   }
 
-  public void setPhoneNumber(int phoneNumber) {
+  public void setPhoneNumber(Integer phoneNumber) {
     this.phoneNumber = phoneNumber;
   }
 
@@ -62,6 +59,9 @@ public abstract class Person {
   }
 
   public void setEmail(String email) {
-    this.email = email;
+    if (email.trim().isEmpty())
+      this.email = null;
+    else
+      this.email = email;
   }
 }

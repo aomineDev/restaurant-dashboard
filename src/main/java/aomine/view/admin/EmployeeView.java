@@ -49,9 +49,16 @@ public class EmployeeView extends SimpleView implements View {
   private EmployeeController controller;
   private GoatList<GoatInput<? extends JComponent>> formInputList;
   private int rowSelected;
+  private String dniMask;
+  private String phoneNumberMask;
+  private String birthdateMask;
 
   public EmployeeView() {
     formWidth = 800;
+    dniMask = "--------";
+    phoneNumberMask = "--- --- ---";
+    birthdateMask = "--/--/----";
+
     controller = new EmployeeController(this);
 
     initialize();
@@ -81,6 +88,8 @@ public class EmployeeView extends SimpleView implements View {
     btnEdit = new JButton("Editar");
     btnDelete = new JButton("Eliminar");
     tableEmployee = new JTable();
+
+    setBtnEnabled(false);
 
     // Form
     form = new JPanel();
@@ -112,7 +121,7 @@ public class EmployeeView extends SimpleView implements View {
     miDni = new MaskInput.MaskInputBuilder()
         .setLabelText("DNI")
         .withErrorLabel()
-        .setMask("########", '-')
+        .setMask(dniMask.replaceAll("-", "#"), '-')
         .build();
 
     datePicker = new DatePicker();
@@ -128,7 +137,7 @@ public class EmployeeView extends SimpleView implements View {
     miPhoneNumber = new MaskInput.MaskInputBuilder()
         .setLabelText("Celuluar")
         .withErrorLabel()
-        .setMask("### ### ###", '-')
+        .setMask(phoneNumberMask.replaceAll("-", "#"), '-')
         .build();
 
     tiAddress = new TextInput.TextInputBuilder()
@@ -218,6 +227,7 @@ public class EmployeeView extends SimpleView implements View {
     tableEmployee.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(MouseEvent evt) {
+        setBtnEnabled(true);
         rowSelected = tableEmployee.rowAtPoint(evt.getPoint());
       }
     });
@@ -462,6 +472,11 @@ public class EmployeeView extends SimpleView implements View {
         "employeeForm");
   }
 
+  public void setBtnEnabled(boolean enable) {
+    btnEdit.setEnabled(enable);
+    btnDelete.setEnabled(enable);
+  }
+
   // getters
   public SelectInput<Role> getCbRole() {
     return cbRole;
@@ -525,6 +540,18 @@ public class EmployeeView extends SimpleView implements View {
 
   public GoatList<GoatInput<? extends JComponent>> getFormInputList() {
     return formInputList;
+  }
+
+  public String getDniMask() {
+    return dniMask;
+  }
+
+  public String getPhoneNumberMask() {
+    return phoneNumberMask;
+  }
+
+  public String getBirthdateMask() {
+    return birthdateMask;
   }
 
   // layout

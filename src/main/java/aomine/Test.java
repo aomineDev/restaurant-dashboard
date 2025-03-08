@@ -21,55 +21,19 @@ import aomine.components.GoatPanel;
 import aomine.components.input.MaskInput;
 import aomine.components.input.TextInput;
 import aomine.dao.EmployeeDAO;
+import aomine.dao.RoleDAO;
 import aomine.database.Hibernate;
 import aomine.model.Employee;
+import aomine.model.Role;
 import aomine.utils.validate.ValError;
 import aomine.utils.validate.Validate;
 import net.miginfocom.swing.MigLayout;
 
-abstract class Padre<T> {
-  protected T t;
-
-  public abstract void print();
-
-  public T getT() {
-    return t;
-  }
-
-  public void setT(T t) {
-    this.t = t;
-  }
-}
-
-class Hijo1 extends Padre<String> {
-  Hijo1() {
-    this.t = "Hijo1";
-  }
-
-  @Override
-  public void print() {
-    System.out.println("Hola: " + t);
-  }
-}
-
-class Hijo2 extends Padre<Integer> {
-  Hijo2() {
-    this.t = 2;
-  }
-
-  @Override
-  public void print() {
-    System.out.println("Hola: Hijo" + t);
-  }
-}
-
 public class Test extends JFrame {
+  private Integer x;
+
   public Test() {
     init();
-  }
-
-  public void print(Padre<? extends String> p) {
-    p.print();
   }
 
   private void init() {
@@ -87,7 +51,7 @@ public class Test extends JFrame {
     GoatPanel panel = new GoatPanel.GoatPanelBuilder()
         .build();
 
-    panel.setLayout(new MigLayout());
+    panel.setLayout(new MigLayout("flowy"));
 
     TextInput tiName = new TextInput.TextInputBuilder()
         .setLabelText("Nombre")
@@ -95,22 +59,34 @@ public class Test extends JFrame {
         .setPlaceholder("dni")
         .build();
 
+    MaskInput miDni = new MaskInput.MaskInputBuilder()
+        .setLabelText("DNI")
+        .withErrorLabel()
+        .setMask("##/##/##/##", '-')
+        .build();
+
     JButton btn = new JButton("Check");
+    JButton btn2 = new JButton("val");
 
     btn.addActionListener(e -> {
-      Validate validate = new Validate();
+      miDni.getInput().setValue(null);
+      // Validate validate = new Validate();
 
-      validate.setElement(tiName)
-          .isRequired("El nombre es requerido")
-          .isUnique("duplicado", Employee.class, "dni", 2);
+      // validate.setElement(tiName)
+      // .isRequired("El nombre es requerido")
+      // .isUnique("duplicado", Employee.class, "dni", 2);
 
-      if (!validate.isValid()) {
-        for (ValError error : validate.getValErrorList()) {
-          error.getComponent().setLabelErrorText(error.getMessage());
-        }
-      } else {
-        System.out.println("Valid");
-      }
+      // if (!validate.isValid()) {
+      // for (ValError error : validate.getValErrorList()) {
+      // error.getComponent().setLabelErrorText(error.getMessage());
+      // }
+      // } else {
+      // System.out.println("Valid");
+      // }
+    });
+
+    btn2.addActionListener(e -> {
+      System.out.println(miDni.getInput().getValue());
     });
 
     tiName.onChanged((e) -> {
@@ -119,9 +95,12 @@ public class Test extends JFrame {
 
     panel.add(tiName.getLabel());
     panel.add(tiName.getInput(), "w 200");
-    panel.add(tiName.getErrorLabel(), "wrap");
-
+    panel.add(tiName.getErrorLabel());
+    panel.add(miDni.getLabel());
+    panel.add(miDni.getInput(), "w 200");
+    panel.add(miDni.getErrorLabel());
     panel.add(btn);
+    panel.add(btn2);
     setContentPane(panel);
   }
 

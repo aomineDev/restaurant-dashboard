@@ -29,9 +29,9 @@ public class EmployeeController implements Controller {
   private String secondName;
   private String paternalLastname;
   private String maternalLastname;
-  private int dni;
+  private Integer dni;
   private LocalDate birthdate;
-  private int phoneNumber;
+  private Integer phoneNumber;
   private String email;
   private String address;
   private String username;
@@ -61,7 +61,10 @@ public class EmployeeController implements Controller {
     maternalLastname = view.getTiMaternalLastName().getText();
     dni = Integer.parseInt(view.getMiDni().getText());
     birthdate = view.getDatePicker().getSelectedDate();
-    phoneNumber = Integer.parseInt(view.getMiPhoneNumber().getText().replaceAll(" ", ""));
+
+    if (!view.getMiPhoneNumber().getText().equals(view.getPhoneNumberMask()))
+      phoneNumber = Integer.parseInt(view.getMiPhoneNumber().getText().replaceAll(" ", ""));
+
     email = view.getTiEmail().getText();
     address = view.getTiAddress().getText();
     username = view.getTiUsername().getText();
@@ -76,10 +79,10 @@ public class EmployeeController implements Controller {
       case ADD -> "Error al creado empleado";
       case EDIT -> "Error al editar empleado";
     };
+
     try {
       switch (action) {
         case ADD -> {
-
           Employee employee = new Employee();
 
           fillEmployee(employee);
@@ -87,7 +90,6 @@ public class EmployeeController implements Controller {
           employeeDAO.add(employee);
         }
         case EDIT -> {
-
           fillEmployee(selectedEmployee);
 
           employeeDAO.update(selectedEmployee);
@@ -103,9 +105,12 @@ public class EmployeeController implements Controller {
       Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.TOP_RIGHT, messageSuccess);
     } catch (Exception e) {
       Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.TOP_RIGHT, messageError);
-
+      System.out.println("error p xd");
+      System.out.println(e.getMessage());
       e.printStackTrace();
     }
+
+    view.setBtnEnabled(false);
   }
 
   public void handleDeleteEmployee(int rowSelected) {
@@ -127,6 +132,8 @@ public class EmployeeController implements Controller {
             }
           }
         });
+
+    view.setBtnEnabled(false);
   }
 
   @Override
@@ -143,7 +150,7 @@ public class EmployeeController implements Controller {
         .isRequired("Campo requerido");
 
     validate.setElement(view.getMiDni())
-        .selfValidate("Campo requerido", text -> !text.equals("--------"))
+        .selfValidate("Campo requerido", text -> !text.equals(view.getDniMask()))
         .isInteger("DNI invalido");
 
     switch (action) {
@@ -151,11 +158,11 @@ public class EmployeeController implements Controller {
       case EDIT -> validate.isUnique("DNI ya registrado", Employee.class, "dni", selectedEmployee.getPersonId());
     }
 
-    if (!view.getMiBirthdate().getText().equals("--/--/----"))
+    if (!view.getMiBirthdate().getText().equals(view.getBirthdateMask()))
       validate.setElement(view.getMiBirthdate())
           .isDate("Fecha invalida");
 
-    if (!view.getMiPhoneNumber().getText().equals("--- --- ---")) {
+    if (!view.getMiPhoneNumber().getText().equals(view.getPhoneNumberMask())) {
       validate.setElement(view.getMiPhoneNumber())
           .setText(text -> text.replaceAll(" ", ""))
           .isInteger("telefono invalido");
@@ -205,6 +212,19 @@ public class EmployeeController implements Controller {
   }
 
   public void fillEmployee(Employee employee) {
+    System.out.println("first Name: " + firstName);
+    System.out.println("second Name: " + secondName);
+    System.out.println("paternal Lastname: " + paternalLastname);
+    System.out.println("maternal Lastname: " + maternalLastname);
+    System.out.println("dni: " + dni);
+    System.out.println("birthdate: " + birthdate);
+    System.out.println("phone Number: " + phoneNumber);
+    System.out.println("email: " + email);
+    System.out.println("address: " + address);
+    System.out.println("username: " + username);
+    System.out.println("password: " + password);
+    System.out.println("role: " + role);
+
     employee.setFirstName(firstName);
     employee.setSecondName(secondName);
     employee.setPaternalLastname(paternalLastname);

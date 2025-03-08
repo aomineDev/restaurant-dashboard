@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 @Table(name = "natural_people")
 public abstract class NaturalPerson extends Person {
   @Column(name = "dni", nullable = false, unique = true)
-  protected int dni;
+  protected Integer dni;
 
   @Column(name = "first_name", nullable = false, length = 50)
   protected String firstName;
@@ -31,11 +31,11 @@ public abstract class NaturalPerson extends Person {
   public NaturalPerson() {
   }
 
-  public int getDni() {
+  public Integer getDni() {
     return dni;
   }
 
-  public void setDni(int dni) {
+  public void setDni(Integer dni) {
     this.dni = dni;
   }
 
