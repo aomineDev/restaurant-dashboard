@@ -57,6 +57,8 @@ public class EmployeeView extends SimpleView implements View {
 
     initialize();
 
+    controller.setAllRoles();
+
     applyTableStyles();
     setTableModel();
     setTableData();
@@ -162,7 +164,15 @@ public class EmployeeView extends SimpleView implements View {
         .setLabelText("Rol")
         .build();
 
-    controller.setAllRoles();
+    // ResetForm
+    resetForm = new JPanel();
+
+    piNewPassword = new PasswordInput.PasswordInputBuilder()
+        .setLabelText("Nueva contraseña")
+        .setPlaceholder("Ingrese la nueva contraseña")
+        .withErrorLabel()
+        .build();
+
   }
 
   @Override
@@ -289,6 +299,10 @@ public class EmployeeView extends SimpleView implements View {
     form.add(cbRole.getInput(), "span 2, wrap");
     form.add(tiUsername.getErrorLabel(), "span 2");
     form.add(piPassword.getErrorLabel(), "span 2");
+
+    resetForm.add(piNewPassword.getLabel());
+    resetForm.add(piNewPassword.getInput());
+    resetForm.add(piNewPassword.getErrorLabel());
   }
 
   private void applyFormLayout() {
@@ -415,7 +429,6 @@ public class EmployeeView extends SimpleView implements View {
   }
 
   private void showFormPopup(FormAction action) {
-
     String actionBtn = switch (action) {
       case ADD -> "Agregar";
       case EDIT -> "Editar";
@@ -435,7 +448,7 @@ public class EmployeeView extends SimpleView implements View {
     borderOption.useScroll();
     borderOption.setWidth(popupWidht);
 
-    String[] actions = { "Cancelar", actionBtn };
+    String[] actions = { "Cancelar", "Cambiar contraseña", actionBtn };
 
     PopupCallbackAction callbackAction = (ctrl, act) -> {
       if (act == 0) {
@@ -444,6 +457,8 @@ public class EmployeeView extends SimpleView implements View {
       } else if (act == -1) {
         Form.fullClearInputList(formInputList);
       } else if (act == 1) {
+        showResetForm();
+      } else if (act == 2) {
         controller.setAction(action);
 
         controller.handleFormAction();
@@ -462,6 +477,22 @@ public class EmployeeView extends SimpleView implements View {
         popup,
         popupOption,
         "employeeForm");
+  }
+
+  public void showResetForm() {
+    // int resetFormWidth = 400;
+
+    // String[] actions = { "Cancelar", "Cambiar" };
+
+    // PopupCallbackAction callbackAction = (ctrl, act) -> {
+    // if (act == 0) {
+    // GlassPanePopup.closePopup("resetForm");
+    // } else if (act == 1) {
+    // controller.handleResetPassword();
+    // }
+    // };
+
+    GlassPanePopup.push(new SimplePopupBorder(resetForm, "Cambiar contraseña"), "employeeForm");
   }
 
   public void setBtnEnabled(boolean enable) {
@@ -530,6 +561,10 @@ public class EmployeeView extends SimpleView implements View {
     return piPassword;
   }
 
+  public PasswordInput getPiNewPassword() {
+    return piNewPassword;
+  }
+
   public GoatList<GoatInput<? extends JComponent>> getFormInputList() {
     return formInputList;
   }
@@ -562,4 +597,8 @@ public class EmployeeView extends SimpleView implements View {
   private TextInput tiUsername;
   private PasswordInput piPassword;
   private SelectInput<Role> cbRole;
+
+  // ResetForm
+  private JPanel resetForm;
+  private PasswordInput piNewPassword;
 }
