@@ -12,6 +12,7 @@ import aomine.utils.FormAction;
 import aomine.utils.GoatList;
 import aomine.utils.validate.Validate;
 import aomine.view.admin.EmployeeView;
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import raven.alerts.MessageAlerts;
 import raven.popup.GlassPanePopup;
 import raven.toast.Notifications;
@@ -45,14 +46,12 @@ public class EmployeeController implements Controller {
     this.validate = new Validate();
   }
 
-  public void setAllRoles() {
-    GoatList<Role> roleList = this.roleDAO.getAll();
-
-    roleList.forEach(role -> view.getCbRole().getInput().addItem(role));
+  public GoatList<Role> getRoleList() {
+    return this.roleDAO.getAll();
   }
 
   public void handleFormAction() {
-    if (!validateFields())
+    if (!validateFormFields())
       return;
 
     firstName = view.getTiFirstName().getText();
@@ -68,7 +67,11 @@ public class EmployeeController implements Controller {
     email = view.getTiEmail().getText();
     address = view.getTiAddress().getText();
     username = view.getTiUsername().getText();
-    password = view.getPiPassword().getText();
+
+    if (action == FormAction.ADD) {
+      password = getEncryptedPassword(view.getPiPassword().getText());
+    }
+
     role = view.getCbRole().getSelectedItem();
 
     String messageSuccess = switch (action) {
@@ -98,15 +101,12 @@ public class EmployeeController implements Controller {
 
       GlassPanePopup.closePopup("employeeForm");
 
-      Form.clearInputList(view.getFormInputList());
-
       view.setTableData();
 
       Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.BOTTOM_LEFT, messageSuccess);
     } catch (Exception e) {
       Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.BOTTOM_LEFT, messageError);
-      System.out.println("error p xd");
-      System.out.println(e.getMessage());
+
       e.printStackTrace();
     }
 
@@ -141,8 +141,33 @@ public class EmployeeController implements Controller {
     view.setBtnEnabled(false);
   }
 
+  public void handleResetPassword() {
+    if (!validateResetFormFields())
+      return;
+
+    password = getEncryptedPassword(view.getPiNewPassword().getText());
+
+    selectedEmployee.setPassword(password);
+
+    try {
+      employeeDAO.update(selectedEmployee);
+
+      GlassPanePopup.closePopup("employeeForm");
+
+      Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.BOTTOM_LEFT,
+          "Contraseña actualizada");
+    } catch (Exception e) {
+      Notifications.getInstance().show(Notifications.Type.ERROR, Notifications.Location.BOTTOM_LEFT,
+          "Error al actualizar la contraseña");
+
+      e.printStackTrace();
+    }
+
+    view.setBtnEnabled(false);
+  }
+
   @Override
-  public boolean validateFields() {
+  public boolean validateFormFields() {
     validate.reset();
 
     validate.setElement(view.getTiFirstName())
@@ -216,20 +241,28 @@ public class EmployeeController implements Controller {
     return validate.isValid();
   }
 
-  public void fillEmployee(Employee employee) {
-    System.out.println("first Name: " + firstName);
-    System.out.println("second Name: " + secondName);
-    System.out.println("paternal Lastname: " + paternalLastname);
-    System.out.println("maternal Lastname: " + maternalLastname);
-    System.out.println("dni: " + dni);
-    System.out.println("birthdate: " + birthdate);
-    System.out.println("phone Number: " + phoneNumber);
-    System.out.println("email: " + email);
-    System.out.println("address: " + address);
-    System.out.println("username: " + username);
-    System.out.println("password: " + password);
-    System.out.println("role: " + role);
+  public boolean validateResetFormFields() {
+    validate.reset();
 
+    validate.setElement(view.getPiNewPassword())
+        .isRequired("campo requerido")
+        .minLength("minimo 8 caracteres", 8);
+
+    if (!validate.isValid()) {
+      validate.getValErrorList().forEach(error -> {
+        error.getComponent().setError(error.getMessage());
+        error.getComponent().clear();
+      });
+    }
+
+    return validate.isValid();
+  }
+
+  private String getEncryptedPassword(String password) {
+    return BCrypt.withDefaults().hashToString(12, password.toCharArray());
+  }
+
+  public void fillEmployee(Employee employee) {
     employee.setFirstName(firstName);
     employee.setSecondName(secondName);
     employee.setPaternalLastname(paternalLastname);
@@ -255,10 +288,12 @@ public class EmployeeController implements Controller {
     return employeeDAO.getAll();
   }
 
-  public Employee getEmployee(int rowSelected) {
-    this.selectedEmployee = employeeDAO.get(getIdFromRow(rowSelected));
-
+  public Employee getEmployee() {
     return this.selectedEmployee;
+  }
+
+  public void setSelectedEmployee(int rowSelected) {
+    this.selectedEmployee = employeeDAO.get(getIdFromRow(rowSelected));
   }
 
   public void setAction(FormAction action) {

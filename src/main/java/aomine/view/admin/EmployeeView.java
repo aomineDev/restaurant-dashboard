@@ -57,7 +57,7 @@ public class EmployeeView extends SimpleView implements View {
 
     initialize();
 
-    controller.setAllRoles();
+    setBtnEnabled(false);
 
     applyTableStyles();
     setTableModel();
@@ -84,95 +84,6 @@ public class EmployeeView extends SimpleView implements View {
     btnEdit = new JButton("Editar");
     btnDelete = new JButton("Eliminar");
     tableEmployee = new JTable();
-
-    setBtnEnabled(false);
-
-    // Form
-    form = new JPanel();
-
-    tiFirstName = new TextInput.TextInputBuilder()
-        .setLabelText("Primer nombre")
-        .setPlaceholder("Inngrese el primer nombre")
-        .withErrorLabel()
-        .build();
-
-    tiSecondtName = new TextInput.TextInputBuilder()
-        .setLabelText("Segundo nombre")
-        .setPlaceholder("Ingrese el segundo nombre")
-        .withErrorLabel()
-        .build();
-
-    tiPaternalLastName = new TextInput.TextInputBuilder()
-        .setLabelText("Apellido paterno")
-        .setPlaceholder("Ingrese el apellido paterno")
-        .withErrorLabel()
-        .build();
-
-    tiMaternalLastName = new TextInput.TextInputBuilder()
-        .setLabelText("Apellido materno")
-        .setPlaceholder("Ingrese el apellido materno")
-        .withErrorLabel()
-        .build();
-
-    miDni = new MaskInput.MaskInputBuilder()
-        .setLabelText("DNI")
-        .withErrorLabel()
-        .setMask("########", '-')
-        .build();
-
-    datePicker = new DatePicker();
-    miBirthdate = new MaskInput.MaskInputBuilder()
-        .setLabelText("Fecha de nacimiento")
-        .withErrorLabel()
-        .build();
-    datePicker.setEditor(miBirthdate.getInput());
-    datePicker.setUsePanelOption(true);
-    datePicker.setDateSelectionAble(localDate -> !localDate.isAfter(LocalDate.now()));
-    datePicker.setCloseAfterSelected(true);
-
-    miPhoneNumber = new MaskInput.MaskInputBuilder()
-        .setLabelText("Celuluar")
-        .withErrorLabel()
-        .setMask("### ### ###", '-')
-        .build();
-
-    tiAddress = new TextInput.TextInputBuilder()
-        .setLabelText("Dirección")
-        .setPlaceholder("Ingrese la dirección")
-        .withErrorLabel()
-        .build();
-
-    tiEmail = new TextInput.TextInputBuilder()
-        .setLabelText("Email")
-        .setPlaceholder("Ingrese el email")
-        .withErrorLabel()
-        .build();
-
-    tiUsername = new TextInput.TextInputBuilder()
-        .setLabelText("Usuario")
-        .setPlaceholder("Ingrese el usuario")
-        .withErrorLabel()
-        .build();
-
-    piPassword = new PasswordInput.PasswordInputBuilder()
-        .setLabelText("Contraseña")
-        .setPlaceholder("Ingrese la contraseña")
-        .withErrorLabel()
-        .build();
-
-    cbRole = new SelectInput.SelectInputBuilder<Role>()
-        .setLabelText("Rol")
-        .build();
-
-    // ResetForm
-    resetForm = new JPanel();
-
-    piNewPassword = new PasswordInput.PasswordInputBuilder()
-        .setLabelText("Nueva contraseña")
-        .setPlaceholder("Ingrese la nueva contraseña")
-        .withErrorLabel()
-        .build();
-
   }
 
   @Override
@@ -182,8 +93,6 @@ public class EmployeeView extends SimpleView implements View {
     container.setLayout(new MigLayout("insets 0, flowy", "[grow]", "[]10[grow]"));
 
     tableContainer.setLayout(new MigLayout("insets 16, fillx", "[]push[][][]", "[]20[grow]"));
-
-    applyFormLayout();
   }
 
   @Override
@@ -202,21 +111,25 @@ public class EmployeeView extends SimpleView implements View {
     btnEdit.putClientProperty(FlatClientProperties.STYLE_CLASS, "table_style");
     btnDelete.putClientProperty(FlatClientProperties.STYLE_CLASS, "table_style");
 
-    miBirthdate.getInput().putClientProperty(FlatClientProperties.OUTLINE, null);
-
     setIcons();
   }
 
   @Override
   public void applyEvents() {
     btnAdd.addActionListener(evt -> {
+      initForm(FormAction.ADD);
+
       this.piPassword.getInput().setEnabled(true);
 
       showFormPopup(FormAction.ADD);
     });
 
     btnEdit.addActionListener(e -> {
-      this.fillForm(controller.getEmployee(rowSelected));
+      initForm(FormAction.EDIT);
+
+      controller.setSelectedEmployee(rowSelected);
+
+      this.fillForm(controller.getEmployee());
 
       this.piPassword.getInput().setEnabled(false);
 
@@ -235,19 +148,6 @@ public class EmployeeView extends SimpleView implements View {
         rowSelected = tableEmployee.rowAtPoint(evt.getPoint());
       }
     });
-
-    // Clean Inputs after error
-    tiFirstName.onKeyTyped(e -> tiFirstName.clearError());
-    tiSecondtName.onKeyTyped(e -> tiSecondtName.clearError());
-    tiPaternalLastName.onKeyTyped(e -> tiPaternalLastName.clearError());
-    tiMaternalLastName.onKeyTyped(e -> tiMaternalLastName.clearError());
-    miDni.onKeyTyped(e -> miDni.clearError());
-    miBirthdate.onChanged(e -> miBirthdate.clearError());
-    miPhoneNumber.onKeyTyped(e -> miPhoneNumber.clearError());
-    tiAddress.onKeyTyped(e -> tiAddress.clearError());
-    tiEmail.onKeyTyped(e -> tiEmail.clearError());
-    tiUsername.onKeyTyped(e -> tiUsername.clearError());
-    piPassword.onKeyTyped(e -> piPassword.clearError());
   }
 
   @Override
@@ -263,46 +163,6 @@ public class EmployeeView extends SimpleView implements View {
     tableContainer.add(btnEdit);
     tableContainer.add(btnDelete, "wrap");
     tableContainer.add(new JScrollPane(tableEmployee), "span, grow");
-
-    form.add(tiFirstName.getLabel(), "span 3");
-    form.add(tiSecondtName.getLabel(), "span 3, wrap");
-    form.add(tiFirstName.getInput(), "span 3");
-    form.add(tiSecondtName.getInput(), "span 3, wrap");
-    form.add(tiFirstName.getErrorLabel(), "span 3");
-    form.add(tiSecondtName.getErrorLabel(), "span 3, wrap");
-    form.add(tiPaternalLastName.getLabel(), "span 3");
-    form.add(tiMaternalLastName.getLabel(), "span 3, wrap");
-    form.add(tiPaternalLastName.getInput(), "span 3");
-    form.add(tiMaternalLastName.getInput(), "span 3, wrap");
-    form.add(tiPaternalLastName.getErrorLabel(), "span 3");
-    form.add(tiMaternalLastName.getErrorLabel(), "span 3, wrap");
-    form.add(miDni.getLabel(), "span 2");
-    form.add(miBirthdate.getLabel(), "span 2");
-    form.add(miPhoneNumber.getLabel(), "span 2, wrap");
-    form.add(miDni.getInput(), "span 2");
-    form.add(miBirthdate.getInput(), "span 2");
-    form.add(miPhoneNumber.getInput(), "wrap, span 2");
-    form.add(miDni.getErrorLabel(), "span 2");
-    form.add(miBirthdate.getErrorLabel(), "span 2");
-    form.add(miPhoneNumber.getErrorLabel(), "span 2, wrap");
-    form.add(tiAddress.getLabel(), "span, wrap");
-    form.add(tiAddress.getInput(), "span, wrap");
-    form.add(tiAddress.getErrorLabel(), "span, wrap");
-    form.add(tiEmail.getLabel(), "span, wrap");
-    form.add(tiEmail.getInput(), "span, wrap");
-    form.add(tiEmail.getErrorLabel(), "span, wrap");
-    form.add(tiUsername.getLabel(), "span 2");
-    form.add(piPassword.getLabel(), "span 2");
-    form.add(cbRole.getLabel(), "span 2, wrap");
-    form.add(tiUsername.getInput(), "span 2");
-    form.add(piPassword.getInput(), "span 2");
-    form.add(cbRole.getInput(), "span 2, wrap");
-    form.add(tiUsername.getErrorLabel(), "span 2");
-    form.add(piPassword.getErrorLabel(), "span 2");
-
-    resetForm.add(piNewPassword.getLabel());
-    resetForm.add(piNewPassword.getInput());
-    resetForm.add(piNewPassword.getErrorLabel());
   }
 
   private void applyFormLayout() {
@@ -448,24 +308,35 @@ public class EmployeeView extends SimpleView implements View {
     borderOption.useScroll();
     borderOption.setWidth(popupWidht);
 
-    String[] actions = { "Cancelar", "Cambiar contraseña", actionBtn };
-
-    PopupCallbackAction callbackAction = (ctrl, act) -> {
-      if (act == 0) {
-        GlassPanePopup.closePopup("employeeForm");
-        Form.fullClearInputList(formInputList);
-      } else if (act == -1) {
-        Form.fullClearInputList(formInputList);
-      } else if (act == 1) {
-        showResetForm();
-      } else if (act == 2) {
-        controller.setAction(action);
-
-        controller.handleFormAction();
-      }
+    String[] actions = switch (action) {
+      case ADD -> new String[] { "Cancelar", actionBtn };
+      case EDIT -> new String[] { "Cancelar", "Cambiar contraseña", actionBtn };
     };
 
-    SwingUtilities.updateComponentTreeUI(form);
+    PopupCallbackAction callbackAction = switch (action) {
+      case ADD -> (ctrl, act) -> {
+        if (act == 0) {
+          GlassPanePopup.closePopup("employeeForm");
+        } else if (act == 1) {
+          controller.setAction(action);
+
+          controller.handleFormAction();
+        }
+      };
+      case EDIT -> (ctrl, act) -> {
+        if (act == 0) {
+          GlassPanePopup.closePopup("employeeForm");
+        } else if (act == 1) {
+          initResetForm();
+
+          showResetForm();
+        } else if (act == 2) {
+          controller.setAction(action);
+
+          controller.handleFormAction();
+        }
+      };
+    };
 
     SimplePopupBorder popup = new SimplePopupBorder(form, title, borderOption, actions, callbackAction);
 
@@ -479,25 +350,180 @@ public class EmployeeView extends SimpleView implements View {
         "employeeForm");
   }
 
-  public void showResetForm() {
-    // int resetFormWidth = 400;
+  private void showResetForm() {
+    String[] actions = { "Cancelar", "Cambiar" };
 
-    // String[] actions = { "Cancelar", "Cambiar" };
+    PopupCallbackAction callbackAction = (ctrl, act) -> {
+      if (act == 0) {
+        GlassPanePopup.pop("employeeForm");
+      } else if (act == 1) {
+        controller.handleResetPassword();
+      }
+    };
 
-    // PopupCallbackAction callbackAction = (ctrl, act) -> {
-    // if (act == 0) {
-    // GlassPanePopup.closePopup("resetForm");
-    // } else if (act == 1) {
-    // controller.handleResetPassword();
-    // }
-    // };
+    SimplePopupBorder popup = new SimplePopupBorder(resetForm, "Cambiar contraseña", actions, callbackAction);
 
-    GlassPanePopup.push(new SimplePopupBorder(resetForm, "Cambiar contraseña"), "employeeForm");
+    GlassPanePopup.push(popup, "employeeForm");
   }
 
   public void setBtnEnabled(boolean enable) {
     btnEdit.setEnabled(enable);
     btnDelete.setEnabled(enable);
+  }
+
+  private void initForm(FormAction action) {
+    form = new JPanel();
+
+    tiFirstName = new TextInput.TextInputBuilder()
+        .setLabelText("CTMRRRRRRRRRR")
+        .setPlaceholder("Inngrese el primer nombre")
+        .withErrorLabel()
+        .build();
+
+    tiSecondtName = new TextInput.TextInputBuilder()
+        .setLabelText("Segundo nombre")
+        .setPlaceholder("Ingrese el segundo nombre")
+        .withErrorLabel()
+        .build();
+
+    tiPaternalLastName = new TextInput.TextInputBuilder()
+        .setLabelText("Apellido paterno")
+        .setPlaceholder("Ingrese el apellido paterno")
+        .withErrorLabel()
+        .build();
+
+    tiMaternalLastName = new TextInput.TextInputBuilder()
+        .setLabelText("Apellido materno")
+        .setPlaceholder("Ingrese el apellido materno")
+        .withErrorLabel()
+        .build();
+
+    miDni = new MaskInput.MaskInputBuilder()
+        .setLabelText("DNI")
+        .withErrorLabel()
+        .setMask("########", '-')
+        .build();
+
+    datePicker = new DatePicker();
+
+    miBirthdate = new MaskInput.MaskInputBuilder()
+        .setLabelText("Fecha de nacimiento")
+        .withErrorLabel()
+        .build();
+
+    datePicker.setEditor(miBirthdate.getInput());
+    datePicker.setUsePanelOption(true);
+    datePicker.setDateSelectionAble(localDate -> !localDate.isAfter(LocalDate.now()));
+    datePicker.setCloseAfterSelected(true);
+
+    miPhoneNumber = new MaskInput.MaskInputBuilder()
+        .setLabelText("Celuluar")
+        .withErrorLabel()
+        .setMask("### ### ###", '-')
+        .build();
+
+    tiAddress = new TextInput.TextInputBuilder()
+        .setLabelText("Dirección")
+        .setPlaceholder("Ingrese la dirección")
+        .withErrorLabel()
+        .build();
+
+    tiEmail = new TextInput.TextInputBuilder()
+        .setLabelText("Email")
+        .setPlaceholder("Ingrese el email")
+        .withErrorLabel()
+        .build();
+
+    tiUsername = new TextInput.TextInputBuilder()
+        .setLabelText("Usuario")
+        .setPlaceholder("Ingrese el usuario")
+        .withErrorLabel()
+        .build();
+
+    piPassword = new PasswordInput.PasswordInputBuilder()
+        .setLabelText("Contraseña")
+        .setPlaceholder("Ingrese la contraseña")
+        .withErrorLabel()
+        .build();
+
+    cbRole = new SelectInput.SelectInputBuilder<Role>()
+        .setLabelText("Rol")
+        .build();
+
+    controller.getRoleList().forEach(role -> cbRole.getInput().addItem(role));
+
+    applyFormLayout();
+
+    miBirthdate.getInput().putClientProperty(FlatClientProperties.OUTLINE, null);
+
+    form.add(tiFirstName.getLabel(), "span 3");
+    form.add(tiSecondtName.getLabel(), "span 3, wrap");
+    form.add(tiFirstName.getInput(), "span 3");
+    form.add(tiSecondtName.getInput(), "span 3, wrap");
+    form.add(tiFirstName.getErrorLabel(), "span 3");
+    form.add(tiSecondtName.getErrorLabel(), "span 3, wrap");
+    form.add(tiPaternalLastName.getLabel(), "span 3");
+    form.add(tiMaternalLastName.getLabel(), "span 3, wrap");
+    form.add(tiPaternalLastName.getInput(), "span 3");
+    form.add(tiMaternalLastName.getInput(), "span 3, wrap");
+    form.add(tiPaternalLastName.getErrorLabel(), "span 3");
+    form.add(tiMaternalLastName.getErrorLabel(), "span 3, wrap");
+    form.add(miDni.getLabel(), "span 2");
+    form.add(miBirthdate.getLabel(), "span 2");
+    form.add(miPhoneNumber.getLabel(), "span 2, wrap");
+    form.add(miDni.getInput(), "span 2");
+    form.add(miBirthdate.getInput(), "span 2");
+    form.add(miPhoneNumber.getInput(), "wrap, span 2");
+    form.add(miDni.getErrorLabel(), "span 2");
+    form.add(miBirthdate.getErrorLabel(), "span 2");
+    form.add(miPhoneNumber.getErrorLabel(), "span 2, wrap");
+    form.add(tiAddress.getLabel(), "span, wrap");
+    form.add(tiAddress.getInput(), "span, wrap");
+    form.add(tiAddress.getErrorLabel(), "span, wrap");
+    form.add(tiEmail.getLabel(), "span, wrap");
+    form.add(tiEmail.getInput(), "span, wrap");
+    form.add(tiEmail.getErrorLabel(), "span, wrap");
+    form.add(tiUsername.getLabel(), "span 2");
+    if (action == FormAction.ADD)
+      form.add(piPassword.getLabel(), "span 2");
+    form.add(cbRole.getLabel(), "span 2, wrap");
+    form.add(tiUsername.getInput(), "span 2");
+    if (action == FormAction.ADD)
+      form.add(piPassword.getInput(), "span 2");
+    form.add(cbRole.getInput(), "span 2, wrap");
+    form.add(tiUsername.getErrorLabel(), "span 2");
+    if (action == FormAction.ADD)
+      form.add(piPassword.getErrorLabel(), "span 2");
+
+    tiFirstName.onKeyTyped(e -> tiFirstName.clearError());
+    tiSecondtName.onKeyTyped(e -> tiSecondtName.clearError());
+    tiPaternalLastName.onKeyTyped(e -> tiPaternalLastName.clearError());
+    tiMaternalLastName.onKeyTyped(e -> tiMaternalLastName.clearError());
+    miDni.onKeyTyped(e -> miDni.clearError());
+    miBirthdate.onChanged(e -> miBirthdate.clearError());
+    miPhoneNumber.onKeyTyped(e -> miPhoneNumber.clearError());
+    tiAddress.onKeyTyped(e -> tiAddress.clearError());
+    tiEmail.onKeyTyped(e -> tiEmail.clearError());
+    tiUsername.onKeyTyped(e -> tiUsername.clearError());
+    piPassword.onKeyTyped(e -> piPassword.clearError());
+  }
+
+  private void initResetForm() {
+    resetForm = new JPanel();
+
+    piNewPassword = new PasswordInput.PasswordInputBuilder()
+        .setLabelText("Nueva contraseña")
+        .setPlaceholder("Ingrese la nueva contraseña")
+        .withErrorLabel()
+        .build();
+
+    resetForm.setLayout(new MigLayout("insets 24, flowy, fillx", "[fill]"));
+
+    resetForm.add(piNewPassword.getLabel());
+    resetForm.add(piNewPassword.getInput());
+    resetForm.add(piNewPassword.getErrorLabel());
+
+    piNewPassword.onKeyTyped(e -> piNewPassword.clearError());
   }
 
   // getters

@@ -128,3 +128,6 @@ class Hijo extends Padre<Hijo> {
 ### MaskInput
 ### SelectInput
 ## Validate
+
+# Actualizar componente al cambiar tema
+SwingUtilities.updateComponentTreeUI(component);

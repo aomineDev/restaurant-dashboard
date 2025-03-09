@@ -50,7 +50,7 @@ public class LoginController implements Controller {
   }
 
   public void handleLogin(ActionEvent evt) {
-    if (!validateFields())
+    if (!validateFormFields())
       return;
 
     username = view.getTiUsername().getText();
@@ -77,7 +77,7 @@ public class LoginController implements Controller {
   }
 
   @Override
-  public boolean validateFields() {
+  public boolean validateFormFields() {
     validate.reset();
 
     validate.setElement(view.getTiUsername())
