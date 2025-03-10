@@ -30,10 +30,28 @@ import aomine.utils.validate.ValError;
 import aomine.utils.validate.Validate;
 import net.miginfocom.swing.MigLayout;
 
+class Padre {
+  Padre() {
+    init();
+  }
+
+  public void init() {
+    System.out.println("Padre");
+  }
+}
+
+class Hijo extends Padre {
+  public void init() {
+    super.init();
+    System.out.println("Hijo");
+  }
+}
+
 public class Test extends JFrame {
 
   public Test() {
-    init();
+    // init();
+    Hijo hijo = new Hijo();
   }
 
   public boolean asd(MaskInput field, String text) {

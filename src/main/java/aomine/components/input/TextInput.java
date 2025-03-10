@@ -7,6 +7,7 @@ public class TextInput extends GoatTextInput<JTextField> {
 
   public TextInput(TextInputBuilder builder) {
     super(builder);
+
     this.value = builder.value;
 
     this.initialize();

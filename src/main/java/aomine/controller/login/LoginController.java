@@ -11,7 +11,7 @@ import aomine.model.Role;
 import aomine.store.Store;
 import aomine.utils.validate.ValError;
 import aomine.utils.validate.Validate;
-import aomine.view.admin.EmployeeView;
+import aomine.view.admin.employee.EmployeeView;
 import aomine.view.login.LoginView;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import at.favre.lib.crypto.bcrypt.BCrypt.Result;

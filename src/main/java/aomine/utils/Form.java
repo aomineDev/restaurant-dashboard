@@ -4,6 +4,10 @@ import javax.swing.JComponent;
 
 import aomine.components.input.GoatInput;
 
+/*
+  SIN USO
+ */
+
 public class Form {
   public static void clearErrorInputList(GoatList<GoatInput<? extends JComponent>> formInputList) {
     formInputList.forEach(input -> input.clearError());

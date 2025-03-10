@@ -7,11 +7,12 @@ import aomine.dao.EmployeeDAO;
 import aomine.dao.RoleDAO;
 import aomine.model.Employee;
 import aomine.model.Role;
-import aomine.utils.Form;
 import aomine.utils.FormAction;
 import aomine.utils.GoatList;
 import aomine.utils.validate.Validate;
-import aomine.view.admin.EmployeeView;
+import aomine.view.admin.employee.EmployeeView;
+import aomine.view.admin.employee.EmployeeForm;
+import aomine.view.admin.employee.EmployeeResetForm;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import raven.alerts.MessageAlerts;
 import raven.popup.GlassPanePopup;
@@ -19,6 +20,8 @@ import raven.toast.Notifications;
 
 public class EmployeeController implements Controller {
   private EmployeeView view;
+  private EmployeeForm form;
+  private EmployeeResetForm resetForm;
   private EmployeeDAO employeeDAO;
   private RoleDAO roleDAO;
   private Validate validate;
@@ -54,25 +57,25 @@ public class EmployeeController implements Controller {
     if (!validateFormFields())
       return;
 
-    firstName = view.getTiFirstName().getText();
-    secondName = view.getTiSecondtName().getText();
-    paternalLastname = view.getTiPaternalLastName().getText();
-    maternalLastname = view.getTiMaternalLastName().getText();
-    dni = Integer.parseInt(view.getMiDni().getText());
-    birthdate = view.getDatePicker().getSelectedDate();
+    firstName = form.getTiFirstName().getText();
+    secondName = form.getTiSecondtName().getText();
+    paternalLastname = form.getTiPaternalLastName().getText();
+    maternalLastname = form.getTiMaternalLastName().getText();
+    dni = Integer.parseInt(form.getMiDni().getText());
+    birthdate = form.getDatePicker().getSelectedDate();
 
-    if (view.getMiPhoneNumber().getText() != null)
-      phoneNumber = Integer.parseInt(view.getMiPhoneNumber().getText().replaceAll(" ", ""));
+    if (form.getMiPhoneNumber().getText() != null)
+      phoneNumber = Integer.parseInt(form.getMiPhoneNumber().getText().replaceAll(" ", ""));
 
-    email = view.getTiEmail().getText();
-    address = view.getTiAddress().getText();
-    username = view.getTiUsername().getText();
+    email = form.getTiEmail().getText();
+    address = form.getTiAddress().getText();
+    username = form.getTiUsername().getText();
 
     if (action == FormAction.ADD) {
-      password = getEncryptedPassword(view.getPiPassword().getText());
+      password = getEncryptedPassword(form.getPiPassword().getText());
     }
 
-    role = view.getCbRole().getSelectedItem();
+    role = form.getCbRole().getSelectedItem();
 
     String messageSuccess = switch (action) {
       case ADD -> "Empleado creado correctamente";
@@ -114,8 +117,8 @@ public class EmployeeController implements Controller {
   }
 
   public void handleDeleteEmployee(int rowSelected) {
-    String firstName = (String) view.getTableEmployee().getValueAt(rowSelected, 0);
-    String paternalLastName = (String) view.getTableEmployee().getValueAt(rowSelected, 2);
+    String firstName = (String) view.getValueFromTable(rowSelected, 0);
+    String paternalLastName = (String) view.getValueFromTable(rowSelected, 2);
 
     String msg = String.format("¿Está seguro de eliminar a \n %s %s?", firstName, paternalLastName);
 
@@ -123,7 +126,7 @@ public class EmployeeController implements Controller {
         MessageAlerts.MessageType.WARNING, MessageAlerts.YES_NO_OPTION, (ctr, option) -> {
           if (option == 0) {
             try {
-              employeeDAO.delete(getIdFromRow(rowSelected));
+              employeeDAO.delete(view.getIdFromTable(rowSelected));
 
               view.setTableData();
 
@@ -145,7 +148,7 @@ public class EmployeeController implements Controller {
     if (!validateResetFormFields())
       return;
 
-    password = getEncryptedPassword(view.getPiNewPassword().getText());
+    password = getEncryptedPassword(resetForm.getPiNewPassword().getText());
 
     selectedEmployee.setPassword(password);
 
@@ -170,16 +173,16 @@ public class EmployeeController implements Controller {
   public boolean validateFormFields() {
     validate.reset();
 
-    validate.setElement(view.getTiFirstName())
+    validate.setElement(form.getTiFirstName())
         .isRequired("Campo requerido");
 
-    validate.setElement(view.getTiPaternalLastName())
+    validate.setElement(form.getTiPaternalLastName())
         .isRequired("Campo requerido");
 
-    validate.setElement(view.getTiMaternalLastName())
+    validate.setElement(form.getTiMaternalLastName())
         .isRequired("Campo requerido");
 
-    validate.setElement(view.getMiDni())
+    validate.setElement(form.getMiDni())
         .isRequired("Campo requerido")
         .isInteger("DNI invalido");
 
@@ -188,14 +191,12 @@ public class EmployeeController implements Controller {
       case EDIT -> validate.isUnique("DNI ya registrado", Employee.class, "dni", selectedEmployee.getPersonId());
     }
 
-    if (view.getMiBirthdate().getText() != null)
-      validate.setElement(view.getMiBirthdate())
+    if (form.getMiBirthdate().getText() != null)
+      validate.setElement(form.getMiBirthdate())
           .isDate("Fecha invalida");
 
-    System.out.println("telefono: " + view.getMiPhoneNumber().getText());
-
-    if (view.getMiPhoneNumber().getText() != null) {
-      validate.setElement(view.getMiPhoneNumber())
+    if (form.getMiPhoneNumber().getText() != null) {
+      validate.setElement(form.getMiPhoneNumber())
           .setText(text -> text.replaceAll(" ", ""))
           .isInteger("telefono invalido");
 
@@ -206,8 +207,8 @@ public class EmployeeController implements Controller {
       }
     }
 
-    if (view.getTiEmail().getText() != null) {
-      validate.setElement(view.getTiEmail())
+    if (form.getTiEmail().getText() != null) {
+      validate.setElement(form.getTiEmail())
           .isEmail("email invalido");
 
       switch (action) {
@@ -216,7 +217,7 @@ public class EmployeeController implements Controller {
       }
     }
 
-    validate.setElement(view.getTiUsername())
+    validate.setElement(form.getTiUsername())
         .isRequired("campo requerido");
 
     switch (action) {
@@ -227,7 +228,7 @@ public class EmployeeController implements Controller {
     }
 
     if (action == FormAction.ADD)
-      validate.setElement(view.getPiPassword())
+      validate.setElement(form.getPiPassword())
           .isRequired("campo requerido")
           .minLength("minimo 8 caracteres", 8);
 
@@ -244,7 +245,7 @@ public class EmployeeController implements Controller {
   public boolean validateResetFormFields() {
     validate.reset();
 
-    validate.setElement(view.getPiNewPassword())
+    validate.setElement(resetForm.getPiNewPassword())
         .isRequired("campo requerido")
         .minLength("minimo 8 caracteres", 8);
 
@@ -280,23 +281,27 @@ public class EmployeeController implements Controller {
     employee.setRole(role);
   }
 
-  public long getIdFromRow(int rowSelected) {
-    return (long) view.getTableEmployee().getModel().getValueAt(rowSelected, 0);
-  }
-
   public GoatList<Employee> getEmployeeList() {
     return employeeDAO.getAll();
   }
 
-  public Employee getEmployee() {
+  public Employee getSelectedEmployee() {
     return this.selectedEmployee;
   }
 
   public void setSelectedEmployee(int rowSelected) {
-    this.selectedEmployee = employeeDAO.get(getIdFromRow(rowSelected));
+    this.selectedEmployee = employeeDAO.get(view.getIdFromTable(rowSelected));
   }
 
   public void setAction(FormAction action) {
     this.action = action;
+  }
+
+  public void setForm(EmployeeForm form) {
+    this.form = form;
+  }
+
+  public void setResetForm(EmployeeResetForm resetForm) {
+    this.resetForm = resetForm;
   }
 }
