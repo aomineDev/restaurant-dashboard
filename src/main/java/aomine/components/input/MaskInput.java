@@ -36,6 +36,7 @@ public class MaskInput extends GoatTextInput<JFormattedTextField> {
     try {
       formatter = new MaskFormatter(mask);
       formatter.setPlaceholderCharacter(maskPlaceholder);
+      formatter.setValueContainsLiteralCharacters(false);
     } catch (java.text.ParseException e) {
       e.printStackTrace();
     }
@@ -45,6 +46,8 @@ public class MaskInput extends GoatTextInput<JFormattedTextField> {
 
   @Override
   public String getText() {
+    verifyFormat();
+
     if (this.input.getValue() == null)
       return null;
 
@@ -55,9 +58,12 @@ public class MaskInput extends GoatTextInput<JFormattedTextField> {
   public void setText(String text) {
     this.input.setText(text);
 
-    if (isValidFormat(this.input.getText())) {
-      this.input.setValue(this.input.getText());
-    }
+    verifyFormat();
+  }
+
+  @Override
+  public void clear() {
+    this.input.setValue(null);
   }
 
   public boolean isValidFormat(String text) {
@@ -69,9 +75,12 @@ public class MaskInput extends GoatTextInput<JFormattedTextField> {
     }
   }
 
-  @Override
-  public void clear() {
-    this.input.setValue(null);
+  public void verifyFormat() {
+    try {
+      this.input.commitEdit();
+    } catch (Exception e) {
+
+    }
   }
 
   public static class MaskInputBuilder

@@ -36,7 +36,7 @@ public class EmployeeForm extends JPanel implements View {
   @Override
   public void initComponents() {
     tiFirstName = new TextInput.TextInputBuilder()
-        .setLabelText("CTMRRRRRRRRRR")
+        .setLabelText("Primer Nombre")
         .setPlaceholder("Inngrese el primer nombre")
         .withErrorLabel()
         .build();

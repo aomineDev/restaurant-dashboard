@@ -16,10 +16,10 @@ public abstract class Person {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "person_id")
-  protected long personId;
+  protected Long personId;
 
-  @Column(name = "phone_number", unique = true)
-  protected Integer phoneNumber;
+  @Column(name = "phone_number", length = 9, unique = true)
+  protected String phoneNumber;
 
   @Column(name = "address", length = 100)
   protected String address;
@@ -30,19 +30,19 @@ public abstract class Person {
   public Person() {
   }
 
-  public long getPersonId() {
+  public Long getPersonId() {
     return personId;
   }
 
-  public void setPersonId(long personId) {
+  public void setPersonId(Long personId) {
     this.personId = personId;
   }
 
-  public Integer getPhoneNumber() {
+  public String getPhoneNumber() {
     return phoneNumber;
   }
 
-  public void setPhoneNumber(Integer phoneNumber) {
+  public void setPhoneNumber(String phoneNumber) {
     this.phoneNumber = phoneNumber;
   }
 

@@ -20,7 +20,8 @@ public class Employee extends NaturalPerson {
   private String password;
 
   @ManyToOne
-  @JoinColumn(name = "role_id", nullable = false)
+  @JoinColumn(name = "role_id")
+  @OnDelete(action = OnDeleteAction.SET_NULL)
   private Role role;
 
   public Employee() {

@@ -116,6 +116,12 @@ public abstract class AdminView extends SimpleView implements View {
     tableContainer.add(new JScrollPane(table), "span, grow");
   }
 
+  @Override
+  public void viewRefresh() {
+    setTableData();
+    setBtnEnabled(false);
+  }
+
   private void applyTableStyles() {
     // Change scroll style
     JScrollPane scroll = (JScrollPane) table.getParent().getParent();

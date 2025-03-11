@@ -7,11 +7,15 @@ import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 @Entity
 @Table(name = "natural_people")
+@OnDelete(action = OnDeleteAction.CASCADE)
 public abstract class NaturalPerson extends Person {
-  @Column(name = "dni", nullable = false, unique = true)
-  protected Integer dni;
+  @Column(name = "dni", length = 8, nullable = false, unique = true)
+  protected String dni;
 
   @Column(name = "first_name", nullable = false, length = 50)
   protected String firstName;
@@ -31,11 +35,11 @@ public abstract class NaturalPerson extends Person {
   public NaturalPerson() {
   }
 
-  public Integer getDni() {
+  public String getDni() {
     return dni;
   }
 
-  public void setDni(Integer dni) {
+  public void setDni(String dni) {
     this.dni = dni;
   }
 

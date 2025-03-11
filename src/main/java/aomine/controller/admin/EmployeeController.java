@@ -33,9 +33,9 @@ public class EmployeeController implements Controller {
   private String secondName;
   private String paternalLastname;
   private String maternalLastname;
-  private Integer dni;
+  private String dni;
   private LocalDate birthdate;
-  private Integer phoneNumber;
+  private String phoneNumber;
   private String email;
   private String address;
   private String username;
@@ -61,12 +61,12 @@ public class EmployeeController implements Controller {
     secondName = form.getTiSecondtName().getText();
     paternalLastname = form.getTiPaternalLastName().getText();
     maternalLastname = form.getTiMaternalLastName().getText();
-    dni = Integer.parseInt(form.getMiDni().getText());
+    dni = form.getMiDni().getText();
     birthdate = form.getDatePicker().getSelectedDate();
 
-    if (form.getMiPhoneNumber().getText() != null)
-      phoneNumber = Integer.parseInt(form.getMiPhoneNumber().getText().replaceAll(" ", ""));
-
+    System.out.println("celuclar value: " + form.getMiPhoneNumber().getInput().getValue());
+    System.out.println("celuclar text: " + form.getMiPhoneNumber().getInput().getText());
+    phoneNumber = form.getMiPhoneNumber().getText();
     email = form.getTiEmail().getText();
     address = form.getTiAddress().getText();
     username = form.getTiUsername().getText();
@@ -197,7 +197,6 @@ public class EmployeeController implements Controller {
 
     if (form.getMiPhoneNumber().getText() != null) {
       validate.setElement(form.getMiPhoneNumber())
-          .setText(text -> text.replaceAll(" ", ""))
           .isInteger("telefono invalido");
 
       switch (action) {

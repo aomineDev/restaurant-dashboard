@@ -3,6 +3,9 @@ package aomine;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.nio.file.Paths;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -30,28 +33,9 @@ import aomine.utils.validate.ValError;
 import aomine.utils.validate.Validate;
 import net.miginfocom.swing.MigLayout;
 
-class Padre {
-  Padre() {
-    init();
-  }
-
-  public void init() {
-    System.out.println("Padre");
-  }
-}
-
-class Hijo extends Padre {
-  public void init() {
-    super.init();
-    System.out.println("Hijo");
-  }
-}
-
 public class Test extends JFrame {
-
   public Test() {
-    // init();
-    Hijo hijo = new Hijo();
+    init();
   }
 
   public boolean asd(MaskInput field, String text) {
@@ -89,22 +73,38 @@ public class Test extends JFrame {
     MaskInput miDni = new MaskInput.MaskInputBuilder()
         .setLabelText("DNI")
         .withErrorLabel()
-        .setMask("##/##/##/##", '-')
+        .setMask("### ### ###", '-')
         .build();
 
     JButton btn = new JButton("Check");
     JButton btn2 = new JButton("val");
 
     JPasswordField jpf = new JPasswordField();
+    ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+
+    scheduler.schedule(() -> {
+      try {
+        miDni.getInput().commitEdit();
+        System.out.println("valid");
+      } catch (Exception err) {
+        System.out.println("error");
+      }
+      System.out.println("celuclar value: " + miDni.getInput().getValue());
+      System.out.println("celuclar text: " + miDni.getInput().getText());
+    }, 6, TimeUnit.SECONDS);
+
+    scheduler.shutdown();
 
     btn.addActionListener(e -> {
-      String t = "asdasdasd";
-      miDni.getInput().setText(t);
-
-      if (asd(miDni, miDni.getInput().getText())) {
-        miDni.getInput().setValue(miDni.getInput().getText());
+      try {
+        miDni.getInput().commitEdit();
+        System.out.println("valid");
+      } catch (Exception err) {
+        System.out.println("error");
       }
 
+      System.out.println("celuclar value: " + miDni.getInput().getValue());
+      System.out.println("celuclar text: " + miDni.getInput().getText());
       // Validate validate = new Validate();
 
       // validate.setElement(tiName)
@@ -121,7 +121,33 @@ public class Test extends JFrame {
     });
 
     btn2.addActionListener(e -> {
-      System.out.println(miDni.getText());
+      String text = "123456789";
+
+      miDni.getInput().setText(text);
+
+      scheduler.schedule(() -> {
+        try {
+          miDni.getInput().commitEdit();
+          System.out.println("valid");
+        } catch (Exception err) {
+          System.out.println("error");
+        }
+        System.out.println("celuclar value: " + miDni.getInput().getValue());
+        System.out.println("celuclar text: " + miDni.getInput().getText());
+      }, 2, TimeUnit.SECONDS);
+
+      scheduler.shutdown();
+
+      // try {
+      // miDni.getInput().commitEdit();
+      // // miDni.getInput().getFormatter().stringToValue(miDni.getInput().getText());
+      // // miDni.getInput().setValue(text);
+
+      // System.out.println("valid");
+      // } catch (Exception err) {
+      // System.out.println("error");
+      // }
+
     });
 
     tiName.onChanged((e) -> {
