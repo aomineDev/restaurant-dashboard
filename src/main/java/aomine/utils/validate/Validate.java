@@ -9,6 +9,7 @@ import org.hibernate.Session;
 
 import aomine.components.input.GoatTextInput;
 import aomine.database.Hibernate;
+import aomine.model.EntityColumn;
 import aomine.utils.GoatList;
 
 public class Validate {
@@ -168,14 +169,14 @@ public class Validate {
 
   }
 
-  public Validate isUnique(String msg, Class<?> Entity, String column) {
+  public Validate isUnique(String msg, Class<?> Entity, EntityColumn column) {
     if (!this.valid)
       return this;
 
-    String query = String.format("FROM %s WHERE %s = :%s", Entity.getSimpleName(), column, column);
+    String query = String.format("FROM %s WHERE %s = :value", Entity.getSimpleName(), column.getColumnName());
 
     Object obj = session.createQuery(query, Entity)
-        .setParameter(column, text)
+        .setParameter("value", text)
         .uniqueResult();
 
     if (obj != null)
@@ -185,15 +186,15 @@ public class Validate {
 
   }
 
-  public Validate isUnique(String msg, Class<?> Entity, String column, long id) {
+  public Validate isUnique(String msg, Class<?> Entity, EntityColumn column, long id) {
     if (!this.valid)
       return this;
 
-    String query = String.format("FROM %s WHERE %s = :%s AND %s != :%s", Entity.getSimpleName(), column, column, "id",
-        "id");
+    String query = String.format("FROM %s WHERE %s = :value AND id != :id", Entity.getSimpleName(),
+        column.getColumnName());
 
     Object obj = session.createQuery(query, Entity)
-        .setParameter(column, text)
+        .setParameter("value", text)
         .setParameter("id", id)
         .uniqueResult();
 

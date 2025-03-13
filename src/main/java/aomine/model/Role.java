@@ -46,7 +46,29 @@ public class Role {
     return this.name;
   }
 
-  public static enum Types {
+  public static enum RoleColumn implements EntityColumn {
+    NAME("name", "nombre");
+
+    private String columnName;
+    private String value;
+
+    private RoleColumn(String columnName, String value) {
+      this.columnName = columnName;
+      this.value = value;
+    }
+
+    @Override
+    public String getColumnName() {
+      return columnName;
+    }
+
+    @Override
+    public String toString() {
+      return value;
+    }
+  }
+
+  public static enum RoleTypes {
     ADMIN("Administrador"),
     WAITER("Mesero"),
     CHEF("Cocinero"),
@@ -54,11 +76,16 @@ public class Role {
 
     private String name;
 
-    Types(String name) {
+    RoleTypes(String name) {
       this.name = name;
     }
 
     public String getName() {
+      return name;
+    }
+
+    @Override
+    public String toString() {
       return name;
     }
   }

@@ -131,3 +131,19 @@ class Hijo extends Padre<Hijo> {
 
 # Actualizar componente al cambiar tema
 SwingUtilities.updateComponentTreeUI(component);
+
+# Ejecucion de una funcion despues de un tiempo x
+    ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+
+    scheduler.schedule(() -> {
+      try {
+        miDni.getInput().commitEdit();
+        System.out.println("valid");
+      } catch (Exception err) {
+        System.out.println("error");
+      }
+      System.out.println("celuclar value: " + miDni.getInput().getValue());
+      System.out.println("celuclar text: " + miDni.getInput().getText());
+    }, 6, TimeUnit.SECONDS);
+
+    scheduler.shutdown();

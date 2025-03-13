@@ -33,9 +33,52 @@ import aomine.utils.validate.ValError;
 import aomine.utils.validate.Validate;
 import net.miginfocom.swing.MigLayout;
 
+enum Days {
+  MONDAY("lunes"), TUESDAY("martes"), WEDNESDAY("miércoles"), THURSDAY("jueves"), FRIDAY("viernes"), SATURDAY("sábado"),
+  SUNDAY("domingo");
+
+  private String name;
+
+  Days(String name) {
+    this.name = name;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  @Override
+  public String toString() {
+    return name;
+  }
+}
+
+class Padre {
+  public void sayHello() {
+    System.out.println("Hello Padre");
+  }
+}
+
+class Hijo extends Padre {
+  @Override
+  public void sayHello() {
+    System.out.println("Hello Hijo");
+  }
+}
+
 public class Test extends JFrame {
   public Test() {
-    init();
+    // init();
+    String name = "Pedro";
+    String secondName = null;
+    String paternalLastname = "Perez";
+    String maternalLastname = "AAA";
+
+    System.out.println(name + " " + secondName + " " + paternalLastname + " " + maternalLastname);
+  }
+
+  public Padre getPadre() {
+    return new Hijo();
   }
 
   public boolean asd(MaskInput field, String text) {
@@ -73,38 +116,23 @@ public class Test extends JFrame {
     MaskInput miDni = new MaskInput.MaskInputBuilder()
         .setLabelText("DNI")
         .withErrorLabel()
-        .setMask("### ### ###", '-')
+        .setMask("## ## ## ##", '-')
         .build();
 
     JButton btn = new JButton("Check");
     JButton btn2 = new JButton("val");
 
     JPasswordField jpf = new JPasswordField();
-    ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
-    scheduler.schedule(() -> {
-      try {
-        miDni.getInput().commitEdit();
-        System.out.println("valid");
-      } catch (Exception err) {
-        System.out.println("error");
-      }
-      System.out.println("celuclar value: " + miDni.getInput().getValue());
-      System.out.println("celuclar text: " + miDni.getInput().getText());
-    }, 6, TimeUnit.SECONDS);
+    Days test = Days.MONDAY;
 
-    scheduler.shutdown();
+    if (test == Days.MONDAY) {
+      System.out.println(test);
+    }
 
     btn.addActionListener(e -> {
-      try {
-        miDni.getInput().commitEdit();
-        System.out.println("valid");
-      } catch (Exception err) {
-        System.out.println("error");
-      }
-
-      System.out.println("celuclar value: " + miDni.getInput().getValue());
-      System.out.println("celuclar text: " + miDni.getInput().getText());
+      // System.out.println("celuclar value: " + miDni.getInput().getValue());
+      // System.out.println("celuclar text: " + miDni.getInput().getText());
       // Validate validate = new Validate();
 
       // validate.setElement(tiName)
@@ -121,32 +149,6 @@ public class Test extends JFrame {
     });
 
     btn2.addActionListener(e -> {
-      String text = "123456789";
-
-      miDni.getInput().setText(text);
-
-      scheduler.schedule(() -> {
-        try {
-          miDni.getInput().commitEdit();
-          System.out.println("valid");
-        } catch (Exception err) {
-          System.out.println("error");
-        }
-        System.out.println("celuclar value: " + miDni.getInput().getValue());
-        System.out.println("celuclar text: " + miDni.getInput().getText());
-      }, 2, TimeUnit.SECONDS);
-
-      scheduler.shutdown();
-
-      // try {
-      // miDni.getInput().commitEdit();
-      // // miDni.getInput().getFormatter().stringToValue(miDni.getInput().getText());
-      // // miDni.getInput().setValue(text);
-
-      // System.out.println("valid");
-      // } catch (Exception err) {
-      // System.out.println("error");
-      // }
 
     });
 

@@ -1,13 +1,18 @@
 package aomine.view.admin.employee;
 
 import java.awt.Dimension;
+import java.awt.event.KeyEvent;
 
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableRowSorter;
 
 import aomine.components.layout.view.AdminView;
 import aomine.controller.admin.EmployeeController;
+import aomine.model.Employee;
+import aomine.model.Employee.EmployeeColumn;
 import aomine.utils.FormAction;
+import aomine.utils.GoatList;
 import raven.popup.DefaultOption;
 import raven.popup.GlassPanePopup;
 import raven.popup.component.PopupCallbackAction;
@@ -30,21 +35,25 @@ public class EmployeeView extends AdminView {
   public void applyEvents() {
     super.applyEvents();
 
+    tiSearch.onKeyPressed(e -> {
+      if (e.getKeyCode() == KeyEvent.VK_ENTER)
+        setTableData();
+    });
+
     btnAdd.addActionListener(evt -> showFormPopup(FormAction.ADD));
 
     btnEdit.addActionListener(e -> showFormPopup(FormAction.EDIT));
 
-    // btn delete
     btnDelete.addActionListener(e -> controller.handleDeleteEmployee(rowSelected));
   }
 
   @Override
   protected void setTableModel() {
-    Object[] columns = { "ID", "P. Nombre", "S. Nombre", "Apellido P.", "Apellido M.", "DNI", "Fecha de nacimiento",
+    Object[] columns = { "ID", "Empleado", "DNI", "Fecha de nacimiento",
         "Celular", "Dirección", "Email", "Usuario", "Rol" };
 
     DefaultTableModel model = new DefaultTableModel(null, columns) {
-      boolean[] canEdit = { false, false, false, false, false, false, false, false, false, false, false, false };
+      boolean[] canEdit = { false, false, false, false, false, false, false, false, false };
 
       @Override
       public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -57,6 +66,10 @@ public class EmployeeView extends AdminView {
     // Ocultar la columna ID
     TableColumnModel tcm = table.getColumnModel();
     tcm.removeColumn(tcm.getColumn(0));
+
+    tcm.getColumn(0).setPreferredWidth(200);
+
+    table.setRowSorter(new TableRowSorter<>(model));
   }
 
   @Override
@@ -65,13 +78,18 @@ public class EmployeeView extends AdminView {
 
     model.setRowCount(0);
 
-    controller.getEmployeeList().forEach(employee -> {
+    GoatList<Employee> employeeList;
+
+    if (tiSearch.getText() == null)
+      employeeList = controller.getEmployeeList();
+    else
+      employeeList = controller.getFilteredEmployeeList();
+
+    employeeList.forEach(employee -> {
+      System.out.println(employee.getFullName());
       Object[] row = {
           employee.getPersonId(),
-          employee.getFirstName(),
-          employee.getSecondName(),
-          employee.getPaternalLastname(),
-          employee.getMaternalLastname(),
+          employee.getFullName(),
           employee.getDni(),
           employee.getBirthdateFomramtted(),
           employee.getPhoneNumber(),
@@ -83,6 +101,17 @@ public class EmployeeView extends AdminView {
 
       model.addRow(row);
     });
+    System.out.println("---------------------------------");
+  }
+
+  @Override
+  protected void setColumnList() {
+    columnList = new GoatList<>(
+        EmployeeColumn.FULL_NAME,
+        EmployeeColumn.DNI,
+        EmployeeColumn.PHONE_NUMBER,
+        EmployeeColumn.EMAIL,
+        EmployeeColumn.USERNAME);
   }
 
   private void showFormPopup(FormAction action) {

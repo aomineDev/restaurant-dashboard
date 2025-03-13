@@ -17,24 +17,31 @@ import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 
 import aomine.components.GoatPanel;
+import aomine.components.input.SelectInput;
 import aomine.components.input.TextInput;
+import aomine.model.EntityColumn;
+import aomine.utils.GoatList;
 import aomine.view.View;
 import net.miginfocom.swing.MigLayout;
 
 public abstract class AdminView extends SimpleView implements View {
   protected int rowSelected;
   private String bannerImage;
+  protected GoatList<EntityColumn> columnList;
 
   public AdminView(String bannerImage) {
     this.bannerImage = bannerImage;
 
     initialize();
 
+    setController();
+
     setBtnEnabled(false);
 
-    applyTableStyles();
+    setColumnList();
+    setSiColumnItems();
 
-    setController();
+    applyTableStyles();
 
     setTableModel();
     setTableData();
@@ -56,6 +63,9 @@ public abstract class AdminView extends SimpleView implements View {
         .setPlaceholder("Nombre")
         .build();
 
+    siColumn = new SelectInput.SelectInputBuilder<EntityColumn>()
+        .build();
+
     btnAdd = new JButton("Nuevo");
     btnEdit = new JButton("Editar");
     btnDelete = new JButton("Eliminar");
@@ -68,7 +78,7 @@ public abstract class AdminView extends SimpleView implements View {
 
     container.setLayout(new MigLayout("insets 0, flowy", "[grow]", "[]10[grow]"));
 
-    tableContainer.setLayout(new MigLayout("insets 16, fillx", "[]push[][][]", "[]20[grow]"));
+    tableContainer.setLayout(new MigLayout("insets 16, fillx", "[][]push[][][]", "[]20[grow]"));
   }
 
   @Override
@@ -110,6 +120,7 @@ public abstract class AdminView extends SimpleView implements View {
     container.add(tableContainer, "grow");
 
     tableContainer.add(tiSearch.getInput(), "w 200");
+    tableContainer.add(siColumn.getInput());
     tableContainer.add(btnAdd);
     tableContainer.add(btnEdit);
     tableContainer.add(btnDelete, "wrap");
@@ -118,6 +129,7 @@ public abstract class AdminView extends SimpleView implements View {
 
   @Override
   public void viewRefresh() {
+    tiSearch.setText(null);
     setTableData();
     setBtnEnabled(false);
   }
@@ -178,9 +190,19 @@ public abstract class AdminView extends SimpleView implements View {
 
   protected abstract void setController();
 
+  protected abstract void setColumnList();
+
+  protected void setSiColumnItems() {
+    columnList.forEach(column -> siColumn.getInput().addItem(column));
+  }
+
   // getters
   public TextInput getTiSearch() {
     return tiSearch;
+  }
+
+  public SelectInput<EntityColumn> getSiColumn() {
+    return siColumn;
   }
 
   public JTable getTable() {
@@ -195,6 +217,7 @@ public abstract class AdminView extends SimpleView implements View {
 
   // table
   protected TextInput tiSearch;
+  protected SelectInput<EntityColumn> siColumn;
   protected JButton btnAdd;
   protected JButton btnEdit;
   protected JButton btnDelete;

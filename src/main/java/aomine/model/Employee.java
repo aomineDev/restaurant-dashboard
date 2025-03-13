@@ -53,6 +53,40 @@ public class Employee extends NaturalPerson {
 
   @Override
   public String toString() {
-    return this.getFirstName() + " " + this.getPaternalLastname();
+    return firstName + " " + paternalLastname;
+  }
+
+  public static enum EmployeeColumn implements EntityColumn {
+    FULL_NAME("fullName", "nombre completo"),
+    FIRST_NAME("firstName", "primer nombre"),
+    SECOND_NAME("secondName", "segundo nombre"),
+    PATERNAL_LASTNAME("paternalLastname", "apellido paterno"),
+    MATERNAL_LASTNAME("maternalLastname", "apellido materno"),
+    DNI("dni", "dni"),
+    BIRTHDATE("birthdate", "fecha de nacimiento"),
+    PHONE_NUMBER("phoneNumber", "numero de telefono"),
+    ADDRESS("address", "direccion"),
+    EMAIL("email", "email"),
+    USERNAME("username", "usuario"),
+    PASSWORD("password", "contraseña"),
+    ROLE("role", "rol");
+
+    private String columnName;
+    private String value;
+
+    private EmployeeColumn(String columnName, String value) {
+      this.columnName = columnName;
+      this.value = value;
+    }
+
+    @Override
+    public String getColumnName() {
+      return columnName;
+    }
+
+    @Override
+    public String toString() {
+      return value;
+    }
   }
 }

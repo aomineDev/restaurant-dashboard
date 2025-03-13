@@ -6,7 +6,9 @@ import aomine.controller.Controller;
 import aomine.dao.EmployeeDAO;
 import aomine.dao.RoleDAO;
 import aomine.model.Employee;
+import aomine.model.EntityColumn;
 import aomine.model.Role;
+import aomine.model.Employee.EmployeeColumn;
 import aomine.utils.FormAction;
 import aomine.utils.GoatList;
 import aomine.utils.validate.Validate;
@@ -63,19 +65,12 @@ public class EmployeeController implements Controller {
     maternalLastname = form.getTiMaternalLastName().getText();
     dni = form.getMiDni().getText();
     birthdate = form.getDatePicker().getSelectedDate();
-
-    System.out.println("celuclar value: " + form.getMiPhoneNumber().getInput().getValue());
-    System.out.println("celuclar text: " + form.getMiPhoneNumber().getInput().getText());
     phoneNumber = form.getMiPhoneNumber().getText();
     email = form.getTiEmail().getText();
     address = form.getTiAddress().getText();
     username = form.getTiUsername().getText();
-
-    if (action == FormAction.ADD) {
-      password = getEncryptedPassword(form.getPiPassword().getText());
-    }
-
-    role = form.getCbRole().getSelectedItem();
+    password = getEncryptedPassword(form.getPiPassword().getText());
+    role = form.getSiRole().getSelectedItem();
 
     String messageSuccess = switch (action) {
       case ADD -> "Empleado creado correctamente";
@@ -104,7 +99,7 @@ public class EmployeeController implements Controller {
 
       GlassPanePopup.closePopup("employeeForm");
 
-      view.setTableData();
+      view.viewRefresh();
 
       Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.BOTTOM_LEFT, messageSuccess);
     } catch (Exception e) {
@@ -112,15 +107,12 @@ public class EmployeeController implements Controller {
 
       e.printStackTrace();
     }
-
-    view.setBtnEnabled(false);
   }
 
   public void handleDeleteEmployee(int rowSelected) {
-    String firstName = (String) view.getValueFromTable(rowSelected, 0);
-    String paternalLastName = (String) view.getValueFromTable(rowSelected, 2);
+    String fullName = (String) view.getValueFromTable(rowSelected, 0);
 
-    String msg = String.format("¿Está seguro de eliminar a \n %s %s?", firstName, paternalLastName);
+    String msg = String.format("¿Está seguro de eliminar a \n %s?", fullName);
 
     MessageAlerts.getInstance().showMessage("Eliminar Empleado", msg,
         MessageAlerts.MessageType.WARNING, MessageAlerts.YES_NO_OPTION, (ctr, option) -> {
@@ -128,7 +120,7 @@ public class EmployeeController implements Controller {
             try {
               employeeDAO.delete(view.getIdFromTable(rowSelected));
 
-              view.setTableData();
+              view.viewRefresh();
 
               Notifications.getInstance().show(Notifications.Type.SUCCESS, Notifications.Location.BOTTOM_LEFT,
                   "Empleado eliminado correctamente");
@@ -140,8 +132,6 @@ public class EmployeeController implements Controller {
             }
           }
         });
-
-    view.setBtnEnabled(false);
   }
 
   public void handleResetPassword() {
@@ -169,6 +159,10 @@ public class EmployeeController implements Controller {
     view.setBtnEnabled(false);
   }
 
+  public GoatList<Employee> getFilteredEmployeeList() {
+    return employeeDAO.search(view.getSiColumn().getSelectedItem(), view.getTiSearch().getText());
+  }
+
   @Override
   public boolean validateFormFields() {
     validate.reset();
@@ -187,8 +181,9 @@ public class EmployeeController implements Controller {
         .isInteger("DNI invalido");
 
     switch (action) {
-      case ADD -> validate.isUnique("DNI ya registrado", Employee.class, "dni");
-      case EDIT -> validate.isUnique("DNI ya registrado", Employee.class, "dni", selectedEmployee.getPersonId());
+      case ADD -> validate.isUnique("DNI ya registrado", Employee.class, EmployeeColumn.DNI);
+      case EDIT ->
+        validate.isUnique("DNI ya registrado", Employee.class, EmployeeColumn.DNI, selectedEmployee.getPersonId());
     }
 
     if (form.getMiBirthdate().getText() != null)
@@ -200,9 +195,10 @@ public class EmployeeController implements Controller {
           .isInteger("telefono invalido");
 
       switch (action) {
-        case ADD -> validate.isUnique("telefono ya registrado", Employee.class, "phoneNumber");
+        case ADD -> validate.isUnique("telefono ya registrado", Employee.class, EmployeeColumn.PHONE_NUMBER);
         case EDIT ->
-          validate.isUnique("telefono ya registrado", Employee.class, "phoneNumber", selectedEmployee.getPersonId());
+          validate.isUnique("telefono ya registrado", Employee.class, EmployeeColumn.PHONE_NUMBER,
+              selectedEmployee.getPersonId());
       }
     }
 
@@ -211,8 +207,9 @@ public class EmployeeController implements Controller {
           .isEmail("email invalido");
 
       switch (action) {
-        case ADD -> validate.isUnique("email ya registrado", Employee.class, "email");
-        case EDIT -> validate.isUnique("email ya registrado", Employee.class, "email", selectedEmployee.getPersonId());
+        case ADD -> validate.isUnique("email ya registrado", Employee.class, EmployeeColumn.EMAIL);
+        case EDIT -> validate.isUnique("email ya registrado", Employee.class, EmployeeColumn.EMAIL,
+            selectedEmployee.getPersonId());
       }
     }
 
@@ -221,9 +218,10 @@ public class EmployeeController implements Controller {
 
     switch (action) {
       case ADD ->
-        validate.isUnique("username ya registrado", Employee.class, "username");
+        validate.isUnique("username ya registrado", Employee.class, EmployeeColumn.USERNAME);
       case EDIT ->
-        validate.isUnique("username ya registrado", Employee.class, "username", selectedEmployee.getPersonId());
+        validate.isUnique("username ya registrado", Employee.class, EmployeeColumn.USERNAME,
+            selectedEmployee.getPersonId());
     }
 
     if (action == FormAction.ADD)
@@ -259,6 +257,9 @@ public class EmployeeController implements Controller {
   }
 
   private String getEncryptedPassword(String password) {
+    if (password == null)
+      return null;
+
     return BCrypt.withDefaults().hashToString(12, password.toCharArray());
   }
 

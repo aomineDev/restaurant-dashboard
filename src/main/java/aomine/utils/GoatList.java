@@ -10,11 +10,17 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 public class GoatList<T> extends ArrayList<T> {
+  public GoatList() {
+  }
+
   public GoatList(List<T> list) {
     super(list);
   }
 
-  public GoatList() {
+  @SafeVarargs
+  public GoatList(T... items) {
+    for (T item : items)
+      add(item);
   }
 
   public GoatList<T> filter(Predicate<T> predicate) {

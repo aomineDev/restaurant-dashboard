@@ -3,8 +3,8 @@ package aomine.dao;
 import org.hibernate.Session;
 
 import aomine.database.Hibernate;
+import aomine.model.EntityColumn;
 import aomine.model.Role;
-import aomine.model.Role.Types;
 import aomine.utils.GoatList;
 
 public class RoleDAO implements DAO<Role> {
@@ -48,11 +48,21 @@ public class RoleDAO implements DAO<Role> {
     session.getTransaction().commit();
   }
 
-  public Role findByName(Types type) {
-    String query = "FROM Role r where r.name = :name";
+  @Override
+  public GoatList<Role> findBy(EntityColumn column, String value) {
+    String query = "FROM Role r where r." + column.getColumnName() + " = :name";
+
+    return new GoatList<>(session.createQuery(query, Role.class)
+        .setParameter("name", value)
+        .getResultList());
+  }
+
+  @Override
+  public Role findUniqueBy(EntityColumn column, String value) {
+    String query = "FROM Role r where r." + column.getColumnName() + " = :name";
 
     return session.createQuery(query, Role.class)
-        .setParameter("name", type.getName())
+        .setParameter("name", value)
         .uniqueResult();
   }
 }

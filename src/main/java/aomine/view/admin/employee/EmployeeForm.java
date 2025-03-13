@@ -30,7 +30,7 @@ public class EmployeeForm extends JPanel implements View {
 
     initialize();
 
-    controller.getRoleList().forEach(role -> cbRole.getInput().addItem(role));
+    controller.getRoleList().forEach(role -> siRole.getInput().addItem(role));
   }
 
   @Override
@@ -107,7 +107,7 @@ public class EmployeeForm extends JPanel implements View {
         .withErrorLabel()
         .build();
 
-    cbRole = new SelectInput.SelectInputBuilder<Role>()
+    siRole = new SelectInput.SelectInputBuilder<Role>()
         .setLabelText("Rol")
         .build();
 
@@ -178,11 +178,11 @@ public class EmployeeForm extends JPanel implements View {
     add(tiUsername.getLabel(), "span 2");
     if (action == FormAction.ADD)
       add(piPassword.getLabel(), "span 2");
-    add(cbRole.getLabel(), "span 2, wrap");
+    add(siRole.getLabel(), "span 2, wrap");
     add(tiUsername.getInput(), "span 2");
     if (action == FormAction.ADD)
       add(piPassword.getInput(), "span 2");
-    add(cbRole.getInput(), "span 2, wrap");
+    add(siRole.getInput(), "span 2, wrap");
     add(tiUsername.getErrorLabel(), "span 2");
     if (action == FormAction.ADD)
       add(piPassword.getErrorLabel(), "span 2");
@@ -199,11 +199,11 @@ public class EmployeeForm extends JPanel implements View {
     tiAddress.setText(employee.getAddress());
     tiEmail.setText(employee.getEmail());
     tiUsername.setText(employee.getUsername());
-    cbRole.getInput().setSelectedItem(employee.getRole());
+    siRole.getInput().setSelectedItem(employee.getRole());
   }
 
-  public SelectInput<Role> getCbRole() {
-    return cbRole;
+  public SelectInput<Role> getSiRole() {
+    return siRole;
   }
 
   public TextInput getTiFirstName() {
@@ -266,5 +266,5 @@ public class EmployeeForm extends JPanel implements View {
   private TextInput tiEmail;
   private TextInput tiUsername;
   private PasswordInput piPassword;
-  private SelectInput<Role> cbRole;
+  private SelectInput<Role> siRole;
 }

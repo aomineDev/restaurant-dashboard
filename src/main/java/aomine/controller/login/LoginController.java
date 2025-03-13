@@ -8,6 +8,9 @@ import aomine.dao.EmployeeDAO;
 import aomine.dao.RoleDAO;
 import aomine.model.Employee;
 import aomine.model.Role;
+import aomine.model.Employee.EmployeeColumn;
+import aomine.model.Role.RoleColumn;
+import aomine.model.Role.RoleTypes;
 import aomine.store.Store;
 import aomine.utils.validate.ValError;
 import aomine.utils.validate.Validate;
@@ -65,7 +68,7 @@ public class LoginController implements Controller {
       Store.setUser(user);
 
       // Router
-      if (user.getRole().getName().equals(Role.Types.ADMIN.getName())) {
+      if (user.getRole().getName().equals(RoleTypes.ADMIN.getName())) {
         ViewManager.showView(new EmployeeView());
       }
 
@@ -96,7 +99,7 @@ public class LoginController implements Controller {
   }
 
   private Employee verifyUsername(String username) throws Exception {
-    Employee user = employeeDAO.findByUsername(username);
+    Employee user = employeeDAO.findUniqueBy(EmployeeColumn.USERNAME, username);
 
     if (user == null)
       throw new Exception("Usuario y/o contraseña invalidos");
@@ -112,7 +115,7 @@ public class LoginController implements Controller {
   }
 
   private void createRoles() {
-    for (Role.Types role : Role.Types.values()) {
+    for (RoleTypes role : RoleTypes.values()) {
       roleDAO.add(new Role(role.getName()));
     }
   }
@@ -123,7 +126,7 @@ public class LoginController implements Controller {
     String password = dotenv.get("DEFAULT_PASSWORD");
     String encryptedPassword = BCrypt.withDefaults().hashToString(12, password.toCharArray());
 
-    Role admin = roleDAO.findByName(Role.Types.ADMIN);
+    Role admin = roleDAO.findUniqueBy(RoleColumn.NAME, RoleTypes.ADMIN.getName());
 
     Employee user = new Employee();
     user.setRole(admin);

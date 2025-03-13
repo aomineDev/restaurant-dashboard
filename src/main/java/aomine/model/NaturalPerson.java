@@ -7,6 +7,7 @@ import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -27,10 +28,13 @@ public abstract class NaturalPerson extends Person {
   protected String paternalLastname;
 
   @Column(name = "maternal_lastname", nullable = false, length = 50)
-  protected String MaternalLastname;
+  protected String maternalLastname;
 
   @Column(name = "birthdate")
   protected LocalDate birthdate;
+
+  @Formula("first_name || ' ' || COALESCE(second_name, '') || ' ' || paternal_lastname || ' ' || maternal_lastname")
+  protected String fullName;
 
   public NaturalPerson() {
   }
@@ -68,11 +72,11 @@ public abstract class NaturalPerson extends Person {
   }
 
   public String getMaternalLastname() {
-    return MaternalLastname;
+    return maternalLastname;
   }
 
   public void setMaternalLastname(String maternalLastname) {
-    MaternalLastname = maternalLastname;
+    this.maternalLastname = maternalLastname;
   }
 
   public LocalDate getBirthdate() {
@@ -90,5 +94,9 @@ public abstract class NaturalPerson extends Person {
 
   public void setBirthdate(LocalDate birthdate) {
     this.birthdate = birthdate;
+  }
+
+  public String getFullName() {
+    return fullName;
   }
 }
