@@ -23,7 +23,7 @@ public class TextInput extends GoatTextInput<JTextField> {
   }
 
   private void initComponents() {
-    this.input = new JTextField(value);
+    input = new JTextField(value);
   }
 
   public static class TextInputBuilder extends GoatTextInput.GoatTextInputBuilder<TextInputBuilder, JTextField> {

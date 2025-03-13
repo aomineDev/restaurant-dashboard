@@ -81,6 +81,11 @@ public abstract class GoatTextInput<T extends JTextComponent> extends GoatInput<
     this.input.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, this.placeholder);
   }
 
+  public void setPlaceholder(String placeholder) {
+    this.placeholder = placeholder;
+    applyPlaceholder();
+  }
+
   public void onKeyTyped(Consumer<KeyEvent> handleKeyTyped) {
     this.handleKeyTyped = handleKeyTyped;
   }

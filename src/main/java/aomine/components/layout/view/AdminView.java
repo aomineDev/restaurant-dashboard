@@ -36,12 +36,13 @@ public abstract class AdminView extends SimpleView implements View {
 
     setController();
 
+    applyTableStyles();
+
     setBtnEnabled(false);
 
     setColumnList();
     setSiColumnItems();
-
-    applyTableStyles();
+    setTiSearchPlaceholder();
 
     setTableModel();
     setTableData();
@@ -60,7 +61,6 @@ public abstract class AdminView extends SimpleView implements View {
     tableContainer = new JPanel();
 
     tiSearch = new TextInput.TextInputBuilder()
-        .setPlaceholder("Nombre")
         .build();
 
     siColumn = new SelectInput.SelectInputBuilder<EntityColumn>()
@@ -109,6 +109,8 @@ public abstract class AdminView extends SimpleView implements View {
         rowSelected = table.rowAtPoint(evt.getPoint());
       }
     });
+
+    siColumn.getInput().addActionListener(e -> setTiSearchPlaceholder());
   }
 
   @Override
@@ -194,6 +196,10 @@ public abstract class AdminView extends SimpleView implements View {
 
   protected void setSiColumnItems() {
     columnList.forEach(column -> siColumn.getInput().addItem(column));
+  }
+
+  public void setTiSearchPlaceholder() {
+    tiSearch.setPlaceholder("Ingrese " + siColumn.getInput().getSelectedItem());
   }
 
   // getters
