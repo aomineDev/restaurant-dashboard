@@ -86,7 +86,6 @@ public class EmployeeView extends AdminView {
       employeeList = controller.getFilteredEmployeeList();
 
     employeeList.forEach(employee -> {
-      System.out.println(employee.getFullName());
       Object[] row = {
           employee.getPersonId(),
           employee.getFullName(),
@@ -101,7 +100,6 @@ public class EmployeeView extends AdminView {
 
       model.addRow(row);
     });
-    System.out.println("---------------------------------");
   }
 
   @Override
