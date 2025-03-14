@@ -4,8 +4,7 @@ import java.awt.event.ActionEvent;
 
 import aomine.ViewManager;
 import aomine.controller.Controller;
-import aomine.dao.EmployeeDAO;
-import aomine.dao.RoleDAO;
+import aomine.database.Hibernate;
 import aomine.model.Employee;
 import aomine.model.Role;
 import aomine.model.Employee.EmployeeColumn;
@@ -23,8 +22,6 @@ import raven.alerts.MessageAlerts;
 
 public class LoginController implements Controller {
   private LoginView view;
-  private RoleDAO roleDAO;
-  private EmployeeDAO employeeDAO;
   private Validate validate;
 
   // from view
@@ -34,14 +31,12 @@ public class LoginController implements Controller {
   public LoginController(LoginView view) {
     this.view = view;
     this.validate = new Validate();
-    this.roleDAO = new RoleDAO();
-    this.employeeDAO = new EmployeeDAO();
 
     this.handleEmptyDB();
   }
 
   private void handleEmptyDB() {
-    if (employeeDAO.isEmpty()) {
+    if (Hibernate.isEmpty(Employee.class)) {
       createRoles();
       createAdmin();
     }
@@ -99,7 +94,7 @@ public class LoginController implements Controller {
   }
 
   private Employee verifyUsername(String username) throws Exception {
-    Employee user = employeeDAO.findUniqueBy(EmployeeColumn.USERNAME, username);
+    Employee user = Hibernate.findUniqueBy(Employee.class, EmployeeColumn.USERNAME, username);
 
     if (user == null)
       throw new Exception("Usuario y/o contraseña invalidos");
@@ -116,7 +111,7 @@ public class LoginController implements Controller {
 
   private void createRoles() {
     for (RoleTypes role : RoleTypes.values()) {
-      roleDAO.add(new Role(role.getName()));
+      Hibernate.add(new Role(role.getName()));
     }
   }
 
@@ -126,7 +121,7 @@ public class LoginController implements Controller {
     String password = dotenv.get("DEFAULT_PASSWORD");
     String encryptedPassword = BCrypt.withDefaults().hashToString(12, password.toCharArray());
 
-    Role admin = roleDAO.findUniqueBy(RoleColumn.NAME, RoleTypes.ADMIN.getName());
+    Role admin = Hibernate.findUniqueBy(Role.class, RoleColumn.NAME, RoleTypes.ADMIN.getName());
 
     Employee user = new Employee();
     user.setRole(admin);
@@ -137,7 +132,7 @@ public class LoginController implements Controller {
     user.setMaternalLastname("toor");
     user.setDni("12345678");
 
-    employeeDAO.add(user);
+    Hibernate.add(user);
   }
 
   private void errorMessage(String msg) {

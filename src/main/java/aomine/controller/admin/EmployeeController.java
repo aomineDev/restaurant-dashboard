@@ -3,10 +3,8 @@ package aomine.controller.admin;
 import java.time.LocalDate;
 
 import aomine.controller.Controller;
-import aomine.dao.EmployeeDAO;
-import aomine.dao.RoleDAO;
+import aomine.database.Hibernate;
 import aomine.model.Employee;
-import aomine.model.EntityColumn;
 import aomine.model.Role;
 import aomine.model.Employee.EmployeeColumn;
 import aomine.utils.FormAction;
@@ -24,8 +22,6 @@ public class EmployeeController implements Controller {
   private EmployeeView view;
   private EmployeeForm form;
   private EmployeeResetForm resetForm;
-  private EmployeeDAO employeeDAO;
-  private RoleDAO roleDAO;
   private Validate validate;
   private FormAction action;
   private Employee selectedEmployee;
@@ -46,13 +42,11 @@ public class EmployeeController implements Controller {
 
   public EmployeeController(EmployeeView view) {
     this.view = view;
-    this.employeeDAO = new EmployeeDAO();
-    this.roleDAO = new RoleDAO();
     this.validate = new Validate();
   }
 
   public GoatList<Role> getRoleList() {
-    return this.roleDAO.getAll();
+    return Hibernate.getAll(Role.class);
   }
 
   public void handleFormAction() {
@@ -88,12 +82,12 @@ public class EmployeeController implements Controller {
 
           fillEmployee(employee);
 
-          employeeDAO.add(employee);
+          Hibernate.add(employee);
         }
         case EDIT -> {
           fillEmployee(selectedEmployee);
 
-          employeeDAO.update(selectedEmployee);
+          Hibernate.update(selectedEmployee);
         }
       }
 
@@ -118,7 +112,7 @@ public class EmployeeController implements Controller {
         MessageAlerts.MessageType.WARNING, MessageAlerts.YES_NO_OPTION, (ctr, option) -> {
           if (option == 0) {
             try {
-              employeeDAO.delete(view.getIdFromTable(rowSelected));
+              Hibernate.delete(Employee.class, view.getIdFromTable(rowSelected));
 
               view.viewRefresh();
 
@@ -143,7 +137,7 @@ public class EmployeeController implements Controller {
     selectedEmployee.setPassword(password);
 
     try {
-      employeeDAO.update(selectedEmployee);
+      Hibernate.update(selectedEmployee);
 
       GlassPanePopup.closePopup("employeeForm");
 
@@ -160,7 +154,7 @@ public class EmployeeController implements Controller {
   }
 
   public GoatList<Employee> getFilteredEmployeeList() {
-    return employeeDAO.search(view.getSiColumn().getSelectedItem(), view.getTiSearch().getText());
+    return Hibernate.search(Employee.class, view.getSiColumn().getSelectedItem(), view.getTiSearch().getText());
   }
 
   @Override
@@ -282,7 +276,7 @@ public class EmployeeController implements Controller {
   }
 
   public GoatList<Employee> getEmployeeList() {
-    return employeeDAO.getAll();
+    return Hibernate.getAll(Employee.class);
   }
 
   public Employee getSelectedEmployee() {
@@ -290,7 +284,7 @@ public class EmployeeController implements Controller {
   }
 
   public void setSelectedEmployee(int rowSelected) {
-    this.selectedEmployee = employeeDAO.get(view.getIdFromTable(rowSelected));
+    this.selectedEmployee = Hibernate.get(Employee.class, view.getIdFromTable(rowSelected));
   }
 
   public void setAction(FormAction action) {

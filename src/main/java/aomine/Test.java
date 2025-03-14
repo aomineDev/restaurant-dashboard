@@ -24,8 +24,6 @@ import com.formdev.flatlaf.util.LoggingFacade;
 import aomine.components.GoatPanel;
 import aomine.components.input.MaskInput;
 import aomine.components.input.TextInput;
-import aomine.dao.EmployeeDAO;
-import aomine.dao.RoleDAO;
 import aomine.database.Hibernate;
 import aomine.model.Employee;
 import aomine.model.Role;
@@ -64,30 +62,34 @@ class Hijo extends Padre {
   public void sayHello() {
     System.out.println("Hello Hijo");
   }
+
+  public <T> T get() {
+    T valor = null;
+    return valor;
+  }
 }
 
 public class Test extends JFrame {
   public Test() {
-    // init();
-    String name = "Pedro";
-    String secondName = null;
-    String paternalLastname = "Perez";
-    String maternalLastname = "AAA";
+    init();
 
-    System.out.println(name + " " + secondName + " " + paternalLastname + " " + maternalLastname);
+    Hijo hijo = new Hijo();
+
+    String a = hijo.get();
+
+    System.out.println(a);
   }
 
-  public Padre getPadre() {
-    return new Hijo();
+  public void print(Object obj) {
+    String txt = obj.getClass().getSimpleName();
+    System.out.println(txt);
+
+    if (obj instanceof Hijo)
+      printf((Hijo) obj);
   }
 
-  public boolean asd(MaskInput field, String text) {
-    try {
-      field.getInput().getFormatter().stringToValue(text);
-      return true;
-    } catch (Exception e) {
-      return false;
-    }
+  public void printf(Padre p) {
+    p.sayHello();
   }
 
   private void init() {
