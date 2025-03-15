@@ -98,7 +98,7 @@ public class Hibernate {
   }
 
   public static <T> T findUniqueBy(Class<T> entity, EntityColumn column, String value) {
-    String query = "FROM \" +  entity.getSimpleName() + \" e WHERE e." + column.getColumnName() + " = :name";
+    String query = "FROM " + entity.getSimpleName() + " e WHERE e." + column.getColumnName() + " = :value";
 
     return instance.session
         .createQuery(query, entity)
